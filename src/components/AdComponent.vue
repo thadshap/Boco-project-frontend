@@ -1,7 +1,7 @@
 <template>
   <div class="card ad-width ad-padding">
     <div class="card-body ad-padding w-100 card-style">
-      <img src="{{ image }}" class="mw-100">
+      <img src="{{ image }}" class="mw-100" />
       <h6 class="location-style">{{ place }}</h6>
       <div class="d-flex flex-row justify-content-between align-items-center">
         <h4>{{ title }}</h4>
@@ -17,32 +17,32 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     price: {
       type: Number,
-      required: true
+      required: true,
     },
     place: {
       type: String,
-      required: true
+      required: true,
     },
     image: {
       type: String,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
 
 <style scoped>
 .card-style {
-  background: rgb(202,216,238);
+  background: rgb(202, 216, 238);
   box-shadow: 0px 0px 10px;
 }
 
 .location-style {
-  opacity: 0.70;
+  opacity: 0.7;
   margin-top: 5px;
 }
 

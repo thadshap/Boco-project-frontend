@@ -1,6 +1,8 @@
 <template>
   <div class="card card-style">
-    <div class="card-body d-flex flex-column justify-content-center align-items-center card-body-style">
+    <div
+      class="card-body d-flex flex-column justify-content-center align-items-center card-body-style"
+    >
       <i class="fas fa-tools icon-style"></i>
       <h4 class="card-title title-style">{{ title }}</h4>
     </div>
@@ -13,9 +15,9 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -23,7 +25,7 @@ export default {
 .card-style {
   width: max-content;
   border-width: 2px;
-  border-color: rgb(0,128,255);
+  border-color: rgb(0, 128, 255);
   margin: 5px;
 }
 
