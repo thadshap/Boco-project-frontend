@@ -29,7 +29,8 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
 * {
-  font-family: cambay;
+  font-family: system-ui;
 }
 </style>
