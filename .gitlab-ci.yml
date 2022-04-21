@@ -1,4 +1,7 @@
 build site:
+  only:
+    refs:
+      - master
   image: node:6
   stage: build
   script:
