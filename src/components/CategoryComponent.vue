@@ -5,6 +5,7 @@
     >
       <i :class="['fa', 'icon-style', icon]"></i>
       <h4 class="card-title title-style">{{ title }}</h4>
+
     </div>
   </div>
 </template>
