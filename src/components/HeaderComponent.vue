@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-5">
     <nav class="navbar navbar-light navbar-expand-md navbarStyle">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center navbarBrandStyle" href="#">
