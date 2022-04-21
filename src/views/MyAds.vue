@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="d-flex justify-content-center">
+      <h2>Mine annonser</h2>
+    </div>
     <div class="d-flex justify-content-center search-box-container-style">
       <div class="d-flex search-container">
         <input type="search" placeholder="Søk" class="w-100" />
@@ -12,12 +15,12 @@
     <div>
       <h3>Categories</h3>
       <div
-        class="d-flex flex-row justify-content-start align-items-center flex-wrap categories-card-container-style"
+          class="d-flex flex-row justify-content-start align-items-center flex-wrap categories-card-container-style"
       >
         <CategoryComponent
-          v-for="category in categories"
-          :key="category"
-          :title="category.title"
+            v-for="category in categories"
+            :key="category"
+            :title="category.title"
         />
       </div>
     </div>
@@ -35,7 +38,7 @@ import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
 
 export default {
-  name: "MainPage",
+  name: "MyAds",
   components: {
     AdListComponent,
     CategoryComponent,
