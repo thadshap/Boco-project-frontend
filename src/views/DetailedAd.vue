@@ -57,27 +57,45 @@
           <ol-source-osm />
         </ol-tile-layer>
 
+        <ol-vector-layer>
+          <ol-source-vector>
+            <ol-feature>
+              <ol-geom-point :coordinates="coordinate"></ol-geom-point>
+              <ol-style>
+                <ol-style-fill color="rgba(255,255,255,0.1)"></ol-style-fill>
+                <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
+              </ol-style>
+            </ol-feature>
+
+          </ol-source-vector>
+
+        </ol-vector-layer>
       </ol-map>
     </div>
   </div>
 </template>
 
 <script>
-
 import { ref } from 'vue'
 
 export default {
   name: "DetailedAd",
   setup(){
-    const center = ref([40, 40])
+    const center = ref([40,40])
     const projection = ref('EPSG:4326')
     const zoom = ref(8)
     const rotation = ref(0)
+    const strokeWidth = ref(10)
+    const strokeColor = ref('red')
+    const coordinate = ref([40, 40])
     return {
       center,
       projection,
       zoom,
-      rotation
+      rotation,
+      strokeWidth,
+      strokeColor,
+      coordinate
     }
   },
   data() {
@@ -93,6 +111,8 @@ export default {
       distance : null,
       address : '',
       picture : '',
+      latitudeForItem: '',
+      longitudeForItem:''
     };
   },
   methods : {
