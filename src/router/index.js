@@ -3,6 +3,7 @@ import MainPage from "@/views/MainPage";
 import About from "@/views/About.vue";
 import DetailedAd from "@/views/DetailedAd";
 import LendingPage from "@/views/LendingPage";
+import UserSettings from "../views/UserSettings";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/ad",
     name: "Ad",
     component: DetailedAd,
+  },
+  {
+    path: "/userSettings",
+    name: "UserSettings",
+    component: UserSettings,
   },
 ];
 
