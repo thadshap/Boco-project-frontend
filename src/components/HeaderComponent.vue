@@ -1,0 +1,104 @@
+<template>
+  <div>
+    <nav class="navbar navbar-light navbar-expand-md navbarStyle">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center navbarBrandStyle" href="#">
+        <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon">
+          <img class="img-fluid" src="@/assets/img/BoCo.png" alt="BorrowCommunity-logo">
+        </span>
+        <span>BorrowCommunity</span>
+      </a>
+        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
+        <span class="visually-hidden">Toggle navigation</span>
+        <span class="navbar-toggler-icon"></span>
+      </button>
+        <div class="collapse navbar-collapse" id="navcol-2">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link active text-end" href="#"><i class="far fa-plus-square"></i>&nbsp; Ny annonse</a></li>
+            <li class="nav-item"><a class="nav-link active text-end" href="#"><i class="far fa-envelope"></i>&nbsp; Meldinger</a></li>
+            <li class="nav-item"><a class="nav-link active text-end" href="#"><i class="far fa-user"></i>&nbsp; Min profil</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</template>
+
+<script>
+  export default {
+    name:"HeaderComponent"
+  }
+</script>
+<style scoped>
+.bs-icon {
+  --bs-icon-size: .75rem;
+  --bs-primary: #0d6efd;
+  --bs-primary-rgb: 13,110,253;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--bs-icon-size);
+  width: calc(var(--bs-icon-size) * 2);
+  height: calc(var(--bs-icon-size) * 2);
+  color: var(--bs-primary);
+}
+
+.bs-icon-xs {
+  --bs-icon-size: 1rem;
+  width: calc(var(--bs-icon-size) * 1.5);
+  height: calc(var(--bs-icon-size) * 1.5);
+}
+
+.bs-icon-sm {
+  --bs-icon-size: 1rem;
+}
+
+.bs-icon-md {
+  --bs-icon-size: 1.5rem;
+}
+
+.bs-icon-lg {
+  --bs-icon-size: 2rem;
+}
+
+.bs-icon-xl {
+  --bs-icon-size: 2.5rem;
+}
+
+.bs-icon.bs-icon-primary {
+}
+
+.bs-icon.bs-icon-primary-light {
+  color: var(--bs-primary);
+  background: rgba(var(--bs-primary-rgb), .2);
+}
+
+.bs-icon.bs-icon-semi-white {
+  color: var(--bs-primary);
+  background: rgba(255, 255, 255, .5);
+}
+
+.bs-icon.bs-icon-rounded {
+  border-radius: .5rem;
+}
+
+.bs-icon.bs-icon-circle {
+  border-radius: 50%;
+}
+
+.navbarStyle {
+  padding-top: 1vh;
+  padding-right: 1vw;
+  padding-bottom: 1vh;
+  padding-left: 1vw;
+  background: rgb(44,62,80);
+}
+
+.navbarBrandStyle {
+  padding: 0;
+  height: auto;
+}
+
+
+</style>
