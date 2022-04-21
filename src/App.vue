@@ -6,6 +6,13 @@
   <router-view />
 </template>
 
+<script>
+const $ = require("jquery");
+window.$ = $;
+window.jQuery = $;
+require("bootstrap/dist/js/bootstrap.min");
+</script>
+
 <style>
 @import "~bootstrap/dist/css/bootstrap.css";
 
