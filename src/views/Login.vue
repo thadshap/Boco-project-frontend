@@ -49,6 +49,16 @@ export default {
 </script>
 
 <style scoped>
+
+.form-inputs-container-style,
+.form-username-container-style,
+.form-password-container-style,
+.form-signin-btn-container-style,
+.form-register-btn-container-style {
+  padding-top: 20px;
+}
+
+
 .form-elements-container-style {
   width: max-content;
   background: #d6dde7;
@@ -61,20 +71,11 @@ export default {
   margin-bottom: 20px;
 }
 
-.form-inputs-container-style {
-  padding-top: 20px;
-}
-
-.form-username-container-style {
-  padding-top: 20px;
-}
-
 .form-username-label-style {
   font-size: 20px;
 }
 
 .form-password-container-style {
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 
@@ -91,7 +92,6 @@ export default {
 }
 
 .form-signin-btn-container-style {
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 
@@ -124,7 +124,6 @@ export default {
 }
 
 .form-register-btn-container-style {
-  padding-top: 20px;
   padding-bottom: 20px;
 }
 
