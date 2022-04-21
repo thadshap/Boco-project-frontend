@@ -4,19 +4,44 @@
       <div class="container">
         <a class="navbar-brand d-flex align-items-center navbarBrandStyle" href="#">
         <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon">
-          <img class="img-fluid" src="@/assets/img/BoCo.png" alt="BorrowCommunity-logo">
+
+          <router-link to="/">
+            <img class="img-fluid" src="@/assets/img/BoCo.png" alt="BorrowCommunity-logo">
+          </router-link>
+          
         </span>
         <span>BorrowCommunity</span>
       </a>
-        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
+      <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
         <span class="visually-hidden">Toggle navigation</span>
         <span class="navbar-toggler-icon"></span>
       </button>
         <div class="collapse navbar-collapse" id="navcol-2">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link active text-end" href="#"><i class="far fa-plus-square"></i>&nbsp; Ny annonse</a></li>
-            <li class="nav-item"><a class="nav-link active text-end" href="#"><i class="far fa-envelope"></i>&nbsp; Meldinger</a></li>
-            <li class="nav-item"><a class="nav-link active text-end" href="#"><i class="far fa-user"></i>&nbsp; Min profil</a></li>
+            <li class="nav-item">
+
+              <router-link to="/" class="nav-link active text-end">
+                <i class="fa fa-plus-square"></i>
+                &nbsp;Ny annonse
+              </router-link>
+              
+            </li>
+            <li class="nav-item">
+              
+              <router-link to="/" class="nav-link active text-end">
+                <i class="fa fa-envelope"></i>
+                &nbsp;Meldinger
+              </router-link>
+              
+            </li>
+            <li class="nav-item">
+              
+              <router-link to="/" class="nav-link active text-end">
+                <i class="fa fa-user"></i>
+                &nbsp;Min profil
+              </router-link>
+              
+            </li>
           </ul>
         </div>
       </div>
@@ -88,17 +113,12 @@
 }
 
 .navbarStyle {
-  padding-top: 1vh;
-  padding-right: 1vw;
-  padding-bottom: 1vh;
-  padding-left: 1vw;
-  background: rgb(44,62,80);
+  padding: 1vh 1vw;
+  background: rgb(120, 147, 173);
 }
 
 .navbarBrandStyle {
   padding: 0;
   height: auto;
 }
-
-
 </style>

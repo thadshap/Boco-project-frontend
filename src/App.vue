@@ -1,20 +1,27 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
+  <HeaderComponent />
   <router-view />
 </template>
 
 <script>
+import HeaderComponent from "@/components/HeaderComponent";
+
 const $ = require("jquery");
 window.$ = $;
 window.jQuery = $;
 require("bootstrap/dist/js/bootstrap.min");
+
+export default {
+  name: "App",
+  components: {
+    HeaderComponent
+  }
+}
 </script>
 
 <style>
 @import "~bootstrap/dist/css/bootstrap.css";
+@import "assets/fonts/font-awesome.min.css";
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -22,18 +29,5 @@ require("bootstrap/dist/js/bootstrap.min");
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
