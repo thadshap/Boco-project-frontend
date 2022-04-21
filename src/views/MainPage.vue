@@ -33,6 +33,8 @@
 <script>
 import AdListComponent from "@/components/AdComponent";
 import CategoryComponent from "@/components/CategoryComponent";
+import { geolocationForUser } from './../geolocationForUser'
+import { computed } from 'vue'
 
 export default {
   name: "MainPage",
@@ -40,12 +42,28 @@ export default {
     AdListComponent,
     CategoryComponent,
   },
+  setup(){
+     const { coords } = geolocationForUser()
+     const currPos = computed(() => ({
+      lat: coords.value.latitude,
+      lng: coords.value.longitude
+    }))
+     return { currPos }
+  },
   data() {
     return {
       ads: [],
       categories: [],
     };
   },
+  created() {
+    //TODO send disse koordinatene til backend
+    /*
+    this.currPos.value.lat;
+    this.currPos.value.lng;
+
+     */
+  }
 };
 </script>
 
