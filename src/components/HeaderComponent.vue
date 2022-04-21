@@ -3,15 +3,13 @@
     <nav class="navbar navbar-light navbar-expand-md navbarStyle">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center navbarBrandStyle" href="#">
-        <span class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon">
 
-          <router-link to="/">
+          <router-link to="/" class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon text-decoration-none">
             <img class="img-fluid" src="@/assets/img/BoCo.png" alt="BorrowCommunity-logo">
+            <span class="text-dark">BorrowCommunity</span>
           </router-link>
-          
-        </span>
-        <span>BorrowCommunity</span>
-      </a>
+
+        </a>
       <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
         <span class="visually-hidden">Toggle navigation</span>
         <span class="navbar-toggler-icon"></span>
@@ -20,7 +18,7 @@
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
 
-              <router-link to="/" class="nav-link active text-end">
+              <router-link to="/new_ad" class="nav-link active text-end">
                 <i class="fa fa-plus-square"></i>
                 &nbsp;Ny annonse
               </router-link>

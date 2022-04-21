@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "@/views/MainPage";
 import About from "@/views/About.vue";
 import DetailedAd from "@/views/DetailedAd";
+import LendingPage from "@/views/LendingPage";
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     path: "/about",
     name: "About",
     component: About
+  },
+  {
+    path: "/new_ad",
+    name: "New Ad",
+    component: LendingPage
   },
   {
     path: "/ad",
