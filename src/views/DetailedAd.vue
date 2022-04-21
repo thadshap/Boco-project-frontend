@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div id="adPictureDiv" class="text-center">
-      <img id="adPicture" alt="Bilde av gjenstanden som blir utlånt">
+      <img id="adPicture" alt="Bilde av gjenstanden som blir utlånt" v-for="picture in pictures" :key="picture">
     </div>
     <div class="text-center">
       <label id="adHeader" class="form-label">{{ headerText }}</label>
@@ -48,10 +48,9 @@
       </label>
     </div>
     <div class="text-center" style="padding: 0px;">
-      <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height:400px">
+      <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height:40vh;padding-bottom: 7vh;">
 
-        <ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom"
-                 :projection="projection" />
+        <ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" />
 
         <ol-tile-layer>
           <ol-source-osm />
@@ -62,14 +61,15 @@
             <ol-feature>
               <ol-geom-point :coordinates="coordinate"></ol-geom-point>
               <ol-style>
-                <ol-style-fill color="rgba(255,255,255,0.1)"></ol-style-fill>
-                <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
+                  <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
+                  <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
               </ol-style>
             </ol-feature>
 
           </ol-source-vector>
 
         </ol-vector-layer>
+
       </ol-map>
     </div>
   </div>
@@ -77,6 +77,7 @@
 
 <script>
 import { ref } from 'vue'
+import mapIcon from '@/assets/img/mapIcon.png'
 
 export default {
   name: "DetailedAd",
@@ -88,6 +89,8 @@ export default {
     const strokeWidth = ref(10)
     const strokeColor = ref('red')
     const coordinate = ref([40, 40])
+    const fillColor = ref('white')
+    const radius = ref(40)
     return {
       center,
       projection,
@@ -95,7 +98,10 @@ export default {
       rotation,
       strokeWidth,
       strokeColor,
-      coordinate
+      coordinate,
+      fillColor,
+      radius,
+      mapIcon
     }
   },
   data() {
@@ -110,7 +116,7 @@ export default {
       },
       distance : null,
       address : '',
-      picture : '',
+      pictures : [],
       latitudeForItem: '',
       longitudeForItem:''
     };
