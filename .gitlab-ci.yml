@@ -13,7 +13,7 @@ build site:
       - dist
 
 unit test:
-  image: node:6
+  image: node:16.14.2
   stage: test
   script:
     - npm install --progress=false
