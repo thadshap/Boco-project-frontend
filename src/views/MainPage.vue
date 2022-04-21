@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import AdListComponent from "@/components/AdComponent";
+import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
 
 export default {
