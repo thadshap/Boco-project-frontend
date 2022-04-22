@@ -10,32 +10,32 @@
       </div>
       <div class="w-100 user-info-container">
         <div class="mt-auto w-100 personal-info">
-          <div class="d-inline-flex firstname-container">
+          <div class="d-inline-flex w-100 firstname-container">
             <label class="form-label firstname-label">Fornavn</label>
             <input class="user-input" type="text" id="firstname" :placeholder="firstname" v-model="firstnameChange" v-on:change="disableChangeBtn">
           </div>
-          <div class="d-inline-flex lastname-container">
+          <div class="d-inline-flex w-100 lastname-container">
             <label class="form-label lastname-label">Etternavn</label>
             <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
           </div>
         </div>
-        <div class="me-auto user-info">
-          <div class="d-inline-flex email-container">
+        <div class="me-auto w-100 user-info">
+          <div class="d-inline-flex w-100 email-container">
             <label class="form-label email-label">Epost</label>
             <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
-            <span class="text-danger" v-if="v$.emailChange.$error">
+            <span class="text-danger w-65" v-if="v$.emailChange.$error">
               {{ v$.emailChange.$errors[0].$message }}
             </span>
           </div>
-          <div class="d-inline-flex password-container">
+          <div class="d-inline-flex w-100 password-container">
             <label class="form-label password-label">Passord</label>
             <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
-            <span class="text-danger" v-if="v$.passwordChange.$error">
+            <span class="text-danger w-65" v-if="v$.passwordChange.$error">
               {{ v$.passwordChange.$errors[0].$message }}
             </span>
           </div>
         </div>
-        <button class="btn btn-primary update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
+        <button class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
       </div>
     </div>
   </div>
@@ -174,7 +174,6 @@ export default {
   background: rgba(255,253,253,0.74);
   border-radius: 4px;
   text-align: center;
-  width: 100%;
   padding: 10px;
   margin-top: 20px;
 }
@@ -189,23 +188,19 @@ export default {
   width: 65%;
 }
 .firstname-container,.lastname-container,.email-container,.password-container{
-  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
-
 .update-user-info-btn{
   background: #03991b;
   border-radius: 6px;
   text-align: center;
   font-size: 30px;
-  width: 100%;
   margin-top: 20px;
 }
 span{
   display: flex;
-  width: 65%;
   left: 35%;
   position: relative;
 }
