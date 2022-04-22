@@ -22,36 +22,35 @@
         <div class="me-auto user-info">
           <div class="d-inline-flex email-container">
             <label class="form-label email-label">Epost</label>
-            <input class="user-input" type="email" id="email" :placeholder="email" v-model="$v.emailChange.$model" v-on:change="disableChangeBtn"
-                   :class="{'is-invalid':$v.emailChange.$error, 'is-valid':!$v.emailChange.$invalid}" >
-            <div class="valid-feedback">Gylding e-post</div>
-            <div class="invalid-feedback">
-              <span v-if="!$v.emailChange.required">Ugyldig e-post</span>
-            </div>
+            <input class="user-input" type="email" id="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
+            <span class="text-danger" v-if="v$.emailChange.$error">
+              {{ v$.emailChange.$errors[0].$message }}
+            </span>
           </div>
           <div class="d-inline-flex password-container">
             <label class="form-label password-label">Passord</label>
-            <input class="user-input" type="password" id="password" placeholder="********" v-model="$v.passwordChange.$model" v-on:change="disableChangeBtn"
-                   :class="{'is-invalid':$v.passwordChange.$error, 'is-valid':!$v.passwordChange.$invalid}" >
-            <div class="valid-feedback">Gylding passord</div>
-            <div class="invalid-feedback">
-              <span v-if="!$v.emailChange.required">Passordet må ha minst 8 tegn</span>
-            </div>
+            <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
+            <span class="text-danger" v-if="v$.passwordChange.$error">
+              {{ v$.passwordChange.$errors[0].$message }}
+            </span>
           </div>
         </div>
-        <button class="btn btn-primary update-user-info-btn" type="button" :disabled="disableBtn === true">Endre</button>
+        <button class="btn btn-primary update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { required, email, minLength} from '@vuelidate/validators'
+import { email, minLength, helpers } from "@vuelidate/validators";
+import { computed, reactive } from "vue";
+import useValidate from "@vuelidate/core";
+
 export default {
   name: "UserSettings",
   data(){
     return{
-    //her burde det lagres en array som tar imot info om brukeren fra databasen
+    // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
       firstname: "Thadsha",
       lastname: "Paramsothy",
       email: "thadsha1710@live.no",
@@ -59,63 +58,59 @@ export default {
       disableBtn: true,
       firstnameChange: '',
       lastnameChange: '',
-      emailChange: '',
-      passwordChange: '',
       url: null,
     };
   },
-  validations: {
-      emailChange:{
-        required,
-        email,
-        isUnique (value){
-          if (value === '') return true
-          let email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-ZÆ@Y@øå\-0-9]+\.)+[a-zA-ZæøåÆØÅ]{2,}))$/;
-          return new Promise((resolve => {
-            setTimeout(() => {
-              resolve(email_regex.test(value))
-            }, 350 + Math.random() * 300)
-          }))
+  setup(){
+    const state = reactive({
+      emailChange:"",
+      passwordChange:""
+    });
+    const rules = computed(()=>{
+      return{
+        emailChange:{
+          email: helpers.withMessage("Ugyldig epost!", email)
+        },
+        passwordChange:{
+          minLength: helpers.withMessage("Passordet må minst bestå av 8 karakterer", minLength(8))
         }
-      },
-      passwordChange:{
-        required,
-        minLength: minLength(8)
-      },
-
+      };
+    });
+    const v$ = useValidate(rules, state);
+    return { state, v$ };
   },
   created() {
     this.disableChangeBtn()
   },
   methods:{
     getUserInfo(){
-      //Her burde det settes lik den informasjonen som hentes fra databasen som
+      //  TODO: her burde det settes lik den informasjonen som hentes fra databasen som
       this.firstname = ''
       this.lastname = ''
       this.email = ''
       this.password = ''
     },
     changeUserInfo(){
-      // isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
+      // TODO:isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
       if (this.firstnameChange !== this.firstname){
-        // endre inn på databasen
+        // TODO: endre inn på databasen
         this.firstnameChange = this.firstname
       }
       if (this.lastnameChange !== this.lastname){
-        // endre inn på databasen
+        // TODO: endre inn på databasen
         this.lastnameChange = this.lastname
       }
-      if (this.emailChange !== this.email){
-        // endre inn på databasen
-        this.emailChange = this.email
+      if (this.state.emailChange !== this.email){
+        // TODO: endre inn på databasen
+        this.state.emailChange = this.email
       }
-      if (this.passwordChange !== this.password){
-        // endre inn på databasen
-        this.passwordChange = this.password
+      if (this.state.passwordChange !== this.password){
+        // TODO: endre inn på databasen
+        this.state.passwordChange = this.password
       }
     },
     disableChangeBtn(){
-      if (this.firstnameChange === '' && this.lastnameChange === '' && this.emailChange === '' && this.passwordChange === '') this.disableBtn = true
+      if (this.firstnameChange === '' && this.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
     chooseImages() {
@@ -126,8 +121,11 @@ export default {
       this.url = URL.createObjectURL(file);
     },
     existingUserImg(){
-
+      // TODO: sette inn eksisterende profilbilde fra databasen
     },
+    submit(){
+      this.v$.$validate()
+    }
   },
 };
 </script>
@@ -190,8 +188,10 @@ export default {
 .firstname-container,.lastname-container,.email-container,.password-container{
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
+
 .update-user-info-btn{
   background: #03991b;
   border-radius: 6px;
@@ -199,5 +199,11 @@ export default {
   font-size: 30px;
   width: 100%;
   margin-top: 20px;
+}
+span{
+  display: flex;
+  width: 65%;
+  left: 35%;
+  position: relative;
 }
 </style>
