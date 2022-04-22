@@ -1,6 +1,11 @@
 <template>
   <HeaderComponent />
   <router-view />
+  <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
+    <div id="flashMessage" class="alert alert-primary mt-5">
+      {{ GStore.flashMessage }}
+    </div>
+  </div>
 </template>
 
 <script>
@@ -12,6 +17,7 @@ window.jQuery = $;
 require("bootstrap/dist/js/bootstrap.min");
 
 export default {
+  inject: ["GStore"],
   name: "App",
   components: {
     HeaderComponent

@@ -1,14 +1,22 @@
-import { createApp} from "vue";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "bootstrap";
-import OpenLayersMap from 'vue3-openlayers';
-import 'vue3-openlayers/dist/vue3-openlayers.css';
+import OpenLayersMap from 'vue3-openlayers'
+import 'vue3-openlayers/dist/vue3-openlayers.css'
+import GStore from './store/reactive';
+import 'nprogress/nprogress.css';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import 'nprogress/nprogress.css';
 
-createApp(App).component('Datepicker', Datepicker).use(store).use(router).use(OpenLayersMap).mount("#app");
+createApp(App)
+    .component('Datepicker', Datepicker)
+    .use(store)
+    .use(router)
+    .use(OpenLayersMap)
+    .provide("GStore", GStore)
+    .mount("#app");
 
 
