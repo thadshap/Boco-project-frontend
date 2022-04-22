@@ -6,24 +6,36 @@
           Lag ny annonse
         </h1>
       </div>
-      <form>
+      <form @submit.prevent="submit">
         <div class="d-flex flex-column">
           <label class="form-label">
             Tittel
           </label>
-          <input class="form-control" type="text">
+          <input class="form-control" type="text" v-model="state.title">
+          <span class="text-danger" v-if="v$.title.$error">
+            {{ v$.title.$errors[0].$message }}
+          </span>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
             Kategori
           </label>
-          <input class="form-control" type="text">
+          <select v-model="state.category" class="form-select">
+            <option v-for="category in categories" :key="category">{{ category }}</option>
+          </select>
+<!--          <input class="form-control" type="text" v-model="state.category">-->
+          <span class="text-danger" v-if="v$.category.$error">
+            {{v$.category.$errors[0].$message }}
+          </span>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
             Beskrivelse
           </label>
-          <textarea class="form-control"></textarea>
+          <textarea class="form-control" v-model="state.description"></textarea>
+          <span class="text-danger" v-if="v$.description.$error">
+            {{ v$.description.$errors[0].$message }}
+          </span>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
@@ -50,32 +62,57 @@
             </div>
           </div>
 
+          <span class="text-danger" v-if="imgError !== ''">
+            {{ imgError }}
+          </span>
+
         </div>
         <div class="d-flex flex-column mt-5">
           <label class="form-label">
             Pris
           </label>
-          <input class="form-control" type="text">
+          <input class="form-control" type="text" v-model="state.price">
+          <span class="text-danger" v-if="v$.price.$error">
+            {{ v$.price.$errors[0].$message }}
+          </span>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
-            Gate adresse
+            Adresse
           </label>
-          <input class="form-control" type="text">
+          <input class="form-control" type="text" v-model="state.streetAddress">
+          <span class="text-danger" v-if="v$.streetAddress.$error">
+            {{ v$.streetAddress.$errors[0].$message }}
+          </span>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
             Postnummer
           </label>
-          <input class="form-control" type="text">
+          <input class="form-control" type="text" v-model="state.postalCode">
+          <span class="text-danger" v-if="v$.postalCode.$error">
+            {{ v$.postalCode.$errors[0].$message }}
+          </span>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
-            Tlf. nummer
+            Sted
           </label>
-          <input class="form-control" type="tel">
+          <input class="form-control" type="text" v-model="state.city">
+          <span class="text-danger" v-if="v$.city.$error">
+            {{ v$.city.$errors[0].$message }}
+          </span>
         </div>
-        <button class="btn btn-primary w-100 btn-style" type="button">
+        <div class="d-flex flex-column">
+          <label class="form-label">
+            Telefonummer
+          </label>
+          <input class="form-control" type="tel" v-model="state.phoneNumber">
+          <span class="text-danger" v-if="v$.phoneNumber.$error">
+            {{ v$.phoneNumber.$errors[0].$message }}
+          </span>
+        </div>
+        <button class="btn btn-primary w-100 btn-style" type="submit">
           Opprett annonse
         </button>
       </form>
@@ -84,11 +121,77 @@
 </template>
 
 <script>
+import useValidate from "@vuelidate/core";
+import { helpers, required, integer, alpha, minLength, maxLength } from "@vuelidate/validators";
+import { computed, reactive } from "vue";
+
 export default {
+  inject: ["GStore"],
   name: "LendingPage",
+  setup() {
+    const state = reactive({
+      title: "",
+      category: "",
+      description: "",
+      price: "",
+      streetAddress: "",
+      postalCode: "",
+      city: "",
+      phoneNumber: ""
+    });
+
+    const rules = computed(() => {
+      return {
+        title: {
+          required: helpers.withMessage("Tittel må være spesifisert!", required)
+        },
+        category: {
+          required: helpers.withMessage("Kategori må være spesifisert!", required)
+        },
+        description: {
+          required: helpers.withMessage("Beskrivelse må være spesifisert!", required)
+        },
+        price: {
+          required: helpers.withMessage("Pris må være satt! Dersom gratis skriv inn 0", required),
+          integer: helpers.withMessage("Pris må være et tall! Dersom gratis skriv inn 0", integer)
+        },
+        streetAddress: {
+          required: helpers.withMessage("Adresse må være satt!", required)
+        },
+        postalCode: {
+          required: helpers.withMessage("Postnummer må være spesifisert!", required),
+          integer: helpers.withMessage("Postnummer må være et heltall!", integer),
+          minLength: helpers.withMessage("Postnummer kan ikke ha mindre enn 4 tall!", minLength(4)),
+          maxLength: helpers.withMessage("Postnummer kan ikke ha mer enn 4 tall!", maxLength(4))
+        },
+        city: {
+          required: helpers.withMessage("Sted må være spesifisert!", required),
+          alpha: helpers.withMessage("Sted kan kun inneholde bokstaver!", alpha)
+        },
+        phoneNumber: {
+          required: helpers.withMessage("Telefonummer må være spesifisert!", required),
+          integer: helpers.withMessage("Telefonummer må være et tall", integer),
+          minLength: helpers.withMessage("Telefonummer må bestå av 8 tall!", minLength(8)),
+          maxLength: helpers.withMessage("Telefonummer kan ikke bestå av mer enn 8 tall!", maxLength(8))
+        }
+      };
+    });
+
+    const v$ = useValidate(rules, state);
+
+    return { state, v$ };
+  },
   data() {
     return {
-      imgUrl: []
+      imgUrl: [],
+      imgError: "",
+
+      //TODO: Add more categories
+      categories: [
+        "Bil",
+        "Båt",
+        "Hus"
+      ]
     }
   },
   methods: {
@@ -102,6 +205,21 @@ export default {
         let file = e.target.files[i];
         this.imgUrl.push(URL.createObjectURL(file));
         console.log(this.imgUrl)
+      }
+    },
+    submit() {
+      this.v$.$validate()
+      this.validateImages()
+
+      //TODO: axios call
+
+      if(!this.v$.$error && this.imgError === "") {
+        this.GStore.flashMessage = "Annonsen ble opprettet!"
+      }
+    },
+    validateImages() {
+      if(this.imgUrl.length === 0) {
+        this.imgError = "Annonsen må ha minst ett bilde!"
       }
     }
   }
@@ -159,11 +277,6 @@ export default {
     height: 100%;
   }
 }
-
-/*#preview img {*/
-/*  max-width: 33%;*/
-/*  max-height: 500px;*/
-/*}*/
 
 @media (min-width: 992px) {
   .form-container {
