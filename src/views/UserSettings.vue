@@ -2,9 +2,10 @@
   <div class="d-sm-flex flex-grow-1 justify-content-sm-center align-items-sm-center w-100 main-container">
     <div class="text-end">
       <div class="d-flex flex-column align-content-center flex-wrap">
-        <div class="d-flex flex-column">
-          <img class="ms-auto user-img">
-          <button class="btn btn-primary me-auto user-img-upload-btn" type="button">Edit picture</button>
+        <div class="d-flex flex-column user-img-container">
+          <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
+          <img class="ms-auto user-img" v-if="url" :src="url">
+          <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
         </div>
       </div>
       <div class="w-100 user-info-container">
@@ -21,11 +22,21 @@
         <div class="me-auto user-info">
           <div class="d-inline-flex email-container">
             <label class="form-label email-label">Epost</label>
-            <input class="user-input" type="email" id="email" :placeholder="email" v-model="emailChange" v-on:change="disableChangeBtn">
+            <input class="user-input" type="email" id="email" :placeholder="email" v-model="$v.emailChange.$model" v-on:change="disableChangeBtn"
+                   :class="{'is-invalid':$v.emailChange.$error, 'is-valid':!$v.emailChange.$invalid}" >
+            <div class="valid-feedback">Gylding e-post</div>
+            <div class="invalid-feedback">
+              <span v-if="!$v.emailChange.required">Ugyldig e-post</span>
+            </div>
           </div>
           <div class="d-inline-flex password-container">
             <label class="form-label password-label">Passord</label>
-            <input class="user-input" type="password" id="password" placeholder="********" v-model="passwordChange" v-on:change="disableChangeBtn">
+            <input class="user-input" type="password" id="password" placeholder="********" v-model="$v.passwordChange.$model" v-on:change="disableChangeBtn"
+                   :class="{'is-invalid':$v.passwordChange.$error, 'is-valid':!$v.passwordChange.$invalid}" >
+            <div class="valid-feedback">Gylding passord</div>
+            <div class="invalid-feedback">
+              <span v-if="!$v.emailChange.required">Passordet må ha minst 8 tegn</span>
+            </div>
           </div>
         </div>
         <button class="btn btn-primary update-user-info-btn" type="button" :disabled="disableBtn === true">Endre</button>
@@ -35,6 +46,7 @@
 </template>
 
 <script>
+import { required, email, minLength} from '@vuelidate/validators'
 export default {
   name: "UserSettings",
   data(){
@@ -49,7 +61,28 @@ export default {
       lastnameChange: '',
       emailChange: '',
       passwordChange: '',
+      url: null,
     };
+  },
+  validations: {
+      emailChange:{
+        required,
+        email,
+        isUnique (value){
+          if (value === '') return true
+          let email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-ZÆ@Y@øå\-0-9]+\.)+[a-zA-ZæøåÆØÅ]{2,}))$/;
+          return new Promise((resolve => {
+            setTimeout(() => {
+              resolve(email_regex.test(value))
+            }, 350 + Math.random() * 300)
+          }))
+        }
+      },
+      passwordChange:{
+        required,
+        minLength: minLength(8)
+      },
+
   },
   created() {
     this.disableChangeBtn()
@@ -84,7 +117,17 @@ export default {
     disableChangeBtn(){
       if (this.firstnameChange === '' && this.lastnameChange === '' && this.emailChange === '' && this.passwordChange === '') this.disableBtn = true
       else this.disableBtn = false
-    }
+    },
+    chooseImages() {
+      this.$refs.fileInput.click()
+    },
+    onFileChange(e) {
+      const file = e.target.files[0];
+      this.url = URL.createObjectURL(file);
+    },
+    existingUserImg(){
+
+    },
   },
 };
 </script>
@@ -98,14 +141,19 @@ export default {
 }
 .user-img-upload-btn{
   font-size: 1em;
-  width: 100%;
 }
 .user-img{
   border-radius: 1px;
-  width: 150px;
-  height: 150px;
-  text-align: center;
   margin-bottom: 10px;
+  height:200px;
+  width: 150px;
+  object-fit:cover;
+  object-position:50% 50%;
+}
+.user-img-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .user-info-container{
   text-align: center;
