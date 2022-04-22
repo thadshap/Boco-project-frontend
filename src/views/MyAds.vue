@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="align-items-center back-arrow-container" @click="back">
+        <i class="fa fa-arrow-left"></i>
+        <span class="mx-2">Tilbake</span>
+      </div>
+    </div>
     <div class="d-flex justify-content-center">
       <h2>Mine annonser</h2>
     </div>
@@ -49,6 +55,11 @@ export default {
       categories: [],
     };
   },
+  methods: {
+    back() {
+      this.$router.go(-1)
+    }
+  }
 };
 </script>
 
@@ -77,5 +88,9 @@ export default {
   .search-container {
     width: 80%;
   }
+}
+
+.back-arrow-container {
+  cursor: pointer;
 }
 </style>

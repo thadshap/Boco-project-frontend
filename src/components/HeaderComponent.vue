@@ -34,7 +34,7 @@
             </li>
             <li class="nav-item">
               
-              <router-link to="/" class="nav-link active text-end">
+              <router-link to="/my_profile" class="nav-link active text-end">
                 <i class="fa fa-user"></i>
                 &nbsp;Min profil
               </router-link>

@@ -4,6 +4,9 @@ import About from "@/views/About.vue";
 import DetailedAd from "@/views/DetailedAd";
 import LendingPage from "@/views/LendingPage";
 import UserSettings from "../views/UserSettings";
+import MyProfile from "@/components/MyProfile";
+import MyAds from "@/views/MyAds";
+import Profile from "@/views/Profile";
 
 const routes = [
   {
@@ -30,6 +33,23 @@ const routes = [
     path: "/userSettings",
     name: "UserSettings",
     component: UserSettings,
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+    children: [
+      {
+        path: "/my_profile",
+        name: "My profile",
+        component: MyProfile
+      },
+      {
+        path: "/ads",
+        name: "Profile ads",
+        component: MyAds
+      }
+    ]
   },
 ];
 
