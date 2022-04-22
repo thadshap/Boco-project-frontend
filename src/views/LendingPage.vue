@@ -23,7 +23,6 @@
           <select v-model="state.category" class="form-select">
             <option v-for="category in categories" :key="category">{{ category }}</option>
           </select>
-<!--          <input class="form-control" type="text" v-model="state.category">-->
           <span class="text-danger" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
           </span>
