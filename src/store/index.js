@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 export default createStore({
   state: {
-    isLoggedIn: false
+    isLoggedIn: true
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {

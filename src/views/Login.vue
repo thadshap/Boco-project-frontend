@@ -37,10 +37,10 @@
               Continue with Google
             </button>
           </div>
-          <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
-            <button class="btn btn-primary w-100 form-register-btn-style" type="button">
+          <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-container-style">
+            <router-link to="/register" class="form-register-style">
               Register
-            </button>
+            </router-link>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default {
 .form-username-container-style,
 .form-password-container-style,
 .form-signin-btn-container-style,
-.form-register-btn-container-style {
+.form-register-container-style {
   padding-top: 20px;
 }
 
@@ -134,15 +134,15 @@ export default {
   margin: 10px;
 }
 
-.form-register-btn-container-style {
+.form-register-container-style {
   padding-bottom: 20px;
 }
 
-.form-register-btn-style {
+.form-register-style {
   background: rgba(13,110,253,0);
-  border-color: rgba(255,255,255,0);
   color: var(--bs-blue);
   font-size: 25px;
+  text-decoration: none;
 }
 
 .back-arrow-container:hover {

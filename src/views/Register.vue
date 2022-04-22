@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="align-items-center back-arrow-container" @click="back">
+        <i class="fa fa-arrow-left"></i>
+        <span class="mx-2">Tilbake</span>
+      </div>
+    </div>
     <form class="d-flex flex-column justify-content-center align-items-center">
       <div class="text-center form-fields-container-style">
         <img src="../assets/img/BoCo.png" class="logo-style">
@@ -56,7 +62,12 @@
 
 <script>
 export default {
-  name: "Register"
+  name: "Register",
+  methods: {
+    back() {
+      this.$router.go(-1)
+    }
+  }
 };
 </script>
 
@@ -95,5 +106,9 @@ export default {
   margin-bottom: 10px;
   font-size: 25px;
   margin-top: 20px;
+}
+
+.back-arrow-container:hover {
+  cursor: pointer;
 }
 </style>

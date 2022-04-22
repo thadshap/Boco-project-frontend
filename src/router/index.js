@@ -6,6 +6,7 @@ import MyProfile from "@/components/MyProfile";
 import MyAds from "@/views/MyAds";
 import Profile from "@/views/Profile";
 import Login from "@/views/Login";
+import Register from "@/views/Register";
 
 const routes = [
   {
@@ -17,6 +18,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register
   },
   {
     path: "/new_ad",

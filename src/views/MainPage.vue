@@ -27,7 +27,7 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent/>
+    <AdListComponent />
   </div>
 </template>
 
