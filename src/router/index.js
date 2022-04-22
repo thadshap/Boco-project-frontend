@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "@/views/MainPage";
-import About from "@/views/About.vue";
 import DetailedAd from "@/views/DetailedAd";
 import LendingPage from "@/views/LendingPage";
 import MyProfile from "@/components/MyProfile";
 import MyAds from "@/views/MyAds";
 import Profile from "@/views/Profile";
+import Login from "@/views/Login";
 
 const routes = [
   {
@@ -14,9 +14,9 @@ const routes = [
     component: MainPage,
   },
   {
-    path: "/about",
-    name: "About",
-    component: About
+    path: "/login",
+    name: "Login",
+    component: Login
   },
   {
     path: "/new_ad",

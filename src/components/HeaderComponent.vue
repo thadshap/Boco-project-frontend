@@ -40,6 +40,15 @@
               </router-link>
               
             </li>
+
+            <li class="nav-item">
+
+              <router-link to="/login" class="nav-link active text-end">
+                <i class="material-icons">arrow_forward</i>
+                &nbsp;Log in
+              </router-link>
+
+            </li>
           </ul>
         </div>
       </div>
