@@ -7,7 +7,7 @@
                 </svg>
             </button>
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
-                <span class="name">Text</span>
+                <span class="name">Username</span>
             </div>
             <img class="profile-picture">
         </div>
@@ -27,7 +27,7 @@
                 </svg>
             </button>
             <div class="d-flex flex-grow-1 align-self-center">
-                <span class="d-flex input">Send message</span>
+                <input class="d-flex input" type="text" placeholder="Send message">
             </div>
             <button class="btn btn-primary send-button" type="button" v-on:click="send">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-right-circle">
