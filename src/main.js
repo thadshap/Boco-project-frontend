@@ -5,7 +5,14 @@ import store from "./store";
 import "bootstrap";
 import OpenLayersMap from 'vue3-openlayers'
 import 'vue3-openlayers/dist/vue3-openlayers.css'
+import GStore from './store/reactive';
+import 'nprogress/nprogress.css';
 
-createApp(App).use(store).use(router).use(OpenLayersMap).mount("#app");
+createApp(App)
+  .use(store)
+  .use(router)
+  .use(OpenLayersMap)
+  .provide("GStore", GStore)
+  .mount("#app");
 
 
