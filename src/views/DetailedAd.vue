@@ -21,9 +21,10 @@
       <button id="makeRequest" class="btn btn-primary" type="button" v-on:click="makeRequest">
         Forespør lån
       </button><br>
-      <div class="text-center" v-if="showRequestDetails">
+      <div id="time" class="text-center" v-if="showRequestDetails">
       Tidsperiode:
-      <input type="date" v-model="requestStartDate"><br>
+        <Datepicker v-model="date" range />
+
 
       <button id="sendRequest" class="btn btn-primary" type="button" v-on:click="sendRequest">
         Send forespørselen
@@ -86,12 +87,10 @@
               <ol-geom-point :coordinates="[latitudeForItem, longitudeForItem]"></ol-geom-point>
               <ol-style>
                   <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
-                  <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
+                <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
               </ol-style>
             </ol-feature>
-
           </ol-source-vector>
-
         </ol-vector-layer>
 
       </ol-map>
@@ -102,11 +101,15 @@
 <script>
 import { ref } from 'vue'
 import mapIcon from '@/assets/img/mapIcon.png'
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
+  components: { Datepicker },
   name: "DetailedAd",
   data() {
     return {
+      date : null,
       reviews : [{ name : 'per persen', rating : '5/10', message : 'Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt'}],
       showRightArrow : true,
       trustedUser : true,
@@ -162,7 +165,7 @@ export default {
         this.showRightArrow = true;
       }
     }
-  },
+  }
 };
 </script>
 
@@ -239,6 +242,14 @@ export default {
   }
   .material-icons{
     cursor: pointer;
+  }
+  #time{
+    width: 30%;
+  }
+  #time{
+    width: 100%;
+    display: grid;
+    justify-items: center;
   }
 
 </style>
