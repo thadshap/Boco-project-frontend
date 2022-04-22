@@ -25,13 +25,13 @@
       <div class="cardDiv">
         <div class="card cardBodyStyle">
           <div class="card-body">
-            <h4 class="card-title">Min konto</h4>
+            <h4 class="card-title">Innstillinger</h4>
             <p class="card-text">Se og rediger dine opplysninger på BoCo</p>
           </div>
         </div>
       </div>
       <div class="cardDiv">
-        <div class="card cardBodyStyle">
+        <div class="card cardBodyStyle" @click="myAds">
           <div class="card-body">
             <h4 class="card-title">Mine annonser</h4>
             <p class="card-text">Se alle dine annonser, aktive og utløpte</p>
@@ -69,6 +69,16 @@
 <script>
   export default {
     name: "MyProfile",
+    methods: {
+      myAds() {
+        this.$router.push({
+          name: "Profile ads",
+          query: {
+            redirect: "/profile/ads"
+          }
+        })
+      }
+    }
   }
 
 </script>

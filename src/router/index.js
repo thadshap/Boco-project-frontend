@@ -3,7 +3,9 @@ import MainPage from "@/views/MainPage";
 import About from "@/views/About.vue";
 import DetailedAd from "@/views/DetailedAd";
 import LendingPage from "@/views/LendingPage";
-import MyProfile from "@/views/MyProfile";
+import MyProfile from "@/components/MyProfile";
+import MyAds from "@/views/MyAds";
+import Profile from "@/views/Profile";
 
 const routes = [
   {
@@ -27,10 +29,22 @@ const routes = [
     component: DetailedAd,
   },
   {
-    path: "/my_profile",
-    name: "My profile",
-    component: MyProfile
-  }
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+    children: [
+      {
+        path: "/my_profile",
+        name: "My profile",
+        component: MyProfile
+      },
+      {
+        path: "/ads",
+        name: "Profile ads",
+        component: MyAds
+      }
+    ]
+  },
 ];
 
 const router = createRouter({
