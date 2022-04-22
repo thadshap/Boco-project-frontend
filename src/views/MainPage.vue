@@ -27,14 +27,14 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent :ads="ads" />
+    <AdListComponent/>
   </div>
 </template>
 
 <script>
 import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
-import { geolocationForUser } from './../geolocationForUser'
+import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 
 export default {
