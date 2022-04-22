@@ -22,7 +22,7 @@
         <div class="me-auto user-info">
           <div class="d-inline-flex email-container">
             <label class="form-label email-label">Epost</label>
-            <input class="user-input" type="email" id="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
+            <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
             <span class="text-danger" v-if="v$.emailChange.$error">
               {{ v$.emailChange.$errors[0].$message }}
             </span>
@@ -110,7 +110,7 @@ export default {
       }
     },
     disableChangeBtn(){
-      if (this.firstnameChange === '' && this.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '') this.disableBtn = true
+      if (this.firstnameChange === '' && this.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' || this.v$.$error) this.disableBtn = true
       else this.disableBtn = false
     },
     chooseImages() {
@@ -125,6 +125,9 @@ export default {
     },
     submit(){
       this.v$.$validate()
+      if (this.v$.$error){
+        this.disableBtn = true
+      }
     }
   },
 };
