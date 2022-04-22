@@ -89,7 +89,7 @@
           <label class="form-label">
             Postnummer
           </label>
-          <input class="form-control" type="text" v-model="state.postalCode">
+          <input class="form-control" type="text" v-model="state.postalCode" @focusout="findPostalplace(state.postalCode)">
           <span class="text-danger" v-if="v$.postalCode.$error">
             {{ v$.postalCode.$errors[0].$message }}
           </span>
@@ -98,10 +98,7 @@
           <label class="form-label">
             Sted
           </label>
-          <input class="form-control" type="text" v-model="state.city">
-          <span class="text-danger" v-if="v$.city.$error">
-            {{ v$.city.$errors[0].$message }}
-          </span>
+          <input class="form-control" type="text" :value="city" readonly>
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
@@ -124,6 +121,7 @@
 import useValidate from "@vuelidate/core";
 import { helpers, required, integer, alpha, minLength, maxLength } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
+import axios from "axios"
 
 export default {
   inject: ["GStore"],
@@ -136,7 +134,6 @@ export default {
       price: "",
       streetAddress: "",
       postalCode: "",
-      city: "",
       phoneNumber: ""
     });
 
@@ -164,10 +161,6 @@ export default {
           minLength: helpers.withMessage("Postnummer kan ikke ha mindre enn 4 tall!", minLength(4)),
           maxLength: helpers.withMessage("Postnummer kan ikke ha mer enn 4 tall!", maxLength(4))
         },
-        city: {
-          required: helpers.withMessage("Sted må være spesifisert!", required),
-          alpha: helpers.withMessage("Sted kan kun inneholde bokstaver!", alpha)
-        },
         phoneNumber: {
           required: helpers.withMessage("Telefonummer må være spesifisert!", required),
           integer: helpers.withMessage("Telefonummer må være et tall", integer),
@@ -191,7 +184,8 @@ export default {
         "Bil",
         "Båt",
         "Hus"
-      ]
+      ],
+      city:""
     }
   },
   methods: {
@@ -221,7 +215,17 @@ export default {
       if(this.imgUrl.length === 0) {
         this.imgError = "Annonsen må ha minst ett bilde!"
       }
-    }
+    },
+    findPostalplace(postalCode){
+      if(postalCode.length!==4) return
+      let url = "https://ws.geonorge.no/adresser/v1/sok?postnummer="+postalCode+"&treffPerSide=1"
+      axios
+        .get(url)
+        .then(response => {
+          this.city = response.data.adresser[0].poststed
+        })
+    },
+
   }
 };
 </script>
