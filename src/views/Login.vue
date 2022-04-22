@@ -32,9 +32,7 @@
             </button>
           </div>
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
-            <button class="btn btn-primary w-100 form-register-btn-style" type="button">
-              Register
-            </button>
+            <router-link to="/register" class="btn btn-primary w-100 form-register-btn-style">Register</router-link>
           </div>
         </div>
       </div>
@@ -44,7 +42,10 @@
 
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  methods:{
+
+  }
 };
 </script>
 
