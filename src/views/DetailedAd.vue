@@ -1,23 +1,34 @@
 <template>
   <div class="container">
-    <div id="adPictureDiv" class="text-center">
-      <img id="adPicture" alt="Bilde av gjenstanden som blir utlånt" v-for="picture in pictures" :key="picture">
+    <div id="adPictureDiv" class="text-center" v-for="picture in pictures" :key="picture">
+      <img id="adPicture" src=mapIcon alt="Bilde av gjenstanden som blir utlånt">
     </div>
     <div class="text-center">
-      <label id="adHeader" class="form-label">{{ headerText }}</label>
+      <label id="adHeader" class="form-label">Stekeovn{{ headerText }}</label>
     </div>
     <div class="text-center">
-      <label class="form-label">Leiepris : {{rentalPrice}} kr pr/{{unitPeriod}}</label>
+      <label class="form-label">Leiepris : 10{{rentalPrice}} kr pr/dag{{unitPeriod}}</label>
+    </div>
+    <div id="description" class="text-center">
+      <label id="descriptionLabel" class="form-label">
+        {{ description }} Veldig fin til å bake
+      </label>
     </div>
     <div class="text-center">
       <button id="startChatButton" class="btn btn-primary" type="button" v-on:click="startChat">
         Send melding
       </button>
-    </div>
-    <div id="description" class="text-center">
-      <label id="descriptionLabel" class="form-label">
-        {{ description }}
-      </label>
+      <button id="makeRequest" class="btn btn-primary" type="button" v-on:click="makeRequest">
+        Forespør lån
+      </button><br>
+      <div class="text-center" v-if="showRequestDetails">
+      Tidsperiode:
+      <input type="date" v-model="requestStartDate"><br>
+
+      <button id="sendRequest" class="btn btn-primary" type="button" v-on:click="sendRequest">
+        Send forespørselen
+      </button>
+      </div>
     </div>
     <div class="text-center">
       <div id="lenderHeader">
@@ -27,19 +38,32 @@
       </div>
       <div id="lenderDetails">
         <label id="lenderName" class="form-label">
-          {{ lender.name}} <br>
+          {{ lender.name}} Kari Jahnsen<br>
         </label>
-        <i class="fas fa-check-circle" style="color: var(--bs-blue);padding: 0.5vw;"></i>
+        <i class="fas fa-check-circle" v-if="trustedUser" style="color: var(--bs-blue);padding: 0.5vw;"></i>
       </div>
       <div id="lenderNumber">
         <label id="lenderNumberLabel" class="form-label">
-          tlf : {{ lender.number}}<br>
+          tlf : 444444 444{{ lender.number}}<br>
         </label>
+      </div>
+      <div class="text-center">
+        <label >
+          Vis tidligere anmeldelser for gjenstanden
+        </label>
+        <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown">keyboard_arrow_left</i><i class="material-icons" v-on:click="dropDown" v-if="!showRightArrow">keyboard_arrow_down</i>
+      </div>
+      <div id="review" v-for="review in reviews" :key="review">
+        <div id="earlierReviews" v-if="!showRightArrow">
+        {{review.name}}<br>
+        {{review.rating}}
+        {{review.message}}
+        </div>
       </div>
     </div>
     <div id="distance" class="text-center">
       <label class="form-label">
-        Avstand : {{ distance}} km fra din posisjon&nbsp;
+        Avstand : {{ distance}}10 km fra din posisjon&nbsp;
       </label>
     </div>
     <div id ="address" class="text-center">
@@ -50,7 +74,7 @@
     <div class="text-center" style="padding: 0px;">
       <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height:40vh;padding-bottom: 7vh;">
 
-        <ol-view ref="view" :center="center" :rotation="rotation" :zoom="zoom" :projection="projection" />
+        <ol-view ref="view" :center="[latitudeForItem, longitudeForItem]" :rotation="rotation" :zoom="zoom" :projection="projection" />
 
         <ol-tile-layer>
           <ol-source-osm />
@@ -59,7 +83,7 @@
         <ol-vector-layer>
           <ol-source-vector>
             <ol-feature>
-              <ol-geom-point :coordinates="coordinate"></ol-geom-point>
+              <ol-geom-point :coordinates="[latitudeForItem, longitudeForItem]"></ol-geom-point>
               <ol-style>
                   <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
                   <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
@@ -81,31 +105,14 @@ import mapIcon from '@/assets/img/mapIcon.png'
 
 export default {
   name: "DetailedAd",
-  setup(){
-    const center = ref([40,40])
-    const projection = ref('EPSG:4326')
-    const zoom = ref(8)
-    const rotation = ref(0)
-    const strokeWidth = ref(10)
-    const strokeColor = ref('red')
-    const coordinate = ref([40, 40])
-    const fillColor = ref('white')
-    const radius = ref(40)
-    return {
-      center,
-      projection,
-      zoom,
-      rotation,
-      strokeWidth,
-      strokeColor,
-      coordinate,
-      fillColor,
-      radius,
-      mapIcon
-    }
-  },
   data() {
     return {
+      reviews : [{ name : 'per persen', rating : '5/10', message : 'Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt'}],
+      showRightArrow : true,
+      trustedUser : true,
+      requestStartDate : '',
+      requestEndDate : '',
+      showRequestDetails : false,
       headerText : '',
       rentalPrice : null,
       unitPeriod : '',
@@ -117,14 +124,44 @@ export default {
       distance : null,
       address : '',
       pictures : [],
-      latitudeForItem: '',
-      longitudeForItem:''
+      latitudeForItem: 10,
+      longitudeForItem:64
     };
+  },
+  setup(){
+    const projection = ref('EPSG:4326')
+    const zoom = ref(8)
+    const rotation = ref(0)
+    const strokeWidth = ref(10)
+    return {
+      projection,
+      zoom,
+      rotation,
+      strokeWidth,
+      mapIcon
+    }
   },
   methods : {
     startChat (){
 
     },
+    makeRequest (){
+      if(this.showRequestDetails){
+        this.showRequestDetails = false;
+      } else {
+        this.showRequestDetails = true;
+      }
+    },
+    sendRequest (){
+
+    },
+    dropDown (){
+      if(this.showRightArrow){
+        this.showRightArrow = false;
+      } else {
+        this.showRightArrow = true;
+      }
+    }
   },
 };
 </script>
@@ -145,8 +182,7 @@ export default {
     font-weight: bold;
     font-size: 22px;
   }
-  #startChatButton{
-
+  button{
     padding: 4px;
     font-size: 14px;
   }
@@ -168,6 +204,7 @@ export default {
     font-size: 12px;
     color: blue;
     text-decoration: underline;
+    cursor: pointer;
   }
   #lenderNumber{
     height: 5vh;
@@ -181,4 +218,27 @@ export default {
   #address{
     padding: 0px 5vw 0px 5vw;
   }
+  img{
+    width : 30vw;
+  }
+  button{
+    margin: 5px;
+  }
+  #makeRequest{
+    background-color: green;
+  }
+  #earlierReviews{
+    border-style: solid;
+    border-color: grey;
+    width: 50%;
+  }
+  #review{
+    display: grid;
+    justify-items: center;
+    font-size: 10px;
+  }
+  .material-icons{
+    cursor: pointer;
+  }
+
 </style>

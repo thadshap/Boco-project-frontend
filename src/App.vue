@@ -22,6 +22,7 @@ export default {
 <style>
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "assets/fonts/fontawesome-all.min.css";
+@import "assets/fonts/material-icons.min.css";
 
 #app {
   -webkit-font-smoothing: antialiased;
