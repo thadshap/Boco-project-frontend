@@ -1,17 +1,17 @@
 <template>
   <div class="container">
-    <form class="d-flex flex-column justify-content-center align-items-center">
+    <form class="d-flex flex-column justify-content-center align-items-center" v-on:submit.prevent="loginSubmit">
       <div class="text-center form-elements-container-style">
         <img src="assets/img/BoCo.png" class="logo-style">
         <h1 class="text-center">Log in</h1>
         <div class="d-flex flex-column flex-shrink-1 align-items-center form-inputs-container-style">
           <div class="text-center form-username-container-style">
-            <label class="form-label form-username-label-style">Username</label>
-            <input class="form-control" type="text">
+            <label class="form-label form-username-label-style">E-mail</label>
+            <input class="form-control" type="text" v-model="email">
           </div>
           <div class="text-center form-password-container-style">
             <label class="form-label form-password-label-style">Password</label>
-            <input class="form-control" type="password">
+            <input class="form-control" type="password" v-model="password">
           </div>
           <div>
             <a href="#" class="form-forgot-password-style">Forgot password?</a>
@@ -19,7 +19,7 @@
         </div>
         <div class="form-buttons-container-style">
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-signin-btn-container-style">
-            <button class="btn btn-primary w-100 form-signin-btn-style" type="button">Sign in</button>
+            <button class="btn btn-primary w-100 form-signin-btn-style" type="submit">Sign in</button>
           </div>
           <div>
             <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button">
@@ -41,10 +41,32 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "Login",
+  data(){
+    return{
+      email:'',
+      password:'',
+    }
+  },
   methods:{
-
+    loginSubmit(){
+      const options = {
+        method: 'POST',
+        url: 'http://localhost:8080/auth/login',
+        headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {email: this.email, password: this.password}
+      };
+      axios.request(options).then(function (response) {
+        localStorage.setItem('token',response.data);
+        console.log(localStorage.getItem('token'))
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }
   }
 };
 </script>

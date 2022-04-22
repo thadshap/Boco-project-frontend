@@ -9,46 +9,43 @@
         <div class="d-flex flex-column flex-shrink-1 align-items-center form-inputs-container-style">
           <div class="text-center d-flex flex-row justify-content-between align-items-center field-container w-100 form-firstname-container-style">
             <label class="form-label field-label">
-              Firstname
+              First Name:
             </label>
             <input class="form-control w-50" type="text" v-model="firstName">
           </div>
           <div class="text-center d-flex flex-row justify-content-between align-items-center w-100 form-lastname-container-style">
             <label class="form-label field-label">
-              Lastname
+              Last Name:
             </label>
             <input class="form-control w-50" type="text" v-model="lastName">
           </div>
           <div class="text-center d-flex flex-row justify-content-between align-items-center w-100 form-email-container-style">
             <label class="form-label field-label">
-              E-mail
+              E-mail:
             </label>
             <input class="form-control w-50" type="text" v-model="email">
           </div>
-          <div class="text-center d-flex flex-row justify-content-between align-items-center w-100 form-username-container-style">
-            <label class="form-label field-label">
-              Username
-            </label>
-            <input class="form-control w-50" type="text" v-model="username">
-          </div>
           <div class="text-center d-flex flex-row justify-content-between align-items-center w-100 form-password-container-style">
             <label class="form-label field-label">
-              Password
+              Password:
             </label>
             <input class="form-control w-50" type="text" v-model="password">
           </div>
           <div class="text-center d-flex flex-row justify-content-between align-items-center w-100 form-repeat-password-container-style">
             <label class="form-label field-label">
-              Repeat password
+              Repeat password:
             </label>
             <input class="form-control w-50" type="text" v-model="matchingPassword">
           </div>
         </div>
+        <span>{{response}}{{error}}</span>
         <div class="form-btn-container-style">
           <button class="btn btn-primary w-100 form-btn-style form-btn-style" type="submit">
             Register
           </button>
-          <span>{{response}}</span>
+          <router-link to="/login" class="btn btn-primary w-100 form-login-btn-style">
+            Login
+          </router-link>
         </div>
       </div>
     </form>
@@ -64,15 +61,14 @@ export default {
       firstName:'',
       lastName:'',
       email:'',
-      username:'',
       password:'',
       matchingPassword:'',
       response:'',
+      error:'',
     }
   },
   methods:{
     register(){
-      console.log(this.firstName)
       const options = {
         method: 'POST',
         url: 'http://localhost:8080/auth/register',
@@ -91,7 +87,7 @@ export default {
       axios.request(options).then(response =>
         this.response = response.data
       ).catch(function (error) {
-        console.error(error);
+        console.log(error);
       });
     }
   }
@@ -136,5 +132,11 @@ export default {
   margin-bottom: 10px;
   font-size: 25px;
   margin-top: 20px;
+}
+.form-login-btn-style{
+  background: rgba(13,110,253,0);
+  border-color: rgba(255,255,255,0);
+  color: var(--bs-blue);
+  font-size: 25px;
 }
 </style>
