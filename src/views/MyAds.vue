@@ -27,6 +27,7 @@
             v-for="category in categories"
             :key="category"
             :title="category.title"
+            :icon="category.icon"
         />
       </div>
     </div>
@@ -35,7 +36,9 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent :ads="ads" />
+    <AdListComponent :ads="ads"
+    :loaned-ads="false"
+    :my-ads="true"/>
   </div>
 </template>
 
@@ -52,7 +55,20 @@ export default {
   data() {
     return {
       ads: [],
-      categories: [],
+      categories: [
+        {
+        "title": "Verktøy",
+        "icon": "fa-hammer"
+        },
+        {
+          "title": "Bil",
+          "icon": "fa-car"
+        },
+        {
+          "title": "Båt",
+          "icon": "fa-ship"
+        }
+      ],
     };
   },
   methods: {

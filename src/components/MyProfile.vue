@@ -7,7 +7,7 @@
             <div>
               <h3>Min Profil</h3>
             </div>
-            <div class="d-flex infoDiv"><img class="profilePic" src="assets/img/1121fqbipvroqfw.png">
+            <div class="d-flex infoDiv"><img class="profilePic" src="@/assets/img/profilePicPlaceholder.png">
               <div class="d-sm-flex flex-column justify-content-end">
                 <h1>Brage Minge</h1>
                 <h6 style="opacity: 0.70;"><br>bragemi@stud.ntnu.no<br><br></h6>

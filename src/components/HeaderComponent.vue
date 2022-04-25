@@ -16,7 +16,7 @@
       </button>
         <div class="collapse navbar-collapse" id="navcol-2">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
+            <li class="nav-item" v-if="this.$store.getters.loggedIn">
 
               <router-link to="/new_ad" class="nav-link active text-end">
                 <i class="fa fa-plus-square"></i>
@@ -24,7 +24,7 @@
               </router-link>
               
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="this.$store.getters.loggedIn">
               
               <router-link to="/" class="nav-link active text-end">
                 <i class="fa fa-envelope"></i>
@@ -32,13 +32,22 @@
               </router-link>
               
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="this.$store.getters.loggedIn">
               
               <router-link to="/my_profile" class="nav-link active text-end">
                 <i class="fa fa-user"></i>
                 &nbsp;Min profil
               </router-link>
               
+            </li>
+
+            <li class="nav-item" v-if="!this.$store.getters.loggedIn">
+
+              <router-link to="/login" class="nav-link active text-end d-flex flex-row align-items-center">
+                <span>Log in</span>
+                <i class="material-icons">arrow_forward</i>
+              </router-link>
+
             </li>
           </ul>
         </div>
