@@ -21,7 +21,7 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/" class="nav-link">
+              <router-link to="/messages" class="nav-link">
                 <i class="fa fa-comments"></i>
                 Meldinger
               </router-link>
