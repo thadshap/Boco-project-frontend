@@ -23,7 +23,7 @@
     </div>
     <div class="d-flex flex-row flex-wrap optionContainer w-100 mt-5">
       <div class="cardDiv">
-        <div class="card cardBodyStyle">
+        <div class="card cardBodyStyle" @click="userSettings">
           <div class="card-body">
             <h4 class="card-title">Innstillinger</h4>
             <p class="card-text">Se og rediger dine opplysninger på BoCo</p>
@@ -75,6 +75,14 @@
           name: "Profile ads",
           query: {
             redirect: "/profile/ads"
+          }
+        })
+      },
+      userSettings() {
+        this.$router.push({
+          name: "Settings",
+          query: {
+            redirect: "/profile/settings"
           }
         })
       }

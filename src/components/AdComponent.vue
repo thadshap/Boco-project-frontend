@@ -63,11 +63,16 @@ export default {
 
 .project-card {
   background-color: white;
-  box-shadow: 0px 2px 5px 0px #000000;
+  box-shadow: 0 2px 5px 0 #000000;
   border-top: 5px solid #0EA0FF;
   border-radius: 20px;
   padding: 20px;
   min-height: 100%;
+}
+
+.project-card:hover {
+  cursor: pointer;
+  box-shadow: 0 0 20px 5px #007FD1;
 }
 
 .ad-img-container-style {
