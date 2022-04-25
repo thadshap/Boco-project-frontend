@@ -23,19 +23,19 @@
           <div class="d-inline-flex w-100 email-container">
             <label class="form-label email-label">Epost</label>
             <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
-            <span class="text-danger w-65" v-if="v$.emailChange.$error">
+            <span id="emailError" class="text-danger w-65" v-if="v$.emailChange.$error">
               {{ v$.emailChange.$errors[0].$message }}
             </span>
           </div>
           <div class="d-inline-flex w-100 password-container">
             <label class="form-label password-label">Passord</label>
             <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
-            <span class="text-danger" v-if="v$.passwordChange.$error">
+            <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
               {{ v$.passwordChange.$errors[0].$message }}
             </span>
           </div>
         </div>
-        <button class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
+        <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
       </div>
     </div>
   </div>
