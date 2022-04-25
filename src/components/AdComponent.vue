@@ -1,0 +1,120 @@
+<template>
+  <div class="project-card-container">
+    <div class="project-card d-flex justify-content-center">
+      <div class="ad-img-container-style d-flex align-items-center justify-content-center">
+        <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>
+      </div>
+      <div class="d-flex flex-column ad-details-container-style">
+        <div class="d-flex flex-column align-items-start">
+          <h3 class="ad-heading-style" style="margin-bottom: 10px;">
+            <b>{{ title }}</b>
+          </h3>
+          <h4>{{ price }} kr</h4>
+          <h5 class="opacity-75">{{ place }}</h5>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" href="#">
+            <i class="fa fa-envelope" style="margin-right: 5px;"></i>
+            Send melding
+          </a>
+          <a class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button" href="#">
+            <i class="fa fa-arrow-circle-right" style="margin-right: 5px;"></i>
+            Til annonse
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "AdComponent",
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    place: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+  },
+  methods: {
+    getImgUrl(img) {
+      return require("../assets/img/" + img);
+    }
+  }
+};
+</script>
+
+<style scoped>
+.project-card-container {
+  padding: 20px;
+}
+
+.project-card {
+  background-color: white;
+  box-shadow: 0px 2px 5px 0px #000000;
+  border-top: 5px solid #0EA0FF;
+  border-radius: 20px;
+  padding: 20px;
+  min-height: 100%;
+}
+
+.ad-img-container-style {
+  width: 100%;
+}
+
+.ad-img-style {
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.ad-heading-style {
+  font-size: 2.5em;
+}
+
+@media screen and (min-width: 992px) {
+  .project-card-container {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .project-card-container {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    width: 100%;
+  }
+
+  .project-card {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .project-card {
+    flex-flow: column;
+  }
+
+  .ad-details-container-style {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .ad-details-container-style {
+    padding-left: 20px;
+    width: 50%;
+  }
+}
+</style>

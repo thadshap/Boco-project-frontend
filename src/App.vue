@@ -1,30 +1,54 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
+  <HeaderComponent />
   <router-view />
+  <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
+    <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
+      {{ GStore.flashMessage }}
+    </div>
+    <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
+      {{ GStore.flashMessage }}
+    </div>
+  </div>
 </template>
 
+<script>
+import HeaderComponent from "@/components/HeaderComponent";
+
+const $ = require("jquery");
+window.$ = $;
+window.jQuery = $;
+require("bootstrap/dist/js/bootstrap.min");
+
+export default {
+  inject: ["GStore"],
+  name: "App",
+  components: {
+    HeaderComponent
+  }
+}
+</script>
+
 <style>
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "assets/fonts/fontawesome-all.min.css";
+@import "assets/fonts/material-icons.min.css";
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
+* {
+  font-family: system-ui;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+#flashMessageSuccess{
+  background-color: rgba(3, 153, 27, 0.50);
+  color: #015601;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+#flashMessageError{
+  background-color: rgba(139, 0, 0, 0.50);
+  color: #5e0000;
 }
 </style>
