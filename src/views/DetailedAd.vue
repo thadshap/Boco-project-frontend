@@ -24,9 +24,7 @@
       <div id="time" class="text-center" v-if="showRequestDetails">
       Tidsperiode:
         <Datepicker v-model="date" range />
-
-
-      <button id="sendRequest" class="btn btn-primary" type="button" v-on:click="sendRequest">
+      <button id="sendRequest" class="btn btn-primary" type="button" v-on:click="sendRequest" :disabled="!date">
         Send forespørselen
       </button>
       </div>
@@ -55,7 +53,7 @@
         <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown">keyboard_arrow_left</i><i class="material-icons" v-on:click="dropDown" v-if="!showRightArrow">keyboard_arrow_down</i>
       </div>
       <div id="review" v-for="review in reviews" :key="review">
-        <div id="earlierReviews" v-if="!showRightArrow">
+        <div class="earlierReviews" v-if="!showRightArrow">
         {{review.name}}<br>
         {{review.rating}}
         {{review.message}}
@@ -101,8 +99,8 @@
 <script>
 import { ref } from 'vue'
 import mapIcon from '@/assets/img/mapIcon.png'
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
+import Datepicker from '@vuepic/vue-datepicker'
+
 
 export default {
   components: { Datepicker },
