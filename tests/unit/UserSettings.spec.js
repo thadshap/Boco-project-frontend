@@ -13,6 +13,7 @@ describe("UserSettings", () => {
   it("test that error message displays if input is not valid for password, and change button get disabled", async () => {
     const wrapper = shallowMount(UserSettings);
     await wrapper.find('[id="password"]').setValue("hj");
+    await wrapper.find('[id="repeatPassword"]').setValue("hj");
     await wrapper.find('[id="change"]').trigger("click");
     const errorMessageEmail = wrapper.find('#passwordError');
     expect(errorMessageEmail.text()).toBe('Passordet må minst bestå av 8 karakterer')

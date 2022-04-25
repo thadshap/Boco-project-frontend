@@ -42,7 +42,7 @@
           </div>
           <div class="d-inline-flex w-100 password-container">
             <label class="form-label password-label">Befrekt passord*</label>
-            <input class="user-input" type="password" id="reapeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
+            <input class="user-input" type="password" id="repeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
             <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
               {{ v$.repeatPasswordChange.$errors[0].$message }}
             </span>
