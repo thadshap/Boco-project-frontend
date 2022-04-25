@@ -9,12 +9,18 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
+import UserProfile from "@/views/UserProfile";
 
 const routes = [
   {
     path: "/",
     name: "MainPage",
     component: MainPage,
+  },
+  {
+    path: "/userProfile",
+    name: "UserProfile",
+    component: UserProfile
   },
   {
     path: "/login",
@@ -32,7 +38,7 @@ const routes = [
     component: LendingPage
   },
   {
-    path: "/ad",
+    path: "/ad/:id",
     name: "Ad",
     component: DetailedAd,
   },

@@ -4,14 +4,14 @@
       <img id="adPicture" src=mapIcon alt="Bilde av gjenstanden som blir utlånt">
     </div>
     <div class="text-center">
-      <label id="adHeader" class="form-label">Stekeovn{{ headerText }}</label>
+      <label id="adHeader" class="form-label">{{ headerText }}</label>
     </div>
     <div class="text-center">
-      <label class="form-label">Leiepris : 10{{rentalPrice}} kr pr/dag{{unitPeriod}}</label>
+      <label class="form-label">Leiepris : {{rentalPrice}} kr pr/{{unitPeriod}}</label>
     </div>
     <div id="description" class="text-center">
       <label id="descriptionLabel" class="form-label">
-        {{ description }} Veldig fin til å bake
+        {{ description }}
       </label>
     </div>
     <div class="text-center">
@@ -37,13 +37,13 @@
       </div>
       <div id="lenderDetails">
         <label id="lenderName" class="form-label">
-          {{ lender.name}} Kari Jahnsen<br>
+          {{ lender.name}}<br>
         </label>
-        <i class="fas fa-check-circle" v-if="trustedUser" style="color: var(--bs-blue);padding: 0.5vw;"></i>
+        <i class="fas fa-check-circle" v-if="lender.trustedUser" style="color: var(--bs-blue);padding: 0.5vw;"></i>
       </div>
       <div id="lenderNumber">
         <label id="lenderNumberLabel" class="form-label">
-          tlf : 444444 444{{ lender.number}}<br>
+          tlf : {{ lender.number}}<br>
         </label>
       </div>
       <div class="text-center">
@@ -62,7 +62,7 @@
     </div>
     <div id="distance" class="text-center">
       <label class="form-label">
-        Avstand : {{ distance}}10 km fra din posisjon&nbsp;
+        Avstand : {{ distance}} km fra din posisjon&nbsp;
       </label>
     </div>
     <div id ="address" class="text-center">
@@ -110,20 +110,20 @@ export default {
       date : null,
       reviews : [{ name : 'per persen', rating : '5/10', message : 'Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt'}],
       showRightArrow : true,
-      trustedUser : true,
       requestStartDate : '',
       requestEndDate : '',
       showRequestDetails : false,
-      headerText : '',
-      rentalPrice : null,
-      unitPeriod : '',
-      description : '',
+      headerText : 'Stekeovn',
+      rentalPrice : 10,
+      unitPeriod : 'dag',
+      description : 'veldig flott å bruke',
       lender : {
-        name : '',
-        number: null,
+        name : 'Arne Bjarne',
+        number: 333333333,
+        trustedUser : true,
       },
       distance : null,
-      address : '',
+      address : 'Nordre hallsetveg',
       pictures : [],
       latitudeForItem: 10,
       longitudeForItem:64
@@ -228,7 +228,7 @@ export default {
   #makeRequest{
     background-color: green;
   }
-  #earlierReviews{
+  .earlierReviews{
     border-style: solid;
     border-color: grey;
     width: 50%;
