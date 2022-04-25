@@ -27,6 +27,7 @@
             v-for="category in categories"
             :key="category"
             :title="category.title"
+            :icon="category.icon"
         />
       </div>
     </div>
@@ -52,7 +53,20 @@ export default {
   data() {
     return {
       ads: [],
-      categories: [],
+      categories: [
+        {
+        "title": "Verktøy",
+        "icon": "fa-hammer"
+        },
+        {
+          "title": "Bil",
+          "icon": "fa-car"
+        },
+        {
+          "title": "Båt",
+          "icon": "fa-ship"
+        }
+      ],
     };
   },
   methods: {
