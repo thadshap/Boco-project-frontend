@@ -5,7 +5,7 @@
 
         <router-link to="/" class="navbar-brand">
           <img src="../assets/img/BoCo.png" width="30" height="30" class="d-inline-block align-top">
-          Borrow Community
+          BorrowCommunity
         </router-link>
 
         <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" @click="expandNavbar">
