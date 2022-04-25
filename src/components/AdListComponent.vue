@@ -1,18 +1,22 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center">
-    <div
-      class="d-flex flex-row justify-content-start align-items-center flex-wrap mx-auto w-100"
-    >
-      <AdComponent
-        v-for="ad in ads"
-        :key="ad"
-        :title="ad.title"
-        :image="ad.img"
-        :place="ad.place"
-        :price="ad.price"
-      />
-    </div>
-  </div>
+  <main class="page projets-page">
+    <section class="portfolio-block project-no-images">
+      <div class="container">
+        <div class="d-flex flex-row flex-wrap">
+
+          <AdComponent
+            v-for="ad in ads"
+            :key="ad"
+            :title="ad.title"
+            :image="ad.img"
+            :place="ad.place"
+            :price="ad.price"
+          />
+
+        </div>
+      </div>
+    </section>
+  </main>
 </template>
 
 <script>
@@ -22,14 +26,42 @@ import axios from "axios"
 export default {
   name: "AdListComponent",
   components: {
-    AdComponent,
+    AdComponent
   },
   data() {
     return{
-        ads: [],
-        adSpecification:{
-          type:String
-        }
+        ads: [
+          {
+            title: "Ski",
+            img: "ski.jpg",
+            place: "Trondheim",
+            price: 200
+          },
+          {
+            title: "Space",
+            img: "space.jpg",
+            place: "Tromsø",
+            price: 100
+          },
+          {
+            title: "Spaceman",
+            img: "spaceman.jpg",
+            place: "Kristiansand",
+            price: 300
+          },
+          {
+            title: "Ski",
+            img: "ski.jpg",
+            place: "Molde",
+            price: 400
+          },
+          {
+            title: "Ski",
+            img: "ski.jpg",
+            place: "Oslo",
+            price: 500
+          },
+        ]
     };
   },
 

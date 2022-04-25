@@ -1,11 +1,27 @@
 <template>
-  <div class="card ad-width ad-padding">
-    <div class="card-body ad-padding w-100 card-style">
-      <img src="{{ image }}" class="mw-100" />
-      <h6 class="location-style">{{ place }}</h6>
-      <div class="d-flex flex-row justify-content-between align-items-center">
-        <h4>{{ title }}</h4>
-        <h4>{{ price }} kr</h4>
+  <div class="project-card-container">
+    <div class="project-card d-flex justify-content-center">
+      <div class="ad-img-container-style d-flex align-items-center justify-content-center">
+        <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>
+      </div>
+      <div class="d-flex flex-column ad-details-container-style">
+        <div class="d-flex flex-column align-items-start">
+          <h3 class="ad-heading-style" style="margin-bottom: 10px;">
+            <b>{{ title }}</b>
+          </h3>
+          <h4>{{ price }} kr</h4>
+          <h5 class="opacity-75">{{ place }}</h5>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" href="#">
+            <i class="fa fa-envelope" style="margin-right: 5px;"></i>
+            Send melding
+          </a>
+          <a class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button" href="#">
+            <i class="fa fa-arrow-circle-right" style="margin-right: 5px;"></i>
+            Til annonse
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -32,41 +48,73 @@ export default {
       required: true,
     },
   },
+  methods: {
+    getImgUrl(img) {
+      return require("../assets/img/" + img);
+    }
+  }
 };
 </script>
 
 <style scoped>
-.card-style {
-  background: rgb(202, 216, 238);
-  box-shadow: 0px 0px 10px;
+.project-card-container {
+  padding: 20px;
 }
 
-.location-style {
-  opacity: 0.7;
-  margin-top: 5px;
+.project-card {
+  background-color: white;
+  box-shadow: 0px 2px 5px 0px #000000;
+  border-top: 5px solid #0EA0FF;
+  border-radius: 20px;
+  padding: 20px;
+  min-height: 100%;
 }
 
-@media screen and (min-width: 1200px) {
-  .ad-width {
-    width: 25%;
-  }
+.ad-img-container-style {
+  width: 100%;
 }
 
-@media screen and (max-width: 1200px) {
-  .ad-width {
+.ad-img-style {
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.ad-heading-style {
+  font-size: 2.5em;
+}
+
+@media screen and (min-width: 992px) {
+  .project-card-container {
     width: 50%;
   }
 }
 
-@media screen and (max-width: 767px) {
-  .ad-padding {
-    padding: 5px;
+@media screen and (max-width: 992px) {
+  .project-card-container {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    width: 100%;
+  }
+
+  .project-card {
+    max-width: 100%;
   }
 }
 
-@media (min-width: 768px) {
-  .ad-padding {
-    padding: 20px;
+@media screen and (max-width: 576px) {
+  .project-card {
+    flex-flow: column;
+  }
+
+  .ad-details-container-style {
+    padding: 0;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .ad-details-container-style {
+    padding-left: 20px;
+    width: 50%;
   }
 }
 </style>
