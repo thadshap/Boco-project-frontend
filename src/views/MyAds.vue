@@ -36,7 +36,9 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent :ads="ads" />
+    <AdListComponent :ads="ads"
+    :loaned-ads="false"
+    :my-ads="true"/>
   </div>
 </template>
 

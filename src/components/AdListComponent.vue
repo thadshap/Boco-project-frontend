@@ -26,19 +26,48 @@ export default {
   },
   data() {
     return{
-        ads: []
+        ads: [],
+        adSpecification:{
+          type:String
+        }
     };
+  },
+
+  props: {
+    myAds:{
+      type:Boolean,
+      required:true,
+    },
+    loanedAds:{
+      type:Boolean,
+      required:true,
+    }
   },
 
   methods: {
     async mounted() {
-      await this.getAds();
+      this.setAdSpecification()
+      await this.getAds()
+    },
+    setAdSpecification(){
+
+
+      if(this.myAds){
+        this.adSpecification = "myAds"
+      }
+      else if(this.loanedAds){
+        this.adSpecification = "loanedAds"
+      }
+      else{
+        this.adSpecification = "allAds"
+      }
+
     },
     async getAds(){
-        console.log("hei")
-        //denne må endres utifra props som spør om ulike ads
-        let adSpecification=""
-        let url= "http://localhost:8080/getads/ellernoe"+adSpecification
+
+        let url= "http://localhost:8081/getads/ellernoe"+this.adSpecification
+
+
 
         //må fikse jwttoken etter det er klart på login
         let user = JSON.parse(window.localStorage.getItem("currentUser"))

@@ -27,7 +27,9 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent />
+    <AdListComponent
+    :my-ads="false"
+    :loaned-ads="false"/>
   </div>
 </template>
 
