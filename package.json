@@ -25,13 +25,14 @@
     "material-icons": "^1.10.8",
     "nprogress": "^0.2.0",
     "popper.js": "^1.16.1",
+    "rxjs": "^7.5.5",
     "vue": "^3.0.0",
     "vue-progressbar": "^0.7.5",
     "vue-router": "^4.0.0-0",
     "vue3-openlayers": "^0.1.63",
-    "vuex-flash": "^1.0.0",
     "vuelidate": "^0.7.7",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "vuex-flash": "^1.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.15",
