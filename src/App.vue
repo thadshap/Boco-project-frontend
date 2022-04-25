@@ -40,4 +40,8 @@ export default {
 * {
   font-family: system-ui;
 }
+#flashMessage{
+  background-color: rgba(3, 153, 27, 0.50);
+  color: #015601;
+}
 </style>

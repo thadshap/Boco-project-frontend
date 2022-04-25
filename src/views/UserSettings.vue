@@ -30,7 +30,7 @@
           <div class="d-inline-flex w-100 password-container">
             <label class="form-label password-label">Passord</label>
             <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
-            <span class="text-danger w-65" v-if="v$.passwordChange.$error">
+            <span class="text-danger" v-if="v$.passwordChange.$error">
               {{ v$.passwordChange.$errors[0].$message }}
             </span>
           </div>
@@ -47,6 +47,7 @@ import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
 
 export default {
+  inject: ["GStore"],
   name: "UserSettings",
   data(){
     return{
@@ -56,8 +57,8 @@ export default {
       email: "thadsha1710@live.no",
       password: "heisann",
       disableBtn: true,
-      firstnameChange: '',
-      lastnameChange: '',
+      firstnameChange: "",
+      lastnameChange: "",
       url: null,
     };
   },
@@ -81,6 +82,7 @@ export default {
   },
   created() {
     this.disableChangeBtn()
+    //TODO: alltid vis informasjonen om en bruker når siden blir åpnet
   },
   methods:{
     getUserInfo(){
@@ -126,6 +128,17 @@ export default {
     submit(){
       this.v$.$validate()
       if (this.v$.$error){
+        this.disableBtn = true
+      }
+      else {
+        this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+        this.firstnameChange = ""
+        this.lastnameChange = ""
+        this.emailChange = ""
+        this.passwordChange = ""
         this.disableBtn = true
       }
     }
@@ -201,6 +214,7 @@ export default {
 }
 span{
   display: flex;
+  width: 75%;
   left: 35%;
   position: relative;
 }

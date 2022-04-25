@@ -118,7 +118,7 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import { helpers, required, integer, alpha, minLength, maxLength } from "@vuelidate/validators";
+import { helpers, required, integer, minLength, maxLength } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import axios from "axios"
 
