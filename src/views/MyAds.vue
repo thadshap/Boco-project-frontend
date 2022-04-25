@@ -21,7 +21,7 @@
     <div>
       <h3>Categories</h3>
       <div
-          class="d-flex flex-row justify-content-start align-items-center flex-wrap categories-card-container-style"
+          class="d-flex flex-row justify-content-center align-items-center flex-wrap categories-card-container-style"
       >
         <CategoryComponent
             v-for="category in categories"

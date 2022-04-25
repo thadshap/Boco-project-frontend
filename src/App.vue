@@ -1,6 +1,6 @@
 <template>
   <HeaderComponent />
-  <main class="pt-5">
+  <main class="pt-5 pb-5">
     <router-view />
     <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
       <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
