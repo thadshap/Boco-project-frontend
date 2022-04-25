@@ -33,7 +33,7 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/my_profile" class="nav-link">
+              <router-link to="/login" class="nav-link">
                 <i class="fa fa-arrow-right"></i>
                 Log in
               </router-link>
