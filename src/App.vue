@@ -1,11 +1,13 @@
 <template>
   <HeaderComponent />
-  <router-view />
-  <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
-    <div id="flashMessage" class="alert alert-primary mt-5">
-      {{ GStore.flashMessage }}
+  <main class="pt-5">
+    <router-view />
+    <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
+      <div id="flashMessage" class="alert alert-primary mt-5">
+        {{ GStore.flashMessage }}
+      </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
