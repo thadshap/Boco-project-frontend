@@ -6,7 +6,7 @@ describe("AdComponent.vue", () => {
         const title = "Motorsag";
         const price = 1000;
         const place = "Trondheim";
-        const image = "Dette er et bilde";
+        const image = "BoCo.png";
         const wrapper = shallowMount(AdComponent, {
             props: { title,price,place,image },
         });
