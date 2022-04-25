@@ -1,43 +1,51 @@
 <template>
-  <div class="d-sm-flex flex-grow-1 justify-content-sm-center align-items-sm-center w-100 main-container">
-    <div class="text-end">
-      <div class="d-flex flex-column align-content-center flex-wrap">
-        <div class="d-flex flex-column user-img-container">
-          <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
-          <img class="ms-auto user-img" v-if="url" :src="url">
-          <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
-        </div>
+  <div class="container">
+    <div class="d-flex justify-content-start align-items-center">
+      <div class="align-items-center back-arrow-container" @click="back">
+        <i class="fa fa-arrow-left"></i>
+        <span class="mx-2">Tilbake</span>
       </div>
-      <div class="w-100 user-info-container">
-        <div class="header">Om meg</div>
-        <div class="mt-auto w-100 personal-info">
-          <div class="d-inline-flex w-100 firstname-container">
-            <label class="form-label firstname-label">Fornavn</label>
-            <input class="user-input" type="text" id="firstname" :placeholder="firstname" v-model="firstnameChange" v-on:change="disableChangeBtn">
-          </div>
-          <div class="d-inline-flex w-100 lastname-container">
-            <label class="form-label lastname-label">Etternavn</label>
-            <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
+    </div>
+    <div class="d-sm-flex flex-grow-1 justify-content-sm-center align-items-sm-center w-100 main-container">
+      <div class="text-end">
+        <div class="d-flex flex-column align-content-center flex-wrap">
+          <div class="d-flex flex-column user-img-container">
+            <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
+            <img class="ms-auto user-img" v-if="url" :src="url">
+            <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
         </div>
-        <div class="header">Bruker opplysning</div>
-        <div class="me-auto w-100 user-info">
-          <div class="d-inline-flex w-100 email-container">
-            <label class="form-label email-label">Epost</label>
-            <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
-            <span id="emailError" class="text-danger w-65" v-if="v$.emailChange.$error">
-              {{ v$.emailChange.$errors[0].$message }}
-            </span>
+        <div class="w-100 user-info-container">
+          <div class="header">Om meg</div>
+          <div class="mt-auto w-100 personal-info">
+            <div class="d-inline-flex w-100 firstname-container">
+              <label class="form-label firstname-label">Fornavn</label>
+              <input class="user-input" type="text" id="firstname" :placeholder="firstname" v-model="firstnameChange" v-on:change="disableChangeBtn">
+            </div>
+            <div class="d-inline-flex w-100 lastname-container">
+              <label class="form-label lastname-label">Etternavn</label>
+              <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
+            </div>
           </div>
-          <div class="d-inline-flex w-100 password-container">
-            <label class="form-label password-label">Passord</label>
-            <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
-            <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
-              {{ v$.passwordChange.$errors[0].$message }}
-            </span>
+          <div class="header">Bruker opplysning</div>
+          <div class="me-auto w-100 user-info">
+            <div class="d-inline-flex w-100 email-container">
+              <label class="form-label email-label">Epost</label>
+              <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
+              <span id="emailError" class="text-danger w-65" v-if="v$.emailChange.$error">
+                {{ v$.emailChange.$errors[0].$message }}
+              </span>
+            </div>
+            <div class="d-inline-flex w-100 password-container">
+              <label class="form-label password-label">Passord</label>
+              <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
+              <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
+                {{ v$.passwordChange.$errors[0].$message }}
+              </span>
+            </div>
           </div>
+          <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
         </div>
-        <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
       </div>
     </div>
   </div>
@@ -144,6 +152,9 @@ export default {
         this.passwordChange = ""
         this.disableBtn = true
       }
+    },
+    back() {
+      this.$router.go(-1);
     }
   },
 };
@@ -227,5 +238,10 @@ span{
   justify-content: left;
   font-weight: bold;
   color: rgba(44, 62, 80, 0.8);
+}
+
+.back-arrow-container {
+  cursor: pointer;
+  width: min-content;
 }
 </style>

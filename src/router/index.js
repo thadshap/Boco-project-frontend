@@ -42,11 +42,6 @@ const routes = [
     component: Chat,
   },
   {
-    path: "/userSettings",
-    name: "UserSettings",
-    component: UserSettings,
-  },
-  {
     path: "/profile",
     name: "Profile",
     component: Profile,
@@ -60,6 +55,11 @@ const routes = [
         path: "/ads",
         name: "Profile ads",
         component: MyAds
+      },
+      {
+        path: "/settings",
+        name: "Settings",
+        component: UserSettings
       }
     ]
   },
