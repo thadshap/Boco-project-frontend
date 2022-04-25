@@ -132,6 +132,7 @@ export default {
       }
       else {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
+        this.GStore.variant = "Success"
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
