@@ -1,18 +1,12 @@
 <template>
   <HeaderComponent />
-  <router-view />
-  <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
-    <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
-      {{ GStore.flashMessage }}
-    </div>
-    <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
-      {{ GStore.flashMessage }}
-    </div>
-  </div>
   <main class="pt-5">
     <router-view />
     <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
-      <div id="flashMessage" class="alert alert-primary mt-5">
+      <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
+        {{ GStore.flashMessage }}
+      </div>
+      <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
         {{ GStore.flashMessage }}
       </div>
     </div>
