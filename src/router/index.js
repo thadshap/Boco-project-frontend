@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import MainPage from "@/views/MainPage";
 import DetailedAd from "@/views/DetailedAd";
 import LendingPage from "@/views/LendingPage";
+import UserSettings from "../views/UserSettings";
 import MyProfile from "@/components/MyProfile";
 import MyAds from "@/views/MyAds";
 import Profile from "@/views/Profile";
@@ -38,7 +39,12 @@ const routes = [
   {
     path: "/messages",
     name: "Messages",
-    component: Chat
+    component: Chat,
+  },
+  {
+    path: "/userSettings",
+    name: "UserSettings",
+    component: UserSettings,
   },
   {
     path: "/profile",
