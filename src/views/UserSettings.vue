@@ -22,6 +22,10 @@
         </div>
         <div class="header">Bruker opplysning</div>
         <div class="me-auto w-100 user-info">
+          <div class="d-inline-flex w-100 username-container">
+            <label class="form-label username-label">Brukernavn</label>
+            <input class="user-input" type="text" id="username" name="username" :placeholder="username" v-model="usernameChange" v-on:change="disableChangeBtn">
+          </div>
           <div class="d-inline-flex w-100 email-container">
             <label class="form-label email-label">Epost</label>
             <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
@@ -36,6 +40,13 @@
               {{ v$.passwordChange.$errors[0].$message }}
             </span>
           </div>
+          <div class="d-inline-flex w-100 password-container">
+            <label class="form-label password-label">Befrekt passord*</label>
+            <input class="user-input" type="password" id="reapeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
+            <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
+              {{ v$.repeatPasswordChange.$errors[0].$message }}
+            </span>
+          </div>
         </div>
         <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
       </div>
@@ -44,7 +55,7 @@
 </template>
 
 <script>
-import { email, minLength, helpers } from "@vuelidate/validators";
+import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
 
@@ -56,18 +67,21 @@ export default {
     // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
       firstname: "Thadsha",
       lastname: "Paramsothy",
+      username: "Thadsha1710",
       email: "thadsha1710@live.no",
       password: "heisann",
       disableBtn: true,
       firstnameChange: "",
       lastnameChange: "",
+      usernameChange: "",
       url: null,
     };
   },
   setup(){
     const state = reactive({
       emailChange:"",
-      passwordChange:""
+      passwordChange:"",
+      repeatPasswordChange: ""
     });
     const rules = computed(()=>{
       return{
@@ -76,6 +90,9 @@ export default {
         },
         passwordChange:{
           minLength: helpers.withMessage("Passordet må minst bestå av 8 karakterer", minLength(8))
+        },
+        repeatPasswordChange:{
+          sameAs: helpers.withMessage('Passordet er ikke lik det oppgitte passordet over',sameAs(state.passwordChange))
         }
       };
     });
@@ -91,8 +108,10 @@ export default {
       //  TODO: her burde det settes lik den informasjonen som hentes fra databasen som
       this.firstname = ''
       this.lastname = ''
+      this.username = ''
       this.email = ''
       this.password = ''
+      this.repeatPassword = ''
     },
     changeUserInfo(){
       // TODO:isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
@@ -104,6 +123,10 @@ export default {
         // TODO: endre inn på databasen
         this.lastnameChange = this.lastname
       }
+      if (this.usernameChange !== this.username){
+        // TODO: endre inn på databasen
+        this.usernameChange = this.username
+      }
       if (this.state.emailChange !== this.email){
         // TODO: endre inn på databasen
         this.state.emailChange = this.email
@@ -112,9 +135,14 @@ export default {
         // TODO: endre inn på databasen
         this.state.passwordChange = this.password
       }
+      if (this.state.repeatPasswordChange !== this.repeatPassword){
+        // TODO: endre inn på databasen
+        this.state.repeatPasswordChange = this.repeatPassword
+      }
     },
     disableChangeBtn(){
-      if (this.firstnameChange === '' && this.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' || this.v$.$error) this.disableBtn = true
+      if (this.firstnameChange === '' && this.lastnameChange === '' && this.usernameChange === '' &&this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
+      else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
     chooseImages() {
@@ -140,6 +168,7 @@ export default {
         }, 4000)
         this.firstnameChange = ""
         this.lastnameChange = ""
+        this.usernameChange = ""
         this.emailChange = ""
         this.passwordChange = ""
         this.disableBtn = true
@@ -194,7 +223,7 @@ export default {
   padding: 10px;
 
 }
-.password-label, .email-label, .lastname-label, .firstname-label{
+.password-label, .email-label, .lastname-label, .firstname-label, .username-label{
   font-size: 1.2em;
 }
 .user-input{
@@ -204,7 +233,7 @@ export default {
   height: 35px;
   width: 65%;
 }
-.firstname-container,.lastname-container,.email-container,.password-container{
+.firstname-container,.lastname-container,.email-container,.password-container, .username-container{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
