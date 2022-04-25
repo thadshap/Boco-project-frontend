@@ -9,6 +9,7 @@
         </div>
       </div>
       <div class="w-100 user-info-container">
+        <div class="header">Om meg</div>
         <div class="mt-auto w-100 personal-info">
           <div class="d-inline-flex w-100 firstname-container">
             <label class="form-label firstname-label">Fornavn</label>
@@ -19,6 +20,7 @@
             <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
           </div>
         </div>
+        <div class="header">Bruker opplysning</div>
         <div class="me-auto w-100 user-info">
           <div class="d-inline-flex w-100 email-container">
             <label class="form-label email-label">Epost</label>
@@ -179,6 +181,7 @@ export default {
   border-radius: 4px;
   text-align: center;
   padding: 10px;
+  margin-bottom: 20px;
 }
 .firstname-label{
   border-width: 8px;
@@ -189,10 +192,10 @@ export default {
   border-radius: 4px;
   text-align: center;
   padding: 10px;
-  margin-top: 20px;
+
 }
 .password-label, .email-label, .lastname-label, .firstname-label{
-  font-size: 1.5em;
+  font-size: 1.2em;
 }
 .user-input{
   background: rgba(230,247,255,0.43);
@@ -218,5 +221,11 @@ span{
   width: 75%;
   left: 35%;
   position: relative;
+}
+.header{
+  display: flex;
+  justify-content: left;
+  font-weight: bold;
+  color: rgba(44, 62, 80, 0.8);
 }
 </style>
