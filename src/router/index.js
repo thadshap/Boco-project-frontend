@@ -7,6 +7,7 @@ import MyAds from "@/views/MyAds";
 import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
+import Chat from "@/views/Chat";
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path: "/ad",
     name: "Ad",
     component: DetailedAd,
+  },
+  {
+    path: "/messages",
+    name: "Messages",
+    component: Chat
   },
   {
     path: "/profile",
