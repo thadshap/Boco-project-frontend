@@ -74,10 +74,11 @@
 </template>
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 import {computed, reactive} from "vue";
 import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
 import useValidate from "@vuelidate/core";
+import lendingService from "@/services/lendingService";
 export default {
   name: "Register",
 
@@ -124,13 +125,15 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    register(){
+    register : async function(){
       this.v$.$validate()
 
       if(this.v$.$error) {
         return
       }
+      await lendingService.registerUser(this.firstname, this.lastname, this.email, this.password, this.repeatPassword);
 
+      /*
       const options = {
         method: 'POST',
         url: 'http://localhost:8080/auth/register',
@@ -151,6 +154,8 @@ export default {
       ).catch(function (error) {
         console.log(error);
       });
+
+       */
     }
   }
 }
