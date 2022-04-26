@@ -67,18 +67,19 @@
 import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
+import lendingService from "../services/lendingService";
+
 
 export default {
   inject: ["GStore"],
   name: "UserSettings",
   data(){
     return{
-      // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
-      firstname: "Thadsha",
-      lastname: "Paramsothy",
-      username: "Thadsha1710",
-      email: "thadsha1710@live.no",
-      password: "heisann",
+      firstname: "",
+      lastname: "",
+      username: "",
+      email: "",
+      password: "",
       disableBtn: true,
       firstnameChange: "",
       lastnameChange: "",
@@ -108,44 +109,53 @@ export default {
     const v$ = useValidate(rules, state);
     return { state, v$ };
   },
-  created() {
-    this.disableChangeBtn()
-    //TODO: getUserInfo()
+  created: async function() {
+    await this.disableChangeBtn()
+    await this.getUserInfo()
   },
   methods:{
     back() {
       this.$router.go(-1)
     },
-    getUserInfo(){
-      //  TODO: her burde det settes lik den informasjonen som hentes fra databasen som
-      this.firstname = ''
-      this.lastname = ''
-      this.username = ''
-      this.email = ''
-      this.password = ''
+    getUserInfo:async function(){
+      await lendingService.getUserById(localStorage.getItem("account").id)
+        .then(response => {
+          this.firstname = response.data.firstname
+          this.lastname = response.data.lastname
+          this.username = response.data.username
+          this.email = response.data.email
+          this.password = response.data.password
+        }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke hentet brukeren!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
     },
-    changeUserInfo(){
-      // TODO:isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
-      if (this.firstnameChange !== this.firstname){
-        // TODO: endre inn på databasen
-        this.firstname = this.firstnameChange
-      }
-      if (this.lastnameChange !== this.lastname){
-        // TODO: endre inn på databasen
-        this.lastname = this.lastnameChange
-      }
-      if (this.usernameChange !== this.username){
-        // TODO: endre inn på databasen
-        this.username = this.usernameChange
-      }
-      if (this.state.emailChange !== this.email){
-        // TODO: endre inn på databasen
-        this.email = this.state.emailChange
-      }
-      if (this.state.passwordChange !== this.password){
-        // TODO: endre inn på databasen
-        this.password = this.state.passwordChange
-      }
+    changeUserInfo:async function(){
+      this.firstname = this.firstnameChange
+      this.lastname = this.lastnameChange
+      this.username = this.usernameChange
+      this.email = this.state.emailChange
+      this.password = this.state.passwordChange
+      await lendingService.updateUser(this.firstname,this.lastname,this.email,this.password,localStorage.getItem("account").id)
+      .then(response => {
+        this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
+        this.GStore.variant = "Success"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+        console.log(response)
+      }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke endret bruker informasjonen!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
     },
     disableChangeBtn(){
       if (this.firstnameChange === '' && this.lastnameChange === '' && this.usernameChange === '' &&this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
@@ -168,12 +178,7 @@ export default {
         this.disableBtn = true
       }
       else {
-        this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
-        this.GStore.variant = "Success"
-        setTimeout(() => {
-          this.GStore.flashMessage = ""
-        }, 4000)
-        // TODO: sende dataen som er endret til databasen og vise det i placeholderen
+        this.changeUserInfo()
         this.firstnameChange = ""
         this.lastnameChange = ""
         this.usernameChange = ""
@@ -183,10 +188,25 @@ export default {
         this.disableBtn = true
       }
     },
-    deleteUser(){
+    deleteUser:async function(){
       let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
       if (deleteAccount == "JA") {
-        console.log("Ja")
+        await lendingService.deleteUser(localStorage.getItem("account").id)
+          .then(response => {
+            this.GStore.flashMessage = "Kontoen har blitt sletta"
+            this.GStore.variant = "Success"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(response)
+          }).catch(error => {
+            this.GStore.flashMessage = "Fikk slettet brukeren!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
         //TODO: når brukeren blir slettet så sendes brukeren til hjemmesiden og er ikke pålogget
       } else return
     }
