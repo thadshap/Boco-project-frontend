@@ -85,7 +85,7 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    loginSubmit(){
+    async loginSubmit(){
       this.v$.$validate()
       if (this.v$.$error){
         return
@@ -97,14 +97,19 @@ export default {
         headers: {
         'Content-Type': 'application/json'
       },
-      data: {email: this.email, password: this.password}
+      data: {email: this.state.email, password: this.password}
       };
-      axios.request(options).then(function (response) {
-        localStorage.setItem('token',response.data);
-        console.log(localStorage.getItem('token'))
-      }).catch(function (error) {
-        console.error(error);
-      });
+
+      await axios
+          .request(options)
+          .then(response => {
+            localStorage.setItem('token',response.data);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
+      await this.$router.push("/")
 
     }
   }

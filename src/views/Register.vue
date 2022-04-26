@@ -124,7 +124,7 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    register(){
+    async register(){
       this.v$.$validate()
 
       if(this.v$.$error) {
@@ -139,18 +139,24 @@ export default {
           Authorization: 'Bearer'
         },
         data: {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password,
-          repeatPassword: this.repeatPassword,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.email,
+          password: this.state.password,
+          repeatPassword: this.state.repeatPassword,
         }
       }
-      axios.request(options).then(response =>
-        this.response = response.data
-      ).catch(function (error) {
-        console.log(error);
-      });
+
+      await axios
+          .request(options)
+          .then(response => {
+            this.response = response.data
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      alert(this.response)
+      await this.$router.push("/login")
     }
   }
 }
