@@ -180,7 +180,8 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        localStorage.setItem("token", response.data);
+        localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userId", response.data.id);
       })
       .catch(function (error) {
         console.error(error);
