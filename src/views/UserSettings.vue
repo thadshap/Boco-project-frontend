@@ -11,7 +11,7 @@
         <div class="d-flex flex-column align-content-center flex-wrap">
           <div class="d-flex flex-column user-img-container">
             <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
-            <img class="ms-auto user-img" v-if="url" :src="url">
+            <img alt="Profilbilde" class="ms-auto user-img" v-if="url" :src="url" width="150" height="200">
             <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
         </div>
@@ -170,7 +170,7 @@ export default {
       this.url = URL.createObjectURL(file);
     },
     existingUserImg(){
-      // TODO: sette inn eksisterende profilbilde fra databasen
+      // TODO: sette inn eksisterende profilbilde fra databasen hvis den eksisterer
     },
     submit(){
       this.v$.$validate()
@@ -227,8 +227,6 @@ export default {
 .user-img{
   border-radius: 1px;
   margin-bottom: 10px;
-  height:200px;
-  width: 150px;
   object-fit:cover;
   object-position:50% 50%;
 }

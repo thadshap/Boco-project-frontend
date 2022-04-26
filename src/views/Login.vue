@@ -91,7 +91,6 @@ export default {
       let changePasswordMessage = prompt("Skriv inn e-post")
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       if (regex.test(changePasswordMessage)) {
-        console.log("emailen er gyldig")
         await lendingService.forgotPassword(changePasswordMessage)
           .then(response => {
             this.GStore.flashMessage = "Sent"
