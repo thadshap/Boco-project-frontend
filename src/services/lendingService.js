@@ -6,7 +6,7 @@ export default {
      */
 
     /**
-     *
+     * Method to create a request for a rental
      * @param deadline for cancelling the rental, 24 hours before rent starts
      * @param price
      */
@@ -23,7 +23,8 @@ export default {
                 rentFrom: rentFrom,
                 rentTo: rentTo,
                 deadline: deadline,
-                active: 'false',
+                //change to false when chat works TODO
+                active: 'true',
                 price: price,
                 owner: lenderId,
                 borrower: userId,
@@ -31,12 +32,22 @@ export default {
             }
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options)
+    },
+    /**
+     * Method to activate a rental when the lender has accepted the request
+     */
+    activateRental(rentalId){
+        const options = {
+            method: 'PUT',
+            url: 'http://localhost:8080/rental/' + rentalId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            }
+        };
 
+        return axios.request(options);
     },
     /**
      *Methods for user
@@ -61,11 +72,7 @@ export default {
             }
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
 
@@ -79,11 +86,7 @@ export default {
             },
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
     },
     deleteUser(userId){
         const options = {
@@ -96,11 +99,7 @@ export default {
             data: {}
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
   /**
@@ -172,11 +171,7 @@ export default {
             data: {email: email}
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
     /**
@@ -194,11 +189,7 @@ export default {
             data: {password: password, confirmPassword: password}
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
 
@@ -219,14 +210,7 @@ export default {
       data: { rating: "", description: "", user_id: userId, ad_id: adId },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
 
   /**
@@ -240,14 +224,7 @@ export default {
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method to get a list of all the reviews a user has recieved
@@ -258,14 +235,7 @@ export default {
       url: "http://localhost:8080/api/users/ads/reviews/" + userId,
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
 
   /**
@@ -280,22 +250,14 @@ export default {
   getAllAdsForUser(userId){
         const options = {method: 'GET', url: 'http://localhost:8080/api/users/ads/' + userId};
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
     //Available
     getAdsByUserId(){
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/available/1'};
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
     },
 
     /**
@@ -305,21 +267,13 @@ export default {
     getAdsByPostalCode(postalCode){
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/postal/' + postalCode};
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
     getAllAds(){
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads'};
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
     },
 
     getAllAvailableAds(){
@@ -329,11 +283,7 @@ export default {
             headers: {'Content-Type': 'application/json'},
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
     },
 
   /**
@@ -349,14 +299,7 @@ export default {
       data: { lat: latitude, lng: longitude },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method to get a list of random ads
@@ -369,14 +312,7 @@ export default {
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method for returning a list of ads sorted in descending order by sortByAttribute
@@ -392,14 +328,7 @@ export default {
       data: { pageSize: pageSize, sortBy: sortByAttribute },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method for returning a list of ads sorted in ascending order by sortByAttribute
@@ -415,14 +344,7 @@ export default {
       data: { pageSize: pageSize, sortBy: sortByAttribute },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
 
   /**
@@ -436,14 +358,7 @@ export default {
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method for returning a list of ads sorted from oldest to newest
@@ -456,14 +371,7 @@ export default {
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method for returning a list of ads where the ads header
@@ -477,23 +385,12 @@ export default {
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
     getAdsByRentalType(){
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/rental/true'};
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
     },
 
   /**
@@ -510,14 +407,7 @@ export default {
       url: "http://localhost:8080/api/ads/" + adId,
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
   /**
    * Method to update an ad, can change one to all attributes
@@ -549,23 +439,12 @@ export default {
       },
     };
 
-    axios
-      .request(options)
-      .then(function (response) {
-        return response;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options);
   },
     getAdById(adId){
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/' + adId};
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
     },
     /**
      *
@@ -591,11 +470,7 @@ export default {
             }
         };
 
-        axios.request(options).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            console.error(error);
-        });
+        return axios.request(options);
 
     },
 };
