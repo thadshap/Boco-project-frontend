@@ -9,6 +9,7 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
+import ResetPassword from "../views/ResetPassword";
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: "/register",
     name: "Register",
     component: Register
+  },
+  {
+    path: "/reset_password",
+    name: "ResetPassword",
+    component: ResetPassword
   },
   {
     path: "/new_ad",
