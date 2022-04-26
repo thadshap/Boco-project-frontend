@@ -11,27 +11,27 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import 'nprogress/nprogress.css';
 
-import { fakeBackend } from "@/_helpers/fake-backend";
-fakeBackend();
+// import { fakeBackend } from "@/_helpers/fake-backend";
+// fakeBackend();
+//
+// import { initFacebookSdk } from "@/_helpers/init-facebook-sdk";
+// import { jwtInterceptor } from "@/_helpers/jwt.interceptor";
+// import { errorInterceptor } from "@/_helpers/error.interceptor";
+//
+// jwtInterceptor();
+// errorInterceptor()
+//
+// initFacebookSdk().then(startApp);
 
-import { initFacebookSdk } from "@/_helpers/init-facebook-sdk";
-import { jwtInterceptor } from "@/_helpers/jwt.interceptor";
-import { errorInterceptor } from "@/_helpers/error.interceptor";
-
-jwtInterceptor();
-errorInterceptor()
-
-initFacebookSdk().then(startApp);
-
-function startApp() {
-  createApp(App)
-    .component('Datepicker', Datepicker)
-    .use(store)
-    .use(router)
-    .use(OpenLayersMap)
-    .provide("GStore", GStore)
-    .mount("#app");
-}
+// function startApp() {
+createApp(App)
+  .component('Datepicker', Datepicker)
+  .use(store)
+  .use(router)
+  .use(OpenLayersMap)
+  .provide("GStore", GStore)
+  .mount("#app");
+// }
 
 
 
