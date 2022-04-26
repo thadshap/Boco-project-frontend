@@ -40,6 +40,7 @@
 import { minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
+import lendingService from "../services/lendingService";
 
 export default {
   inject: ["GStore"],
@@ -47,7 +48,8 @@ export default {
   data(){
     return{
       // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
-      password: "heisann",
+      password: "",
+      repeatPassword: "",
       disableBtn: true,
     };
   },
@@ -71,34 +73,36 @@ export default {
   },
   created() {
     this.disableChangeBtn()
-    //TODO: getUserInfo()
   },
   methods:{
     back() {
       this.$router.go(-1)
     },
-    getUserInfo(){
-      //  TODO: her burde det settes lik den informasjonen som hentes fra databasen som
-      this.password = ''
-    },
-    changeUserInfo(){
-      // TODO:isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
-      if (this.state.passwordChange !== this.password){
-        // TODO: endre inn på databasen
-        this.password = this.state.passwordChange
-      }
+    changePassword: async function(){
+      // TODO:endre siste parameteren på linje 85 ang token, vet ikke om den heter token
+      this.password = this.state.passwordChange
+      this.repeatPassword = this.state.repeatPasswordChange
+      await lendingService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("account").token)
+        .then(response => {
+          this.GStore.flashMessage = "Passoret har blitt endret!"
+          this.GStore.variant = "Success"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(response)
+        }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke endret passordet!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
     },
     disableChangeBtn(){
       if (this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
-    },
-    onFileChange(e) {
-      const file = e.target.files[0];
-      this.url = URL.createObjectURL(file);
-    },
-    existingUserImg(){
-      // TODO: sette inn eksisterende profilbilde fra databasen
     },
     submit(){
       this.v$.$validate()
@@ -106,12 +110,7 @@ export default {
         this.disableBtn = true
       }
       else {
-        this.GStore.flashMessage = "Passordet har blitt resatt!"
-        this.GStore.variant = "Success"
-        setTimeout(() => {
-          this.GStore.flashMessage = ""
-        }, 4000)
-        // TODO: sende dataen som er endret til databasen og vise det i placeholderen
+        this.changePassword()
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
         this.disableBtn = true

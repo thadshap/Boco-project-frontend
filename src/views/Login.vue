@@ -24,7 +24,7 @@
             <input class="form-control" type="password" v-model="password">
           </div>
           <div>
-            <a href="#" class="form-forgot-password-style">Glemt passord?</a>
+            <a href="#" v-on:click="changePassword" class="form-forgot-password-style">Glemt passord?</a>
           </div>
         </div>
         <div class="form-buttons-container-style">
@@ -85,6 +85,29 @@ export default {
   methods:{
     back() {
       this.$router.go(-1)
+    },
+    changePassword: async function(){
+      let changePasswordMessage = prompt("Skriv inn e-post")
+      const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      if (changePasswordMessage == regex) {
+        await lendingService.forgotPassword(changePasswordMessage)
+          .then(response => {
+            this.GStore.flashMessage = "Sent"
+            this.GStore.variant = "Success"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(response)
+          }).catch(error => {
+            this.GStore.flashMessage = "Ops...Noe gikk galt. Har du skrevet riktig email"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
+      }
+      }
     },
     loginSubmit : async function(){
       this.v$.$validate()
