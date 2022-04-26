@@ -17,7 +17,7 @@
             <label class="form-label field-label">
               Fornavn:
             </label>
-            <input class="form-control w-50" type="text" id="firstname" v-model="state.firstName">
+            <input class="form-control w-50" type="text" id="firstname" v-model="state.firstname">
           </div>
           <span id="firstnameError" class="text-danger w-65" v-if="v$.firstname.$error">
               {{ v$.firstname.$errors[0].$message }}
@@ -26,7 +26,7 @@
             <label class="form-label field-label">
               Etternavn:
             </label>
-            <input class="form-control w-50" type="text" id="lastname" v-model="state.lastName">
+            <input class="form-control w-50" type="text" id="lastname" v-model="state.lastname">
           </div>
           <span id="lastnameError" class="text-danger w-65" v-if="v$.lastname.$error">
               {{ v$.lastname.$errors[0].$message }}
