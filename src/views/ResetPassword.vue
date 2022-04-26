@@ -115,6 +115,7 @@ export default {
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
         this.disableBtn = true
+        // TODO: gå til log inn siden
       }
     }
   },

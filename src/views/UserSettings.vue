@@ -184,7 +184,7 @@ export default {
       }
     },
     deleteUser(){
-      let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn JA:");
+      let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
       if (deleteAccount == "JA") {
         console.log("Ja")
         //TODO: når brukeren blir slettet så sendes brukeren til hjemmesiden og er ikke pålogget

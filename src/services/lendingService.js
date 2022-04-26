@@ -45,10 +45,10 @@ export default {
     /**
      * Method to update a user
      */
-    updateUser(firstName, lastName, email, password){
+    updateUser(firstName, lastName, email, password, userId){
         const options = {
             method: 'PUT',
-            url: 'http://localhost:8080/user/{userId}',
+            url: 'http://localhost:8080/user/' + userId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer'
