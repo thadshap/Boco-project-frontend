@@ -32,14 +32,30 @@
             <button class="btn btn-primary w-100 form-signin-btn-style" @click="loginSubmit">Logg inn</button>
           </div>
           <div>
-            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button">
-              <i class="fab fa-facebook facebook-icon-style"></i>
-              Logg inn med Facebook
-            </button>
-            <button class="btn btn-primary w-100 form-continue-with-google-btn" type="button">
-              <i class="fab fa-google google-icon-style"></i>
-              Logg inn med Google
-            </button>
+
+<!--            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button">-->
+<!--              <i class="fab fa-facebook facebook-icon-style"></i>-->
+<!--              Logg inn med Facebook-->
+<!--            </button>-->
+
+            <vue-facebook-login-component-next-es
+              app-id="3598318360302645"
+              class="btn w-100" style="background-color: #0a58ca"
+              logo-style="color: white"
+              text-style="color: white"
+              @sdk-init="handleSdkInit"
+              @click="loginFacebook"
+              v-if="!this.$store.getters.isLoggedIn"
+            />
+
+<!--            @click="login"-->
+<!--            scope="{ login: login(), logout: logout() }"-->
+
+<!--            <button class="btn btn-primary w-100 form-continue-with-google-btn" type="button">-->
+<!--              <i class="fab fa-google google-icon-style"></i>-->
+<!--              Logg inn med Google-->
+<!--            </button>-->
+            <GoogleLogin />
           </div>
 
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
@@ -58,8 +74,16 @@ import useValidate from "@vuelidate/core";
 import {helpers, email} from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
+import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
+import GoogleLogin from 'vue3-google-oauth2';
+import { accountService } from "@/_services/account.service";
+
 export default {
   name: "Login",
+  components: {
+    VueFacebookLoginComponentNextEs,
+    GoogleLogin
+  },
   setup() {
     const state = reactive({
       email: "",
@@ -76,9 +100,11 @@ export default {
     return { state, v$ };
   },
 
-    data(){
+  data(){
     return{
       password:'',
+      FB: {},
+      scope: {}
     }
   },
   methods:{
@@ -106,6 +132,17 @@ export default {
         console.error(error);
       });
 
+    },
+    handleSdkInit({ FB, scope }) {
+      this.FB = FB
+      this.scope = scope
+    },
+    loginFacebook() {
+      if(JSON.parse(localStorage.getItem("vue-facebook-login-accounts")) !== [] && localStorage.getItem("vue-facebook-login-accounts") !== null) {
+        accountService.logout(this.FB);
+      } else {
+        accountService.login(this.FB);
+      }
     }
   }
 };

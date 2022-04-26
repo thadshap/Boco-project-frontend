@@ -9,6 +9,7 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
+import { authGuard } from "@/_helpers/auth.guard";
 
 const routes = [
   {
@@ -29,7 +30,8 @@ const routes = [
   {
     path: "/new_ad",
     name: "New Ad",
-    component: LendingPage
+    component: LendingPage,
+    beforeEnter: authGuard
   },
   {
     path: "/ad",
@@ -40,26 +42,35 @@ const routes = [
     path: "/messages",
     name: "Messages",
     component: Chat,
+    beforeEnter: authGuard
   },
   {
     path: "/profile",
     name: "Profile",
     component: Profile,
+    beforeEnter: authGuard,
     children: [
       {
         path: "/my_profile",
         name: "My profile",
-        component: MyProfile
+        component: MyProfile,
+        beforeEnter: authGuard
       },
       {
         path: "/ads",
         name: "Profile ads",
-        component: MyAds
+        component: MyAds,
+        beforeEnter: authGuard
       },
       {
         path: "/settings",
         name: "Settings",
-        component: UserSettings
+        component: UserSettings,
+        beforeEnter: authGuard
+      },
+      {
+        path: "*",
+        redirect: "/"
       }
     ]
   }
