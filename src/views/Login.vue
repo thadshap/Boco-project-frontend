@@ -53,10 +53,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+//import axios from 'axios';
 import useValidate from "@vuelidate/core";
 import {helpers, email} from "@vuelidate/validators";
 import { computed, reactive } from "vue";
+import lendingService from "@/services/lendingService";
 
 export default {
   name: "Login",
@@ -85,12 +86,14 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    loginSubmit(){
+    loginSubmit : async function(){
       this.v$.$validate()
       if (this.v$.$error){
         return
       }
+      await lendingService.logIn(this.email, this.password);
 
+      /*
       const options = {
         method: 'POST',
         url: 'http://localhost:8080/auth/login',
@@ -105,6 +108,8 @@ export default {
       }).catch(function (error) {
         console.error(error);
       });
+
+       */
 
     }
   }

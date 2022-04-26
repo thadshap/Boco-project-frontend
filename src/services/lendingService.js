@@ -1,6 +1,108 @@
 import axios from "axios";
 
 export default {
+    /**
+     *Methods for rental
+     */
+
+    /**
+     *
+     * @param deadline for cancelling the rental, 24 hours before rent starts
+     * @param price
+     */
+    createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderId, userId, adId){
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:8080/rental/create',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            },
+            data: {
+                dateOfRental: dateOfRental,
+                rentFrom: rentFrom,
+                rentTo: rentTo,
+                deadline: deadline,
+                active: 'false',
+                price: price,
+                owner: lenderId,
+                borrower: userId,
+                ad: adId
+            }
+        };
+
+        axios.request(options).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            console.error(error);
+        });
+
+    },
+    /**
+     *Methods for user
+     */
+
+    /**
+     * Method to update a user
+     */
+    updateUser(firstName, lastName, email, password){
+        const options = {
+            method: 'PUT',
+            url: 'http://localhost:8080/user/{userId}',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            },
+            data: {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            }
+        };
+
+        axios.request(options).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            console.error(error);
+        });
+
+    },
+
+    getUserById(userId){
+        const options = {
+            method: 'GET',
+            url: 'http://localhost:8080/user/' + userId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            },
+        };
+
+        axios.request(options).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            console.error(error);
+        });
+    },
+    deleteUser(userId){
+        const options = {
+            method: 'DELETE',
+            url: 'http://localhost:8080/user/' + userId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            },
+            data: {}
+        };
+
+        axios.request(options).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            console.error(error);
+        });
+
+    },
   /**
    * Methods for login and registration for user
    */
@@ -51,12 +153,54 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.log(error);
       });
   },
+    /**
+     * method to send email to user where they can change password
+     */
+    forgotPassword(email){
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:8080/auth/forgotPassword',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {email: email}
+        };
+
+        axios.request(options).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            console.error(error);
+        });
+
+    },
+    /**
+     * method to renew password
+     * @token the token in the url when the user clicked on the link in email
+     */
+    renewPassword(password, confPassword, token){
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:8080/auth/renewPassword',
+            params: {token: token},
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {password: password, confirmPassword: password}
+        };
+
+        axios.request(options).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            console.error(error);
+        });
+
+    },
 
   /**
    * Methods for reviews
@@ -78,7 +222,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -99,7 +243,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -117,7 +261,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -137,7 +281,7 @@ export default {
         const options = {method: 'GET', url: 'http://localhost:8080/api/users/ads/' + userId};
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -148,7 +292,7 @@ export default {
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/available/1'};
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -162,7 +306,7 @@ export default {
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/postal/' + postalCode};
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -172,7 +316,7 @@ export default {
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads'};
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -186,7 +330,7 @@ export default {
         };
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -208,7 +352,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -228,7 +372,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -251,7 +395,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -274,7 +418,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -295,7 +439,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -315,7 +459,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -336,7 +480,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -346,7 +490,7 @@ export default {
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/rental/true'};
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -369,7 +513,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -408,7 +552,7 @@ export default {
     axios
       .request(options)
       .then(function (response) {
-        return response.data;
+        return response;
       })
       .catch(function (error) {
         console.error(error);
@@ -418,7 +562,7 @@ export default {
         const options = {method: 'GET', url: 'http://localhost:8080/api/ads/' + adId};
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
@@ -448,7 +592,7 @@ export default {
         };
 
         axios.request(options).then(function (response) {
-            return response.data;
+            return response;
         }).catch(function (error) {
             console.error(error);
         });
