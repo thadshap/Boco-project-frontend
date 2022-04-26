@@ -109,32 +109,31 @@ export default {
       }
       }
     },
-    loginSubmit : async function(){
-      this.v$.$validate()
-      if (this.v$.$error){
-        return
-      }
-      await lendingService.logIn(this.email, this.password);
-
-      /*
-      const options = {
-        method: 'POST',
-        url: 'http://localhost:8080/auth/login',
-        headers: {
-        'Content-Type': 'application/json'
-      },
-      data: {email: this.email, password: this.password}
-      };
-      axios.request(options).then(function (response) {
-        localStorage.setItem('token',response.data);
-        console.log(localStorage.getItem('token'))
-      }).catch(function (error) {
-        console.error(error);
-      });
-
-       */
-
+  loginSubmit : async function(){
+    this.v$.$validate()
+    if (this.v$.$error){
+      return
     }
+    await lendingService.logIn(this.email, this.password);
+
+    /*
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:8080/auth/login',
+      headers: {
+      'Content-Type': 'application/json'
+    },
+    data: {email: this.email, password: this.password}
+    };
+    axios.request(options).then(function (response) {
+      localStorage.setItem('token',response.data);
+      console.log(localStorage.getItem('token'))
+    }).catch(function (error) {
+      console.error(error);
+    });
+
+     */
+
   }
 };
 </script>
