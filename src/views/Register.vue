@@ -74,10 +74,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import {computed, reactive} from "vue";
 import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
 import useValidate from "@vuelidate/core";
+import lendingService from "@/services/lendingService";
 export default {
   name: "Register",
 
@@ -130,32 +130,16 @@ export default {
       if(this.v$.$error) {
         return
       }
+      this.response = await lendingService
+          .registerUser(
+              this.state.firstname,
+              this.state.lastname,
+              this.state.email,
+              this.state.password,
+              this.state.repeatPassword
+          )
 
-      const options = {
-        method: 'POST',
-        url: 'http://localhost:8080/auth/register',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer'
-        },
-        data: {
-          firstName: this.state.firstName,
-          lastName: this.state.lastName,
-          email: this.state.email,
-          password: this.state.password,
-          repeatPassword: this.state.repeatPassword,
-        }
-      }
-
-      await axios
-          .request(options)
-          .then(response => {
-            this.response = response.data
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      alert(this.response)
+      alert(this.response.data)
       await this.$router.push("/login")
     }
   }
