@@ -1,36 +1,34 @@
 import { BehaviorSubject } from "rxjs";
 import Router from "@/router";
 import Store from "@/store";
-// import axios from "axios";
 
 const accountSubject = new BehaviorSubject(null);
-const accountsKey = "vue-facebook-login-accounts";
+const accountsKey = "vue-login-accounts";
 let accounts = JSON.parse(localStorage.getItem(accountsKey)) || [];
 
 export const accountService = {
-  login,
-  apiAuthenticate,
-  logout,
+  loginFacebook,
+  logoutFacebook,
+  loginGoogle,
+  logoutGoogle,
   account: accountSubject.asObservable(),
   get accountValue() {
     return accountSubject.value;
   },
 };
 
-async function login(FB) {
+async function loginFacebook(FB) {
   // login with facebook then authenticate with the API to get a JWT auth token
   const { authResponse } = await new Promise(FB.login);
   if (!authResponse) return;
 
-  await apiAuthenticate(authResponse.accessToken, FB);
+  await apiAuthenticateFacebook(authResponse.accessToken, FB);
   Store.commit("SET_LOGGED_IN", true);
 
-  // get return url from query parameters or default to home page
-  // const returnUrl = this.$router.history.current.query["returnUrl"] || "/";
   await Router.push("/");
 }
 
-async function apiAuthenticate(accessToken, FB) {
+async function apiAuthenticateFacebook(accessToken, FB) {
   FB.api(
     "/me",
     "GET",
@@ -40,7 +38,7 @@ async function apiAuthenticate(accessToken, FB) {
 
       let account = false;
       for (let i = 0; i < accounts.length; i++) {
-        if (accounts[i].facebookId === response.id) {
+        if (accounts[i].id === response.id) {
           account = true;
         }
       }
@@ -53,6 +51,7 @@ async function apiAuthenticate(accessToken, FB) {
           lastName: response.lastName,
           email: response.email,
           accessToken: accessToken,
+          provider: "facebook"
         };
         localStorage.setItem(accountsKey, JSON.stringify(account));
 
@@ -64,9 +63,9 @@ async function apiAuthenticate(accessToken, FB) {
   );
 }
 
-function logout(FB) {
+function logoutFacebook() {
   // revoke app permissions to logout completely because FB.logout() doesn't remove FB cookie
-  FB.api("/me/permissions", "delete", null, () => FB.logout());
+  // FB.api("/me/permissions", "delete", null, () => FB.logout());
   stopAuthenticateTimer();
   accountSubject.next(null);
   localStorage.removeItem(accountsKey)
@@ -83,10 +82,55 @@ function startAuthenticateTimer(FB) {
   const expires = new Date(jwtToken.exp * 1000);
   const timeout = expires.getTime() - Date.now() - 60 * 1000;
   const { accessToken } = FB.getAuthResponse();
-  authenticateTimeout = setTimeout(() => apiAuthenticate(accessToken, FB), timeout);
+  authenticateTimeout = setTimeout(() => apiAuthenticateFacebook(accessToken, FB), timeout);
 }
 
 function stopAuthenticateTimer() {
   // cancel timer for re-authenticating with the api
   clearTimeout(authenticateTimeout);
+}
+
+async function loginGoogle(gauth) {
+  try {
+    const googleUser = await gauth.signIn();
+    if (!googleUser) {
+      return null;
+    }
+
+    let account = true;
+    if(accounts.length === 0) {
+      account = false;
+    }
+
+    if (!account) {
+      // create new account if first time logging in
+      account = {
+        id: googleUser.getBasicProfile().getId(),
+        email: googleUser.getBasicProfile().getEmail(),
+        accessToken: googleUser.getAuthResponse().access_token,
+        provider: "google"
+      };
+      localStorage.setItem(accountsKey, JSON.stringify(account));
+      accountSubject.next(account);
+      Store.commit("SET_LOGGED_IN", true);
+
+      await Router.push("/");
+    }
+
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+async function logoutGoogle(gauth) {
+  try {
+    await gauth.signOut();
+    // console.log("isAuthorized", this.Vue3GoogleOauth.isAuthorized);
+    localStorage.removeItem(accountsKey);
+    Store.commit("SET_LOGGED_IN", false);
+    await Router.push("/");
+  } catch (error) {
+    console.error(error);
+  }
 }

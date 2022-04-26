@@ -62,11 +62,20 @@
           </div>
         </div>
       </div>
+      <div class="cardDiv">
+        <div class="card h-100" @click="logout">
+          <div class="card-body cardBodyStyle d-flex align-items-center justify-content-center">
+            <h4 class="card-title">Logg ut</h4>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import { accountService } from "@/_services/account.service";
+
   export default {
     name: "MyProfile",
     methods: {
@@ -85,6 +94,15 @@
             redirect: "/profile/settings"
           }
         })
+      },
+      logout() {
+        let provider = JSON.parse(localStorage.getItem("vue-login-accounts")).provider
+
+        if(provider === "facebook") {
+          accountService.logoutFacebook()
+        } else if(provider === "google") {
+          accountService.logoutGoogle(this.$gAuth)
+        }
       }
     }
   }

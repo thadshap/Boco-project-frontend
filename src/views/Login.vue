@@ -51,11 +51,10 @@
 <!--            @click="login"-->
 <!--            scope="{ login: login(), logout: logout() }"-->
 
-<!--            <button class="btn btn-primary w-100 form-continue-with-google-btn" type="button">-->
-<!--              <i class="fab fa-google google-icon-style"></i>-->
-<!--              Logg inn med Google-->
-<!--            </button>-->
-            <GoogleLogin />
+            <button class="btn btn-primary w-100 mb-5 form-continue-with-google-btn" type="button" @click="loginGoogle">
+              <i class="fab fa-google google-icon-style"></i>
+              Logg inn med Google
+            </button>
           </div>
 
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
@@ -74,15 +73,13 @@ import useValidate from "@vuelidate/core";
 import {helpers, email} from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
-import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
-import GoogleLogin from 'vue3-google-oauth2';
+import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next";
 import { accountService } from "@/_services/account.service";
 
 export default {
   name: "Login",
   components: {
-    VueFacebookLoginComponentNextEs,
-    GoogleLogin
+    VueFacebookLoginComponentNextEs
   },
   setup() {
     const state = reactive({
@@ -143,12 +140,19 @@ export default {
       this.scope = scope
     },
     loginFacebook() {
-      if(JSON.parse(localStorage.getItem("vue-facebook-login-accounts")) !== [] && localStorage.getItem("vue-facebook-login-accounts") !== null) {
-        accountService.logout(this.FB);
+      if(JSON.parse(localStorage.getItem("vue-login-accounts")) !== [] && localStorage.getItem("vue-login-accounts") !== null) {
+        accountService.logoutFacebook(this.FB);
       } else {
-        accountService.login(this.FB);
+        accountService.loginFacebook(this.FB);
       }
-    }
+    },
+    loginGoogle(){
+      if(JSON.parse(localStorage.getItem("vue-login-accounts")) !== [] && localStorage.getItem("vue-login-accounts") !== null) {
+        accountService.logoutGoogle(this.$gAuth);
+      } else {
+        accountService.loginGoogle(this.$gAuth);
+      }
+    },
   }
 };
 </script>
