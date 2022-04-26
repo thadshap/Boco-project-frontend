@@ -56,6 +56,7 @@
             </div>
           </div>
           <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
+          <button class="btn btn-primary w-100 delete-user-btn" type="button"  @click="deleteUser">Slett konto</button>
         </div>
       </div>
     </div>
@@ -181,6 +182,13 @@ export default {
         this.state.repeatPasswordChange = ""
         this.disableBtn = true
       }
+    },
+    deleteUser(){
+      let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn JA:");
+      if (deleteAccount == "JA") {
+        console.log("Ja")
+        //TODO: når brukeren blir slettet så sendes brukeren til hjemmesiden og er ikke pålogget
+      } else return
     }
   },
 };
@@ -254,6 +262,19 @@ export default {
   font-size: 1.5em;
   margin-top: 20px;
 }
+.update-user-info-btn:hover{
+  background: rgba(3, 153, 27, 0.7);
+}
+.delete-user-btn{
+  background: rgb(227, 2, 2);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 20px;
+}
+.delete-user-btn:hover{
+  background: rgba(227, 2, 2, 0.7);
+}
 #emailError, #passwordError, #repeatPasswordError{
   display: flex;
   width: 50%;
@@ -277,7 +298,7 @@ export default {
     height: 30px;
     font-size: 0.7em;
   }
-  .update-user-info-btn{
+  .update-user-info-btn, .delete-user-btn{
     font-size: 1em;
   }
   .user-img-upload-btn{
@@ -295,7 +316,7 @@ export default {
     height: 25px;
     font-size: 0.5em;
   }
-  .update-user-info-btn{
+  .update-user-info-btn, .delete-user-btn{
     font-size: 0.9em;
   }
   .user-img-upload-btn{
