@@ -17,7 +17,7 @@
             <label class="form-label field-label">
               Fornavn:
             </label>
-            <input class="form-control w-50" type="text" v-model="state.firstName">
+            <input class="form-control w-50" type="text" id="firstname" v-model="state.firstName">
           </div>
           <span id="firstnameError" class="text-danger w-65" v-if="v$.firstname.$error">
               {{ v$.firstname.$errors[0].$message }}
@@ -26,7 +26,7 @@
             <label class="form-label field-label">
               Etternavn:
             </label>
-            <input class="form-control w-50" type="text" v-model="state.lastName">
+            <input class="form-control w-50" type="text" id="lastname" v-model="state.lastName">
           </div>
           <span id="lastnameError" class="text-danger w-65" v-if="v$.lastname.$error">
               {{ v$.lastname.$errors[0].$message }}
@@ -35,7 +35,7 @@
             <label class="form-label field-label">
               Epost:
             </label>
-            <input class="form-control w-50" type="text" v-model="state.email">
+            <input class="form-control w-50" type="text" id="email" v-model="state.email">
           </div>
           <span id="emailError" class="text-danger w-65" v-if="v$.email.$error">
               {{ v$.email.$errors[0].$message }}
@@ -44,7 +44,7 @@
             <label class="form-label field-label">
               Passord:
             </label>
-            <input class="form-control w-50" type="text" v-model="state.password">
+            <input class="form-control w-50" type="password" id="password" v-model="state.password">
           </div>
           <span id="passwordError" class="text-danger w-65" v-if="v$.password.$error">
               {{ v$.password.$errors[0].$message }}
@@ -53,7 +53,7 @@
             <label class="form-label field-label">
               Gjenta passord:
             </label>
-            <input class="form-control w-50" type="text" v-model="state.repeatPassword">
+            <input class="form-control w-50" type="password" id="repeatPassword" v-model="state.repeatPassword">
           </div>
           <span id="repeatPasswordError" class="text-danger w-65" v-if="v$.repeatPassword.$error">
               {{ v$.repeatPassword.$errors[0].$message }}
@@ -61,7 +61,7 @@
         </div>
         <span>{{response}}{{error}}</span>
         <div class="form-btn-container-style">
-          <button class="btn btn-primary w-100 form-btn-style form-btn-style" @click="register">
+          <button class="btn btn-primary w-100 form-btn-style form-btn-style" @click="register" id="registerBtn">
             Registrer
           </button>
           <router-link to="/login" class="btn btn-primary w-100 form-login-btn-style">
