@@ -49,6 +49,63 @@ export default {
 
         return axios.request(options);
     },
+    deleteRental(rentalId){
+        const options = {
+            method: 'DELETE',
+            url: 'http://localhost:8080/rental/delete/' + rentalId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            }
+        };
+
+        return axios.request(options);
+    },
+
+    updateRental(rentalId, dateRentFrom, dateRentTo, deadline, price){
+        const options = {
+            method: 'PUT',
+            url: 'http://localhost:8080/rental/update/' + rentalId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            },
+            data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
+        };
+
+        return axios.request(options);
+
+    },
+
+    getRentalById(rentalId){
+        const options = {
+            method: 'GET',
+            url: 'http://localhost:8080/rental/' + rentalId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            }
+        };
+        return axios.request(options);
+    },
+
+    /**
+     * Gets all the items a user have lent, and all items it has rented out
+     */
+    getHistoryRentalForUser(userId){
+        const options = {
+            method: 'GET',
+            url: 'http://localhost:8080/rental/s/' + userId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'
+            }
+        };
+
+        return axios.request(options);
+
+    },
+
     /**
      *Methods for user
      */
@@ -207,7 +264,7 @@ export default {
       method: "DELETE",
       url: "http://localhost:8080/api/delete/review",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
-      data: { rating: "", description: "", user_id: userId, ad_id: adId },
+      data: { rating: "", description: "", userId: userId, adId: adId },
     };
 
     return axios.request(options);
@@ -405,6 +462,7 @@ export default {
     const options = {
       method: "DELETE",
       url: "http://localhost:8080/api/ads/" + adId,
+        headers: {Authorization: 'Bearer'}
     };
 
     return axios.request(options);
@@ -426,15 +484,15 @@ export default {
     const options = {
       method: "PUT",
       url: "http://localhost:8080/api/ads/" + adId,
-      headers: { "Content-Type": "application/json" },
+        headers: {'Content-Type': 'application/json', Authorization: 'Bearer'},
       data: {
         title: newTitle,
         price: newPrice,
         description: newDescription,
-        duration_type: newDurationType,
-        category_id: newCategoryId,
-        street_address: newStreetAdress,
-        postal_code: newPostalCode,
+        durationType: newDurationType,
+        categoryId: newCategoryId,
+        streetAddress: newStreetAdress,
+        postalCode: newPostalCode,
         picture: newPicture,
       },
     };
