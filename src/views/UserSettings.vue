@@ -27,7 +27,7 @@
               <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
             </div>
           </div>
-          <div class="header">Bruker opplysning</div>
+          <div class="header">Brukeropplysning</div>
           <div class="me-auto w-100 user-info">
             <div class="d-inline-flex w-100 username-container">
               <label class="form-label username-label">Brukernavn</label>
@@ -48,7 +48,7 @@
               </span>
             </div>
             <div class="d-inline-flex w-100 password-container">
-              <label class="form-label password-label">Befrekt passord*</label>
+              <label class="form-label password-label">Bekreft passord*</label>
               <input class="user-input" type="password" id="repeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
               <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
                 {{ v$.repeatPasswordChange.$errors[0].$message }}
@@ -72,7 +72,7 @@ export default {
   name: "UserSettings",
   data(){
     return{
-    // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
+      // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
       firstname: "Thadsha",
       lastname: "Paramsothy",
       username: "Thadsha1710",
@@ -109,7 +109,7 @@ export default {
   },
   created() {
     this.disableChangeBtn()
-    //TODO: alltid vis informasjonen om en bruker når siden blir åpnet
+    //TODO: getUserInfo()
   },
   methods:{
     back() {
@@ -122,33 +122,28 @@ export default {
       this.username = ''
       this.email = ''
       this.password = ''
-      this.repeatPassword = ''
     },
     changeUserInfo(){
       // TODO:isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
       if (this.firstnameChange !== this.firstname){
         // TODO: endre inn på databasen
-        this.firstnameChange = this.firstname
+        this.firstname = this.firstnameChange
       }
       if (this.lastnameChange !== this.lastname){
         // TODO: endre inn på databasen
-        this.lastnameChange = this.lastname
+        this.lastname = this.lastnameChange
       }
       if (this.usernameChange !== this.username){
         // TODO: endre inn på databasen
-        this.usernameChange = this.username
+        this.username = this.usernameChange
       }
       if (this.state.emailChange !== this.email){
         // TODO: endre inn på databasen
-        this.state.emailChange = this.email
+        this.email = this.state.emailChange
       }
       if (this.state.passwordChange !== this.password){
         // TODO: endre inn på databasen
-        this.state.passwordChange = this.password
-      }
-      if (this.state.repeatPasswordChange !== this.repeatPassword){
-        // TODO: endre inn på databasen
-        this.state.repeatPasswordChange = this.repeatPassword
+        this.password = this.state.passwordChange
       }
     },
     disableChangeBtn(){
@@ -177,11 +172,13 @@ export default {
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
+        // TODO: sende dataen som er endret til databasen og vise det i placeholderen
         this.firstnameChange = ""
         this.lastnameChange = ""
         this.usernameChange = ""
-        this.emailChange = ""
-        this.passwordChange = ""
+        this.state.emailChange = ""
+        this.state.passwordChange = ""
+        this.state.repeatPasswordChange = ""
         this.disableBtn = true
       }
     }
@@ -220,7 +217,7 @@ export default {
   background: rgba(255,253,253,0.74);
   border-radius: 4px;
   text-align: center;
-  padding: 10px;
+  padding: 4%;
   margin-bottom: 20px;
 }
 .firstname-label{
@@ -231,7 +228,7 @@ export default {
   background: rgba(255,253,253,0.74);
   border-radius: 4px;
   text-align: center;
-  padding: 10px;
+  padding: 4%;
 
 }
 .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
@@ -242,7 +239,8 @@ export default {
   border-radius: 4px;
   border: 0.5px solid rgb(201,197,197);
   height: 35px;
-  width: 65%;
+  width: 50%;
+  font-size: 1em;
 }
 .firstname-container,.lastname-container,.email-container,.password-container, .username-container{
   display: flex;
@@ -253,13 +251,13 @@ export default {
   background: #03991b;
   border-radius: 6px;
   text-align: center;
-  font-size: 30px;
+  font-size: 1.5em;
   margin-top: 20px;
 }
-span{
+#emailError, #passwordError, #repeatPasswordError{
   display: flex;
-  width: 75%;
-  left: 35%;
+  width: 50%;
+  left: 50%;
   position: relative;
 }
 .header{
@@ -268,8 +266,45 @@ span{
   font-weight: bold;
   color: rgba(44, 62, 80, 0.8);
 }
-
 .back-arrow-container {
   cursor: pointer;
+}
+@media (max-width: 573px) {
+  .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+    font-size: 1em;
+  }
+  .user-input{
+    height: 30px;
+    font-size: 0.7em;
+  }
+  .update-user-info-btn{
+    font-size: 1em;
+  }
+  .user-img-upload-btn{
+    font-size: 0.9em;
+  }
+  #emailError, #passwordError, #repeatPasswordError{
+    font-size: 0.7em;
+  }
+}
+@media (max-width: 370px){
+  .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+    font-size: 0.9em;
+  }
+  .user-input{
+    height: 25px;
+    font-size: 0.5em;
+  }
+  .update-user-info-btn{
+    font-size: 0.9em;
+  }
+  .user-img-upload-btn{
+    font-size: 0.7em;
+  }
+}
+@media (max-width: 300px){
+  .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+    font-size: 0.6em;
+  }
 }
 </style>
