@@ -17,7 +17,7 @@
             <label class="form-label field-label">
               Fornavn:
             </label>
-            <input class="form-control w-50" type="text" id="firstname" v-model="state.firstName">
+            <input class="form-control w-50" type="text" id="firstname" v-model="state.firstname">
           </div>
           <span id="firstnameError" class="text-danger w-65" v-if="v$.firstname.$error">
               {{ v$.firstname.$errors[0].$message }}
@@ -26,7 +26,7 @@
             <label class="form-label field-label">
               Etternavn:
             </label>
-            <input class="form-control w-50" type="text" id="lastname" v-model="state.lastName">
+            <input class="form-control w-50" type="text" id="lastname" v-model="state.lastname">
           </div>
           <span id="lastnameError" class="text-danger w-65" v-if="v$.lastname.$error">
               {{ v$.lastname.$errors[0].$message }}
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-//import axios from "axios";
 import {computed, reactive} from "vue";
 import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
 import useValidate from "@vuelidate/core";
@@ -125,37 +124,23 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    register : async function(){
+    async register(){
       this.v$.$validate()
 
       if(this.v$.$error) {
         return
       }
-      await lendingService.registerUser(this.firstname, this.lastname, this.email, this.password, this.repeatPassword);
+      this.response = await lendingService
+          .registerUser(
+              this.state.firstname,
+              this.state.lastname,
+              this.state.email,
+              this.state.password,
+              this.state.repeatPassword
+          )
 
-      /*
-      const options = {
-        method: 'POST',
-        url: 'http://localhost:8080/auth/register',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer'
-        },
-        data: {
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.email,
-          password: this.password,
-          repeatPassword: this.repeatPassword,
-        }
-      }
-      axios.request(options).then(response =>
-        this.response = response.data
-      ).catch(function (error) {
-        console.log(error);
-      });
-
-       */
+      alert(this.response.data)
+      await this.$router.push("/login")
     }
   }
 }
