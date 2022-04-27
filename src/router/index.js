@@ -34,7 +34,7 @@ const routes = [
     beforeEnter: authGuard
   },
   {
-    path: "/ad",
+    path: "/ad/:id",
     name: "Ad",
     component: DetailedAd,
   },
