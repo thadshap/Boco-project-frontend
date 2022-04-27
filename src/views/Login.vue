@@ -67,10 +67,10 @@
 </template>
 
 <script>
-import axios from 'axios';
 import useValidate from "@vuelidate/core";
 import {helpers, email} from "@vuelidate/validators";
 import { computed, reactive } from "vue";
+import lendingService from "@/services/lendingService";
 
 import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next";
 import { accountService } from "@/_services/account.service";
@@ -112,27 +112,9 @@ export default {
       if (this.v$.$error){
         return
       }
-
-      const options = {
-        method: 'POST',
-        url: 'http://localhost:8080/auth/login',
-        headers: {
-        'Content-Type': 'application/json'
-      },
-      data: {email: this.state.email, password: this.password}
-      };
-
-      await axios
-          .request(options)
-          .then(response => {
-            localStorage.setItem('token',response.data);
-          })
-          .catch(error => {
-            console.error(error);
-          });
+      await lendingService.logIn(this.state.email, this.password);
 
       await this.$router.push("/")
-
     },
     handleSdkInit({ FB, scope }) {
       this.FB = FB
