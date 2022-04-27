@@ -212,7 +212,7 @@ export default {
       }
     },
     seeLenderDetails() {
-      localStorage.setItem("lenderId", this.ad.userId)
+      localStorage.setItem("lenderId", this.ad.userId) //TODO: fix this.ad.userId to actually be userId
       this.$router.push({
         name: "UserProfile",
       });

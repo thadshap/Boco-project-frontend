@@ -68,7 +68,7 @@ export default {
     },
     async getLender(){
       await lendingService
-      .getUserById(localStorage.getItem("lenderId"))
+      .getUserById(parseInt(localStorage.getItem("lenderId"))) //TODO: in DetailedAd.vue change this.user.id in seeLenderDetails method so this method works
       .then(response => {
         this.lender.firstname = response.data.firstName
         this.lender.lastname = response.data.lastName
