@@ -12,12 +12,12 @@
           <h4>{{ price }} kr</h4>
           <h5 class="opacity-75">{{ place }}</h5>
         </div>
-        <div class="d-flex flex-column justify-content-between">
-          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" href="#">
+        <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn">
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Send melding
           </a>
-          <a class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button" href="#">
+          <a class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button">
             <i class="fa fa-arrow-circle-right" style="margin-right: 5px;"></i>
             Til annonse
           </a>
@@ -49,7 +49,6 @@ export default {
     },
     image: {
       type: String,
-      required: true,
     },
   },
   methods: {
