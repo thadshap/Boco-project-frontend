@@ -189,6 +189,36 @@ export default {
   },
 
   /**
+   * Method to log in a user
+   * @param emailEntered is the email the user entered
+   * @param passwordEntered is the password the user entered
+   */
+  logInSocial(name, imgUrl, email, provider) {
+    const options = {
+      method: "POST",
+      url: "http://localhost:8080/auth/login/outside",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        name: name,
+        imgUrl: imgUrl,
+        email: email,
+        provider: provider
+      },
+    };
+    axios
+      .request(options)
+      .then(function (response) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.id);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  },
+
+  /**
    * Method to register new user
    */
   registerUser(firstName, lastName, email, password, matchingPassword) {

@@ -22,7 +22,7 @@ createApp(App)
   .use(gAuthPlugin, {
     clientId: gauthClientId,
     prompt: "consent",
-    fetch_basic_profile: false
+    fetch_basic_profile: true
   })
   .provide("GStore", GStore)
   .mount("#app");

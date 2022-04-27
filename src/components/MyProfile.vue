@@ -96,7 +96,7 @@
         })
       },
       logout() {
-        let provider = JSON.parse(localStorage.getItem("provider"))
+        let provider = localStorage.getItem("provider")
 
         if(provider === "facebook") {
           accountService.logoutFacebook()

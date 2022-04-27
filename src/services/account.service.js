@@ -1,5 +1,6 @@
 import Router from "@/router";
 import Store from "@/store";
+import lendingService from "@/services/lendingService";
 
 const accountsKey = "vue-login-accounts";
 let accounts = JSON.parse(localStorage.getItem(accountsKey)) || [];
@@ -29,6 +30,8 @@ async function apiAuthenticateFacebook(accessToken, FB) {
     { fields: "id,email,first_name,last_name" },
     (response) => {
 
+      console.log(response)
+
       account = true;
       if(accounts.length === 0) {
         account = false
@@ -45,6 +48,8 @@ async function apiAuthenticateFacebook(accessToken, FB) {
         };
         localStorage.setItem("provider", "facebook")
         localStorage.setItem(accountsKey, JSON.stringify(account));
+
+        getJWToken("facebook")
       }
     }
   );
@@ -82,6 +87,7 @@ function stopAuthenticateTimer() {
 async function loginGoogle(gauth) {
   try {
     const googleUser = await gauth.signIn();
+
     if (!googleUser) {
       return null;
     }
@@ -95,12 +101,21 @@ async function loginGoogle(gauth) {
       // create new account if first time logging in
       account = {
         id: googleUser.getBasicProfile().getId(),
+        name: googleUser.getBasicProfile().getName(),
         email: googleUser.getBasicProfile().getEmail(),
         accessToken: googleUser.getAuthResponse().access_token,
       };
       localStorage.setItem(accountsKey, JSON.stringify(account));
-      localStorage.setItem("provider", "google")
-      await Store.dispatch("setLoggedIn", true)
+      localStorage.setItem("provider", "google");
+
+      getJWToken(
+        googleUser.getBasicProfile().getName(),
+        googleUser.getBasicProfile().getImageUrl(),
+        googleUser.getBasicProfile().getEmail(),
+        "google"
+      );
+
+      await Store.dispatch("setLoggedIn", true);
 
       await Router.push("/");
     }
@@ -120,4 +135,8 @@ async function logoutGoogle(gauth) {
   } catch (error) {
     console.error(error);
   }
+}
+
+async function getJWToken(name, imgUrl, email, provider) {
+  lendingService.logInSocial(name, imgUrl, email, provider)
 }
