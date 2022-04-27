@@ -27,9 +27,7 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent
-    :my-ads="false"
-    :loaned-ads="false"/>
+    <AdListComponent v-bind:ads="this.ads"/>
   </div>
 </template>
 
@@ -38,6 +36,7 @@ import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
+import lendingService from "@/services/lendingService";
 
 export default {
   name: "MainPage",
@@ -55,6 +54,7 @@ export default {
   },
   data() {
     return {
+      ads:[],
       categories: [
         {
           "title": "Verktøy",
@@ -72,12 +72,41 @@ export default {
     };
   },
   created() {
+    this.getRandomAds()
     //TODO send disse koordinatene til backend
     /*
     this.currPos.value.lat;
     this.currPos.value.lng;
 
      */
+  },
+  methods:{
+    getRandomAds(){
+      lendingService.getPageWithRandomAds(24)
+      .then(response => {
+        for (let i = 0; i < response.data.length; i++) {
+          console.log(i)
+          //få poststed
+          let ad = {
+            id: response.data[i].adId,
+            title: response.data[i].title,
+            img: "ski.jpg",
+            place: response.data[i].postalCode.toString(),
+            price: response.data[i].price
+          }
+          this.ads.push(ad)
+        }
+      })
+      .catch(error => {
+        console.error(error)
+      })
+    },
+    getAdsWhenOnMainpage(){
+      if(this.$route.name === "/") this.getRandomAds()
+    },
+  },
+  watch:{
+    $route:"getAdsWhenOnMainpage"
   }
 };
 </script>
