@@ -115,11 +115,12 @@ export default {
       if (regex.test(changePasswordMessage)) {
         await lendingService.forgotPassword(changePasswordMessage)
           .then(response => {
-            this.GStore.flashMessage = "Sent"
+            this.GStore.flashMessage = "Sent! Sjekk den oppgitte e-posten"
             this.GStore.variant = "Success"
+            console.log("funker")
             setTimeout(() => {
               this.GStore.flashMessage = ""
-            }, 4000)
+            }, 6000)
             console.log(response)
           }).catch(error => {
             this.GStore.flashMessage = "Ops...Noe gikk galt. Har du skrevet riktig email"
@@ -157,6 +158,7 @@ export default {
             }
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("userId", response.data.id);
+            console.log(localStorage.getItem("userId"))
             localStorage.setItem("provider","none")
             this.$store.dispatch("setLoggedIn",true)
             this.$router.push("/")
