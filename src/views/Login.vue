@@ -76,7 +76,7 @@ import lendingService from "@/services/lendingService";
 
 import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
 import GoogleLogin from 'vue3-google-oauth2';
-import { accountService } from "@/_services/account.service";
+// import { accountService } from "@/_services/account.service";
 
 export default {
   inject: ["GStore"],
@@ -146,21 +146,41 @@ export default {
       if (this.v$.$error){
         return
       }
-      await lendingService.logIn(this.state.email, this.password);
+      await lendingService.logIn(this.state.email, this.password)
+          .then(response => {
+            console.log(response.status)
+            if(response.status === 404) {
+              alert("Feil brukernavn eller passord")
+              return;
+            }
+            if(response.status !== 202) {
+              //legg til nettverksfeil tilbakemelding
+              console.log("fikk ikke kontakt med backend")
+              return
+            }
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userId", response.data.id);
+            localStorage.setItem("provider","none")
+            this.$store.dispatch("setLoggedIn",true)
+            this.$router.push("/")
+          })
+          .catch(error => {
+            console.error(error)
+            alert("Nå skjedde det noe galt, prøv på nytt")
+          });
 
-      await this.$router.push("/")
     },
     handleSdkInit({ FB, scope }) {
       this.FB = FB
       this.scope = scope
     },
-    loginFacebook() {
-      if(JSON.parse(localStorage.getItem("vue-facebook-login-accounts")) !== [] && localStorage.getItem("vue-facebook-login-accounts") !== null) {
-        accountService.logout(this.FB);
-      } else {
-        accountService.login(this.FB);
-      }
-    }
+    // loginFacebook() {
+    //   if(JSON.parse(localStorage.getItem("vue-facebook-login-accounts")) !== [] && localStorage.getItem("vue-facebook-login-accounts") !== null) {
+    //     accountService.logout(this.FB);
+    //   } else {
+    //     accountService.login(this.FB);
+    //   }
+    // }
   }
 };
 </script>
