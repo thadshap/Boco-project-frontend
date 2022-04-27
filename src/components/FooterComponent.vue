@@ -58,7 +58,6 @@ export default {
 }
 
 footer {
-  position: absolute;
   background-color: #292c2f;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
   box-sizing: border-box;
@@ -67,7 +66,6 @@ footer {
   font: bold 16px sans-serif;
   padding: 55px 50px;
   margin-top: 80px;
-  bottom: 0;
   color: #fff;
 }
 

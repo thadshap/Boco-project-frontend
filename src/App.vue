@@ -11,10 +11,12 @@
       </div>
     </div>
   </main>
+  <FooterComponent />
 </template>
 
 <script>
 import HeaderComponent from "@/components/HeaderComponent";
+import FooterComponent from "@/components/FooterComponent";
 
 const $ = require("jquery");
 window.$ = $;
@@ -25,7 +27,8 @@ export default {
   inject: ["GStore"],
   name: "App",
   components: {
-    HeaderComponent
+    HeaderComponent,
+    FooterComponent
   }
 }
 </script>
