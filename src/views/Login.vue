@@ -73,7 +73,7 @@ import { computed, reactive } from "vue";
 import lendingService from "@/services/lendingService";
 
 import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next";
-import { accountService } from "@/_services/account.service";
+import { accountService } from "@/services/account.service";
 
 export default {
   name: "Login",

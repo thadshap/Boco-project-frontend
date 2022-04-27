@@ -74,7 +74,7 @@
 </template>
 
 <script>
-  import { accountService } from "@/_services/account.service";
+  import { accountService } from "@/services/account.service";
 
   export default {
     name: "MyProfile",

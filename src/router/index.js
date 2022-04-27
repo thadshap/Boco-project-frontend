@@ -9,7 +9,7 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
-import { authGuard } from "@/_helpers/auth.guard";
+import { authGuard } from "@/helpers/auth.guard";
 
 const routes = [
   {
