@@ -1,5 +1,5 @@
 <template>
-  <div class="project-card-container" v-on:click="goToDetailedView($event)" v-bind:id="id">
+  <div class="project-card-container" v-on:click="goToDetailedView">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
         <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>
@@ -56,13 +56,13 @@ export default {
     getImgUrl(img) {
       return require("../assets/img/" + img);
     },
-    goToDetailedView(e){
-      console.log(e.currentTarget);
+    goToDetailedView(){
+      console.log(this.$props.id);
       this.$router.push({
         path: "/ad/:id",
         name : "Ad",
         params : {
-          id : e.currentTarget.id
+          id : this.$props.id
         }
       })
     },
