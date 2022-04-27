@@ -16,39 +16,35 @@
             {{ v$.title.$errors[0].$message }}
           </span>
         </div>
-
-
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
         <div class="d-flex flex-column">
           <label class="form-label">
             Hoved kategori
           </label>
           <select v-model="state.category" class="form-select">
-            <option v-for="category in categories" :key="category">{{ category }}</option>
+            <option v-for="category in categories" :key="category.name" v-bind:id="category.name" v-on:click="clickedCategory($event)">{{ category.name }}</option>
           </select>
           <span class="text-danger" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
           </span>
         </div>
-
         <div class="d-flex flex-column">
           <label class="form-label">
             Under kategori
           </label>
           <select v-model="state.subCategory" class="form-select">
-            <option v-for="subCategory in subCategories" :key="subCategory">{{ subCategory }}</option>
+            <option v-for="subCategory in subCategories" :key="subCategory.name" v-bind:id="subCategory.name" v-on:click="clickedSubCategory($event)">{{ subCategory.name }}</option>
           </select>
         </div>
-
         <div class="d-flex flex-column" v-if="isSubSubCategori">
           <label class="form-label">
             ... kategori
           </label>
           <select v-model="state.subSubCategory" class="form-select">
-            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory">{{ subSubCategory }}</option>
+            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory.name" v-bind:id="subSubcategory.name" v-on:click="clickedSubSubCategory($event)">{{ subSubCategory.name }}</option>
           </select>
         </div>
-
-
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
         <div class="d-flex flex-column">
           <label class="form-label">
             Beskrivelse
@@ -143,7 +139,7 @@ import useValidate from "@vuelidate/core";
 import { helpers, required, integer, minLength, maxLength } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import axios from "axios"
-//import lendingService from "../services/lendingService";
+import lendingService from "../services/lendingService";
 
 export default {
   inject: ["GStore"],
@@ -202,24 +198,19 @@ export default {
       imgError: "",
 
       //TODO: Hente kategori data fra backend og legge inn i array listene
-      categories: [
-        "Bil",
-        "Båt",
-        "Hus"
-      ],
-      subCategories:[
-        "Bil",
-        "Båt",
-        "Hus"
-      ],
-      subSubCategories:[
-        "Bil",
-        "Båt",
-        "Hus"
-      ],
-      isSubSubCategori: false,
+      categories: [],
+      subCategories:[],
+      subSubCategories:[],
+      isSubSubCategory: false,
+      categoriesId :"",
+      subCategoriesId :"",
+      subSubCategoriesId :"",
+      idToCategory: "",
       city:""
     }
+  },
+  created: async function() {
+    // await this.getCategories()
   },
   methods: {
     chooseImages() {
@@ -234,18 +225,50 @@ export default {
         console.log(this.imgUrl)
       }
     },
-    submit() {
+    submit:async function() {
       this.v$.$validate()
       this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
         this.GStore.flashMessage = "Annonsen ble opprettet!"
+        this.GStore.variant = "Success"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").userId, this.idToCategory)
       }
-      /**
-      else{
-        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").id,)
-      }*/
     },
+    /**
+    getCategories:async function(){
+      //TODO: hente alle hoved kategoriene fra databasen og legge inn i  categories arrayen over
+    }
+     */
+    /**
+     clickedCategory:async function(id){
+      //TODO: lagre categories id og sette subCategories id lik ingenting
+      //TODO: hente alle sub kategoriene til den tilhørende hovedkategorien fra databasen og legge inn i subCategories arrayen over
+    }
+     */
+    /**
+    clickedSubCategories:async function(id){
+      //TODO: lagre subCategories id og sette subSubCategories id lik ingenting
+      //TODO: hente alle sub sub kategoriene til den tilhørende sub kategorien fra databasen hvis de finnes og legge inn i subSubCategories arrayen over
+      //TODO: hvis det eksisterer så skal booleanen bli satt til true
+      //TODO: hvis ikke så skal booleanen bli satt til false
+    }
+     */
+    /**
+    clickedSubSubCategories:async function(id){
+      //TODO: lagre id til subSubCategories
+    }
+     */
+    /**
+     getSubSubCategories(){
+      //TODO: sjekke om subSubCategories id er lik null, hvis ikke så skal den lagres i idToCategory
+      //TODO: hvis subSubCategories id er lik null så skal subCategories id sjekkes mot om det står en id der, hvis ja så skal den lagres i idToCategory
+      //TODO: hvis det har kun blitt trukket på en hoved kategori så skal id-en dens lagres i idToCategory
+    }
+     */
     validateImages() {
       if(this.imgUrl.length === 0) {
         this.imgError = "Annonsen må ha minst ett bilde!"
@@ -260,7 +283,6 @@ export default {
           this.city = response.data.adresser[0].poststed
         })
     },
-
   }
 };
 </script>
