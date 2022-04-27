@@ -9,6 +9,7 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
+import UserProfile from "@/views/UserProfile";
 import { authGuard } from "@/helpers/auth.guard";
 
 const routes = [
@@ -18,16 +19,19 @@ const routes = [
     component: MainPage,
   },
   {
+    path: "/userProfile",
+    name: "UserProfile",
+    component: UserProfile
+  },
+  {
     path: "/login",
     name: "Login",
-    component: Login,
-    // beforeEnter: authGuard
+    component: Login
   },
   {
     path: "/register",
     name: "Register",
-    component: Register,
-    // beforeEnter: authGuard
+    component: Register
   },
   {
     path: "/new_ad",
@@ -36,7 +40,7 @@ const routes = [
     beforeEnter: authGuard
   },
   {
-    path: "/ad",
+    path: "/ad/:id",
     name: "Ad",
     component: DetailedAd,
   },

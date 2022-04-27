@@ -45,6 +45,7 @@
               text-style="color: white"
               @sdk-init="handleSdkInit"
               @click="loginFacebook"
+              v-if="!this.$store.getters.isLoggedIn"
             />
 
 <!--            @click="login"-->
@@ -72,8 +73,9 @@ import {helpers, email} from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import lendingService from "@/services/lendingService";
 
-import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next";
-import { accountService } from "@/services/account.service";
+import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
+import GoogleLogin from 'vue3-google-oauth2';
+import { accountService } from "@/_services/account.service";
 
 export default {
   name: "Login",
@@ -112,7 +114,28 @@ export default {
       if (this.v$.$error){
         return
       }
-      await lendingService.logIn(this.state.email, this.password);
+      await lendingService.logIn(this.state.email, this.password)
+          .then(response => {
+            console.log(response.status)
+            if(response.status === 404) {
+              alert("Feil brukernavn eller passord")
+              return;
+            }
+            if(response.status !== 202) {
+              //legg til nettverksfeil tilbakemelding
+              console.log("fikk ikke kontakt med backend")
+              return
+            }
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userId", response.data.id);
+            localStorage.setItem("provider","none")
+            this.$store.dispatch("setLoggedIn",true)
+            this.$router.push("/")
+          })
+          .catch(error => {
+            console.error(error)
+            alert("Nå skjedde det noe galt, prøv på nytt")
+          });
 
       await this.$router.push("/")
     },
