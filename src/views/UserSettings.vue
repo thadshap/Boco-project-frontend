@@ -110,8 +110,10 @@ export default {
     return { state, v$ };
   },
   created: async function() {
+    /**
     await this.disableChangeBtn()
     await this.getUserInfo()
+     */
   },
   methods:{
     back() {
@@ -158,7 +160,7 @@ export default {
         })
     },
     disableChangeBtn(){
-      if (this.firstnameChange === '' && this.lastnameChange === '' && this.usernameChange === '' &&this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
+      if (this.firstnameChange === '' && this.lastnameChange === '' && this.usernameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
