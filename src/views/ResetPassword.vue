@@ -82,7 +82,7 @@ export default {
       // TODO:endre siste parameteren på linje 85 ang token, vet ikke om den heter token
       this.password = this.state.passwordChange
       this.repeatPassword = this.state.repeatPasswordChange
-      await lendingService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("account").token)
+      await lendingService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("account").accessToken)
         .then(response => {
           this.GStore.flashMessage = "Passoret har blitt endret!"
           this.GStore.variant = "Success"

@@ -112,7 +112,7 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    changePassword: async function(){
+    async changePassword (){
       let changePasswordMessage = prompt("Skriv inn e-post")
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       if (regex.test(changePasswordMessage)) {
@@ -133,14 +133,8 @@ export default {
             console.log(error)
           })
       }
-      }
+
     },
-  loginSubmit : async function(){
-    this.v$.$validate()
-    if (this.v$.$error){
-      return
-    }
-    await lendingService.logIn(this.email, this.password);
     async loginSubmit(){
       this.v$.$validate()
       if (this.v$.$error){

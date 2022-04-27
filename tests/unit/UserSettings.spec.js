@@ -21,7 +21,9 @@ describe("UserSettings", () => {
   });
   it("test that change button is disabled if no inputs have been changed", async () => {
     const wrapper = shallowMount(UserSettings);
+    await wrapper.find('[id="username"]').setValue("");
     await wrapper.find('[id="password"]').setValue("");
+    await wrapper.find('[id="repeatPassword"]').setValue("");
     await wrapper.find('[id="email"]').setValue("");
     await wrapper.find('[id="firstname"]').setValue("");
     await wrapper.find('[id="lastname"]').setValue("");
