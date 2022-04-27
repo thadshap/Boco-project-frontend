@@ -1,79 +1,117 @@
 <template>
   <div class="container">
-    <div id="adPictureDiv" class="text-center" v-for="picture in pictures" :key="picture">
-      <img id="adPicture" src=mapIcon alt="Bilde av gjenstanden som blir utlånt">
+    <div
+      id="adPictureDiv"
+      class="text-center"
+      v-for="picture in ad.pictures"
+      :key="picture"
+    >
+      <img>
     </div>
     <div class="text-center">
-      <label id="adHeader" class="form-label">{{ headerText }}</label>
+      <label id="adHeader" class="form-label">{{ ad.headerText }}</label>
     </div>
     <div class="text-center">
-      <label class="form-label">Leiepris : {{rentalPrice}} kr pr/{{unitPeriod}}</label>
+      <label class="form-label">
+        Leiepris : {{ ad.rentalPrice }} kr pr/{{ ad.unitPeriod }}
+      </label>
     </div>
     <div id="description" class="text-center">
       <label id="descriptionLabel" class="form-label">
-        {{ description }}
+        {{ ad.description }}
       </label>
     </div>
     <div class="text-center">
-      <button id="startChatButton" class="btn btn-primary" type="button" v-on:click="startChat">
+      <button
+        id="startChatButton"
+        class="btn btn-primary"
+        type="button"
+        v-on:click="startChat"
+      >
         Send melding
       </button>
-      <button id="makeRequest" class="btn btn-primary" type="button" v-on:click="makeRequest">
+      <button
+        id="makeRequest"
+        class="btn btn-primary"
+        type="button"
+        v-on:click="makeRequest"
+      >
         Forespør lån
       </button><br>
       <div id="time" class="text-center" v-if="showRequestDetails">
-      Tidsperiode:
+        Tidsperiode:
         <Datepicker v-model="date" range />
-      <button id="sendRequest" class="btn btn-primary" type="button" v-on:click="sendRequest" :disabled="!date">
-        Send forespørselen
-      </button>
+        <button
+          id="sendRequest"
+          class="btn btn-primary"
+          type="button"
+          v-on:click="sendRequest"
+          :disabled="!date"
+        >
+          Send forespørselen
+        </button>
       </div>
     </div>
     <div class="text-center">
       <div id="lenderHeader">
-        <label class="form-label">
-          Utlåner:
-        </label>
+        <label class="form-label"> Utlåner: </label>
       </div>
       <div id="lenderDetails">
-        <label id="lenderName" class="form-label">
-          {{ lender.name}}<br>
+        <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
+          {{ lender.name }}<br />
         </label>
-        <i class="fas fa-check-circle" v-if="lender.trustedUser" style="color: var(--bs-blue);padding: 0.5vw;"></i>
+        <i
+          class="fas fa-check-circle"
+          v-if="lender.trustedUser"
+          style="color: var(--bs-blue); padding: 0.5vw"
+        ></i>
       </div>
       <div id="lenderNumber">
-        <label id="lenderNumberLabel" class="form-label">
-          tlf : {{ lender.number}}<br>
+        <label
+          id="lenderNumberLabel"
+          class="form-label"
+          v-on:click="seeLenderDetails"
+        >
+          tlf : {{ lender.number }}<br />
         </label>
       </div>
       <div class="text-center">
-        <label >
-          Vis tidligere anmeldelser for gjenstanden
-        </label>
-        <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown">keyboard_arrow_left</i><i class="material-icons" v-on:click="dropDown" v-if="!showRightArrow">keyboard_arrow_down</i>
+        <label> Vis tidligere anmeldelser for gjenstanden </label>
+        <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown"
+          >keyboard_arrow_left</i
+        ><i class="material-icons" v-on:click="dropDown" v-if="!showRightArrow"
+          >keyboard_arrow_down</i
+        >
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-        {{review.name}}<br>
-        {{review.rating}}
-        {{review.message}}
+          {{ review.name }}<br />
+          {{ review.rating }}
+          {{ review.message }}
         </div>
       </div>
     </div>
     <div id="distance" class="text-center">
       <label class="form-label">
-        Avstand : {{ distance}} km fra din posisjon&nbsp;
+        Avstand : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
     </div>
-    <div id ="address" class="text-center">
-      <label class="form-label">
-        Adresse : {{ address }}&nbsp;
-      </label>
+    <div id="address" class="text-center">
+      <label class="form-label"> Adresse : {{ ad.address }}&nbsp; </label>
     </div>
-    <div class="text-center" style="padding: 0px;">
-      <ol-map :loadTilesWhileAnimating="true" :loadTilesWhileInteracting="true" style="height:40vh;padding-bottom: 7vh;">
-
-        <ol-view ref="view" :center="[latitudeForItem, longitudeForItem]" :rotation="rotation" :zoom="zoom" :projection="projection" />
+    <div class="text-center" style="padding: 0px">
+      <ol-map
+        :loadTilesWhileAnimating="true"
+        :loadTilesWhileInteracting="true"
+        style="height: 40vh; padding-bottom: 7vh"
+      >
+        <ol-view
+          ref="view"
+          :center="[ad.latitudeForItem, ad.longitudeForItem]"
+          :rotation="rotation"
+          :zoom="zoom"
+          :projection="projection"
+        />
 
         <ol-tile-layer>
           <ol-source-osm />
@@ -82,24 +120,25 @@
         <ol-vector-layer>
           <ol-source-vector>
             <ol-feature>
-              <ol-geom-point :coordinates="[latitudeForItem, longitudeForItem]"></ol-geom-point>
+              <ol-geom-point
+                :coordinates="[ad.latitudeForItem, ad.longitudeForItem]"
+              ></ol-geom-point>
               <ol-style>
-                  <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
+                <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
                 <ol-style-icon :src="mapIcon" :scale="0.1"></ol-style-icon>
               </ol-style>
             </ol-feature>
           </ol-source-vector>
         </ol-vector-layer>
-
       </ol-map>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
-import mapIcon from '@/assets/img/mapIcon.png'
-import Datepicker from '@vuepic/vue-datepicker'
+import { ref } from "vue";
+import mapIcon from "@/assets/img/mapIcon.png";
+import Datepicker from "@vuepic/vue-datepicker";
 
 
 export default {
@@ -107,63 +146,77 @@ export default {
   name: "DetailedAd",
   data() {
     return {
-      date : null,
-      reviews : [{ name : 'per persen', rating : '5/10', message : 'Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt'}],
-      showRightArrow : true,
-      requestStartDate : '',
-      requestEndDate : '',
-      showRequestDetails : false,
-      headerText : 'Stekeovn',
-      rentalPrice : 10,
-      unitPeriod : 'dag',
-      description : 'veldig flott å bruke',
-      lender : {
-        name : 'Arne Bjarne',
-        number: 333333333,
-        trustedUser : true,
+      date: null,
+      showRightArrow: true,
+      requestStartDate: "",
+      requestEndDate: "",
+      showRequestDetails: false,
+      reviews: [
+        {
+          name: "per persen",
+          rating: "5/10",
+          message:
+            "Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt",
+        },
+      ],
+      ad: {
+        distance: null,
+        address: "Nordre hallsetveg",
+        pictures: [],
+        latitudeForItem: 10,
+        longitudeForItem: 64,
+        headerText: "Stekeovn",
+        rentalPrice: 10,
+        unitPeriod: "dag",
+        description: "veldig flott å bruke",
       },
-      distance : null,
-      address : 'Nordre hallsetveg',
-      pictures : [],
-      latitudeForItem: 10,
-      longitudeForItem:64
+      lender: {
+        name: "Arne Bjarne",
+        number: 333333333,
+        trustedUser: true,
+      },
     };
   },
-  setup(){
-    const projection = ref('EPSG:4326')
-    const zoom = ref(8)
-    const rotation = ref(0)
-    const strokeWidth = ref(10)
+  setup() {
+    const projection = ref("EPSG:4326");
+    const zoom = ref(8);
+    const rotation = ref(0);
+    const strokeWidth = ref(10);
     return {
       projection,
       zoom,
       rotation,
       strokeWidth,
-      mapIcon
-    }
+      mapIcon,
+    };
   },
-  methods : {
-    startChat (){
-
-    },
-    makeRequest (){
-      if(this.showRequestDetails){
+  methods: {
+    startChat() {},
+    makeRequest() {
+      if (this.showRequestDetails) {
         this.showRequestDetails = false;
       } else {
         this.showRequestDetails = true;
       }
     },
-    sendRequest (){
-
+    sendRequest : async function() {
+      const startDate = this.date[0].toISOString().substring(0,10);
+      const endDate = this.date[1].toISOString().substring(0,10);
+      console.log(startDate + " " + endDate);
     },
-    dropDown (){
-      if(this.showRightArrow){
+    dropDown() {
+      if (this.showRightArrow) {
         this.showRightArrow = false;
       } else {
         this.showRightArrow = true;
       }
-    }
-  }
+    },
+    seeLenderDetails() {
+      this.$router.push({
+        name: "UserProfile",
+      });
+    },
+  },
 };
 </script>
 
@@ -172,6 +225,7 @@ export default {
   height: 400px;
   width: 100%;
 }
+<<<<<<< src/views/DetailedAd.vue
   #adPictureDiv{
     padding: 10vw 10vw 0 10vw;
   }
