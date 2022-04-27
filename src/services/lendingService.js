@@ -114,7 +114,6 @@ export default {
         Authorization: "Bearer",
       },
     };
-
     return axios.request(options);
   },
   /**
