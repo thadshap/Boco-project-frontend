@@ -16,9 +16,11 @@
             {{ v$.title.$errors[0].$message }}
           </span>
         </div>
+
+
         <div class="d-flex flex-column">
           <label class="form-label">
-            Kategori
+            Hoved kategori
           </label>
           <select v-model="state.category" class="form-select">
             <option v-for="category in categories" :key="category">{{ category }}</option>
@@ -27,6 +29,26 @@
             {{v$.category.$errors[0].$message }}
           </span>
         </div>
+
+        <div class="d-flex flex-column">
+          <label class="form-label">
+            Under kategori
+          </label>
+          <select v-model="state.subCategory" class="form-select">
+            <option v-for="subCategory in subCategories" :key="subCategory">{{ subCategory }}</option>
+          </select>
+        </div>
+
+        <div class="d-flex flex-column" v-if="isSubSubCategori">
+          <label class="form-label">
+            ... kategori
+          </label>
+          <select v-model="state.subSubCategory" class="form-select">
+            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory">{{ subSubCategory }}</option>
+          </select>
+        </div>
+
+
         <div class="d-flex flex-column">
           <label class="form-label">
             Beskrivelse
@@ -121,6 +143,7 @@ import useValidate from "@vuelidate/core";
 import { helpers, required, integer, minLength, maxLength } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import axios from "axios"
+//import lendingService from "../services/lendingService";
 
 export default {
   inject: ["GStore"],
@@ -178,12 +201,23 @@ export default {
       imgUrl: [],
       imgError: "",
 
-      //TODO: Add more categories
+      //TODO: Hente kategori data fra backend og legge inn i array listene
       categories: [
         "Bil",
         "Båt",
         "Hus"
       ],
+      subCategories:[
+        "Bil",
+        "Båt",
+        "Hus"
+      ],
+      subSubCategories:[
+        "Bil",
+        "Båt",
+        "Hus"
+      ],
+      isSubSubCategori: false,
       city:""
     }
   },
@@ -204,11 +238,13 @@ export default {
       this.v$.$validate()
       this.validateImages()
 
-      //TODO: axios call
-
       if(!this.v$.$error && this.imgError === "") {
         this.GStore.flashMessage = "Annonsen ble opprettet!"
       }
+      /**
+      else{
+        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").id,)
+      }*/
     },
     validateImages() {
       if(this.imgUrl.length === 0) {

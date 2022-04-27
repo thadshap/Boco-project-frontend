@@ -41,6 +41,7 @@ import { minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
 import lendingService from "../services/lendingService";
+import MainPage from "./MainPage";
 
 export default {
   inject: ["GStore"],
@@ -79,10 +80,10 @@ export default {
       this.$router.go(-1)
     },
     changePassword: async function(){
-      // TODO:endre siste parameteren på linje 85 ang token, vet ikke om den heter token
+      console.log(this.$router.currentRoute)
       this.password = this.state.passwordChange
       this.repeatPassword = this.state.repeatPasswordChange
-      await lendingService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("account").accessToken)
+      await lendingService.renewPassword(this.password,this.repeatPassword,new URL(location.href).searchParams.get('page'))
         .then(response => {
           this.GStore.flashMessage = "Passoret har blitt endret!"
           this.GStore.variant = "Success"
@@ -114,7 +115,10 @@ export default {
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
         this.disableBtn = true
-        // TODO: gå til log inn siden
+        this.$router.push({
+          name: "MainPage",
+          component: MainPage,
+        });
       }
     }
   },

@@ -120,7 +120,7 @@ export default {
       this.$router.go(-1)
     },
     getUserInfo:async function(){
-      await lendingService.getUserById(localStorage.getItem("account").id)
+      await lendingService.getUserById(localStorage.getItem("account").Id)
         .then(response => {
           this.firstname = response.data.firstname
           this.lastname = response.data.lastname
@@ -142,7 +142,7 @@ export default {
       this.username = this.usernameChange
       this.email = this.state.emailChange
       this.password = this.state.passwordChange
-      await lendingService.updateUser(this.firstname,this.lastname,this.email,this.password,localStorage.getItem("account").id)
+      await lendingService.updateUser(this.firstname,this.lastname,this.email,this.password,localStorage.getItem("account").Id)
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"

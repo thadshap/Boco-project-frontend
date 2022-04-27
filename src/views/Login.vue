@@ -133,7 +133,13 @@ export default {
             console.log(error)
           })
       }
-
+      else {
+        this.GStore.flashMessage = "Prøv igjen, e-posten har feil formatering"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      }
     },
     async loginSubmit(){
       this.v$.$validate()
