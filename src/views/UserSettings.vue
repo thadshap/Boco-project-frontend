@@ -15,41 +15,54 @@
             <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
         </div>
-        <div class="w-100 user-info-container">
+        <div class="w-100">
           <div class="header">Om meg</div>
+          <div class="w-100 overview-container">
+          <div class="mt-auto w-50 overview">
+            <div class="d-inline-flex w-100 firstname-container">
+              <p class="form-label overview-header">Fornavn</p>
+              <p class="form-label">{{state.firstname}}</p>
+            </div>
+            <div class="d-inline-flex w-100 lastname-container">
+              <p class="form-label overview-header">Etternavn</p>
+              <p class="form-label">{{state.lastname}}</p>
+            </div>
+            <div class="d-inline-flex w-100 email-container">
+              <p class="form-label overview-header">E-post</p>
+              <p class="form-label">{{state.email}}</p>
+            </div>
+          </div>
+          </div>
+          <div class="header">Personopplysning</div>
           <div class="mt-auto w-100 personal-info">
             <div class="d-inline-flex w-100 firstname-container">
               <label class="form-label firstname-label">Fornavn</label>
-              <input class="user-input" type="text" id="firstname" :placeholder="firstname" v-model="firstnameChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="text" id="firstname" v-model="state.firstnameChange" v-on:change="disableChangeBtn">
             </div>
             <div class="d-inline-flex w-100 lastname-container">
               <label class="form-label lastname-label">Etternavn</label>
-              <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="text" id="lastname" v-model="state.lastnameChange" v-on:change="disableChangeBtn">
             </div>
           </div>
           <div class="header">Brukeropplysning</div>
           <div class="me-auto w-100 user-info">
-            <div class="d-inline-flex w-100 username-container">
-              <label class="form-label username-label">Brukernavn</label>
-              <input class="user-input" type="text" id="username" name="username" :placeholder="username" v-model="usernameChange" v-on:change="disableChangeBtn">
-            </div>
             <div class="d-inline-flex w-100 email-container">
               <label class="form-label email-label">Epost</label>
-              <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="email" id="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
               <span id="emailError" class="text-danger w-65" v-if="v$.emailChange.$error">
                 {{ v$.emailChange.$errors[0].$message }}
               </span>
             </div>
             <div class="d-inline-flex w-100 password-container">
               <label class="form-label password-label">Passord</label>
-              <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="password" id="password" v-model="state.passwordChange" v-on:change="disableChangeBtn">
               <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
                 {{ v$.passwordChange.$errors[0].$message }}
               </span>
             </div>
             <div class="d-inline-flex w-100 password-container">
               <label class="form-label password-label">Bekreft passord*</label>
-              <input class="user-input" type="password" id="repeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="password" id="repeatPassword" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
               <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
                 {{ v$.repeatPasswordChange.$errors[0].$message }}
               </span>
@@ -76,20 +89,18 @@ export default {
   name: "UserSettings",
   data(){
     return{
-      firstname: "",
-      lastname: "",
-      username: "",
-      email: "",
-      password: "",
       disableBtn: true,
-      firstnameChange: "",
-      lastnameChange: "",
-      usernameChange: "",
       url: null,
     };
   },
   setup(){
     const state = reactive({
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      firstnameChange: "",
+      lastnameChange: "",
       emailChange:"",
       passwordChange:"",
       repeatPasswordChange: ""
@@ -119,13 +130,12 @@ export default {
       this.$router.go(-1)
     },
     getUserInfo:async function(){
-      await lendingService.getUserById(localStorage.getItem("account").userId)
+      await lendingService.getUserById(parseInt(localStorage.getItem("userId")))
         .then(response => {
-          this.firstname = response.data.firstname
-          this.lastname = response.data.lastname
-          this.username = response.data.username
-          this.email = response.data.email
-          this.password = response.data.password
+          console.log(response.data)
+          this.state.firstname = response.data.firstName
+          this.state.lastname = response.data.lastName
+          this.state.email = response.data.email
         }).catch(error => {
           this.GStore.flashMessage = "Fikk ikke hentet brukeren!"
           this.GStore.variant = "Error"
@@ -136,12 +146,7 @@ export default {
         })
     },
     changeUserInfo:async function(){
-      this.firstname = this.firstnameChange
-      this.lastname = this.lastnameChange
-      this.username = this.usernameChange
-      this.email = this.state.emailChange
-      this.password = this.state.passwordChange
-      await lendingService.updateUser(this.firstname,this.lastname,this.email,this.password,localStorage.getItem("account").userId)
+      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.emailChange,this.state.passwordChange,localStorage.getItem("userId"))
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
@@ -159,7 +164,7 @@ export default {
         })
     },
     disableChangeBtn(){
-      if (this.firstnameChange === '' && this.lastnameChange === '' && this.usernameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
+      if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
@@ -180,9 +185,8 @@ export default {
       }
       else {
         await this.changeUserInfo()
-        this.firstnameChange = ""
-        this.lastnameChange = ""
-        this.usernameChange = ""
+        this.state.firstnameChange = ""
+        this.state.lastnameChange = ""
         this.state.emailChange = ""
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
@@ -192,7 +196,7 @@ export default {
     deleteUser:async function(){
       let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
       if (deleteAccount == "JA") {
-        await lendingService.deleteUser(localStorage.getItem("account").userId)
+        await lendingService.deleteUser(localStorage.getItem("userId"))
           .then(response => {
             console.log(response)
             this.$router.push({
@@ -234,16 +238,18 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.user-info-container{
-  text-align: center;
-  padding-top: 1em;
-}
 .personal-info{
   background: rgba(255,253,253,0.74);
   border-radius: 4px;
   text-align: center;
   padding: 4%;
   margin-bottom: 20px;
+}
+.overview{
+  background: rgba(110, 179, 211, 0.2);
+  border-radius: 4px;
+  text-align: center;
+  padding: 4%;
 }
 .firstname-label{
   border-width: 8px;
@@ -256,7 +262,7 @@ export default {
   padding: 4%;
 
 }
-.password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+.password-label, .email-label, .lastname-label, .firstname-label{
   font-size: 1.2em;
 }
 .user-input{
@@ -267,7 +273,7 @@ export default {
   width: 50%;
   font-size: 1em;
 }
-.firstname-container,.lastname-container,.email-container,.password-container, .username-container{
+.firstname-container,.lastname-container,.email-container,.password-container{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -307,8 +313,14 @@ export default {
 .back-arrow-container {
   cursor: pointer;
 }
+.overview-container{
+  display: flex;
+  justify-content: center;
+  background-color: rgba(255,253,253,0.74);
+  padding: 4%;
+}
 @media (max-width: 573px) {
-  .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+  .password-label, .email-label, .lastname-label, .firstname-label{
     font-size: 1em;
   }
   .user-input{
@@ -326,7 +338,7 @@ export default {
   }
 }
 @media (max-width: 370px){
-  .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+  .password-label, .email-label, .lastname-label, .firstname-label{
     font-size: 0.9em;
   }
   .user-input{
@@ -341,7 +353,7 @@ export default {
   }
 }
 @media (max-width: 300px){
-  .password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+  .password-label, .email-label, .lastname-label, .firstname-label{
     font-size: 0.6em;
   }
 }
