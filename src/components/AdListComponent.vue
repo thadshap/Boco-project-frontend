@@ -22,7 +22,6 @@
 
 <script>
 import AdComponent from "@/components/AdComponent";
-import axios from "axios"
 
 export default {
   name: "AdListComponent",
