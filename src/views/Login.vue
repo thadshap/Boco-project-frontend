@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="d-flex flex-column justify-content-center align-items-center">
-    <div class="d-flex flex-column justify-content-center align-items-center">
+    <div class="d-flex flex-column justify-content-center align-items-center" v-if="!this.$store.getters.loggedIn">
       <div class="text-center form-elements-container-style">
         <img src="@/assets/img/BoCo.png" class="logo-style" alt="logo">
         <h1 class="text-center">Logg inn</h1>
@@ -45,7 +45,6 @@
               text-style="color: white"
               @sdk-init="handleSdkInit"
               @click="loginFacebook"
-              v-if="!this.$store.getters.isLoggedIn"
             />
 
 <!--            @click="login"-->
@@ -140,18 +139,10 @@ export default {
       this.scope = scope
     },
     loginFacebook() {
-      if(JSON.parse(localStorage.getItem("vue-login-accounts")) !== [] && localStorage.getItem("vue-login-accounts") !== null) {
-        accountService.logoutFacebook(this.FB);
-      } else {
-        accountService.loginFacebook(this.FB);
-      }
+      accountService.loginFacebook(this.FB);
     },
     loginGoogle(){
-      if(JSON.parse(localStorage.getItem("vue-login-accounts")) !== [] && localStorage.getItem("vue-login-accounts") !== null) {
-        accountService.logoutGoogle(this.$gAuth);
-      } else {
-        accountService.loginGoogle(this.$gAuth);
-      }
+      accountService.loginGoogle(this.$gAuth);
     },
   }
 };

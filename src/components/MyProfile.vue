@@ -96,13 +96,19 @@
         })
       },
       logout() {
-        let provider = JSON.parse(localStorage.getItem("vue-login-accounts")).provider
+        let provider = JSON.parse(localStorage.getItem("provider"))
 
         if(provider === "facebook") {
           accountService.logoutFacebook()
         } else if(provider === "google") {
           accountService.logoutGoogle(this.$gAuth)
+        } else if(provider === "nonde") {
+          this.$store.dispatch("setLoggedIn", false)
+          this.$router.push("/")
+          localStorage.clear()
         }
+
+
       }
     }
   }

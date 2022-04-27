@@ -58,8 +58,12 @@ import $ from "jquery";
         $("#navbarToggler").toggle("collapse")
       },
       checkLoggedIn() {
-        if(localStorage.getItem('vue-login-accounts')) {
+        if(localStorage.getItem('vue-login-accounts') || this.$store.getters.loggedIn) {
           this.loggedIn = true
+          console.log("Logged in")
+        } else {
+          this.loggedIn = false
+          console.log("Not logged in")
         }
       }
     },

@@ -20,12 +20,14 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: Login
+    component: Login,
+    // beforeEnter: authGuard
   },
   {
     path: "/register",
     name: "Register",
-    component: Register
+    component: Register,
+    // beforeEnter: authGuard
   },
   {
     path: "/new_ad",
