@@ -138,9 +138,21 @@ export default {
               this.state.password,
               this.state.repeatPassword
           )
+          .then(response => {
+            console.log(response.data)
+            console.log(response.status)
+            if(response.status!==201){
+              //legg til nettverksfeil tilbakemelding
+              alert("fikk ikke kontakt med backend")
+              return
+            }
+            alert(response.data)
+            this.$router.push("/login")
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
 
-      alert(this.response.data)
-      await this.$router.push("/login")
     }
   }
 }
