@@ -212,6 +212,7 @@ export default {
       }
     },
     seeLenderDetails() {
+      localStorage.setItem("lenderId", this.ad.userId)
       this.$router.push({
         name: "UserProfile",
       });
