@@ -1,5 +1,5 @@
 <template>
-  <div class="project-card-container">
+  <div class="project-card-container" v-on:click="adSelected($event)" v-bind:id="id">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
         <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>
@@ -31,6 +31,10 @@
 export default {
   name: "AdComponent",
   props: {
+    id: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -51,6 +55,12 @@ export default {
   methods: {
     getImgUrl(img) {
       return require("../assets/img/" + img);
+    },
+    adSelected: function (e) {
+      this.$router.push({
+        name: "Ad",
+        params: {id :e.currentTarget.id}
+      });
     }
   }
 };
