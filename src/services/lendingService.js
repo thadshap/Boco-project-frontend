@@ -177,22 +177,13 @@ export default {
       },
       data: { email: emailEntered, password: passwordEntered },
     };
-    axios
-      .request(options)
-      .then(function (response) {
-        localStorage.setItem("token", response.data.token);
-          localStorage.setItem("userId", response.data.id);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(options)
   },
 
   /**
    * Method to register new user
    */
   registerUser(firstName, lastName, email, password, matchingPassword) {
-    let res;
     const options = {
       method: "POST",
       url: "http://localhost:8080/auth/register",
@@ -208,15 +199,7 @@ export default {
         matchingPassword: matchingPassword,
       },
     };
-    axios
-      .request(options)
-      .then(function (response) {
-        res = response;
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    return res
+    return axios.request(options)
   },
     /**
      * method to send email to user where they can change password

@@ -33,35 +33,35 @@ export default {
     return{
         ads: [
           {
-            id: 1,
+            id:1,
             title: "Ski",
             img: "ski.jpg",
             place: "Trondheim",
             price: 200
           },
           {
-            id:2,
+            id: 2,
             title: "Space",
             img: "space.jpg",
             place: "Tromsø",
             price: 100
           },
           {
-            id:3,
+            id: 3,
             title: "Spaceman",
             img: "spaceman.jpg",
             place: "Kristiansand",
             price: 300
           },
           {
-            id:4,
+            id: 4,
             title: "Ski",
             img: "ski.jpg",
             place: "Molde",
             price: 400
           },
           {
-            id:5,
+            id: 5,
             title: "Ski",
             img: "ski.jpg",
             place: "Oslo",
