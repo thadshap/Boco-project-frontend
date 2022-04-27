@@ -2,7 +2,6 @@
 import Router from "@/router";
 import Store from "@/store";
 
-// const accountSubject = new BehaviorSubject(null);
 const accountsKey = "vue-login-accounts";
 let accounts = JSON.parse(localStorage.getItem(accountsKey)) || [];
 
@@ -10,8 +9,7 @@ export const accountService = {
   loginFacebook,
   logoutFacebook,
   loginGoogle,
-  logoutGoogle,
-  // account: accountSubject.asObservable(),
+  logoutGoogle
 };
 
 async function loginFacebook(FB) {
@@ -31,7 +29,6 @@ async function apiAuthenticateFacebook(accessToken, FB) {
     "GET",
     { fields: "id,email,first_name,last_name" },
     (response) => {
-      // if (response.error) return accounts;
 
       account = true;
       if(accounts.length === 0) {
@@ -53,7 +50,6 @@ async function apiAuthenticateFacebook(accessToken, FB) {
     }
   );
   await Store.dispatch("setLoggedIn", true)
-  console.log(Store.getters.loggedIn)
   // startAuthenticateTimer(FB);
 }
 
