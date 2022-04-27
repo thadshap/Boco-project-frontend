@@ -3,17 +3,17 @@
     <div
       id="adPictureDiv"
       class="text-center"
-      v-for="picture in ad.pictures"
+      v-for="picture in ad.picturesOut"
       :key="picture"
     >
-      <img>
+      <img src={{picture}}>
     </div>
     <div class="text-center">
-      <label id="adHeader" class="form-label">{{ ad.headerText }}</label>
+      <label id="adHeader" class="form-label">{{ ad.title }}</label>
     </div>
     <div class="text-center">
       <label class="form-label">
-        Leiepris : {{ ad.rentalPrice }} kr pr/{{ ad.unitPeriod }}
+        Leiepris : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
     </div>
     <div id="description" class="text-center">
@@ -58,22 +58,13 @@
       </div>
       <div id="lenderDetails">
         <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
-          {{ lender.name }}<br />
+          {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
         <i
           class="fas fa-check-circle"
-          v-if="lender.trustedUser"
+          v-if="lender.verified"
           style="color: var(--bs-blue); padding: 0.5vw"
         ></i>
-      </div>
-      <div id="lenderNumber">
-        <label
-          id="lenderNumberLabel"
-          class="form-label"
-          v-on:click="seeLenderDetails"
-        >
-          tlf : {{ lender.number }}<br />
-        </label>
       </div>
       <div class="text-center">
         <label> Vis tidligere anmeldelser for gjenstanden </label>
@@ -85,9 +76,8 @@
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{ review.name }}<br />
           {{ review.rating }}
-          {{ review.message }}
+          {{ review.description}}
         </div>
       </div>
     </div>
@@ -97,7 +87,7 @@
       </label>
     </div>
     <div id="address" class="text-center">
-      <label class="form-label"> Adresse : {{ ad.address }}&nbsp; </label>
+      <label class="form-label"> Adresse : {{ ad.streetAddress }}&nbsp; </label>
     </div>
     <div class="text-center" style="padding: 0px">
       <ol-map
@@ -139,9 +129,10 @@
 import { ref } from "vue";
 import mapIcon from "@/assets/img/mapIcon.png";
 import Datepicker from "@vuepic/vue-datepicker";
-
+import lendingService from "@/services/lendingService";
 
 export default {
+  inject : ["GStore"],
   components: { Datepicker },
   name: "DetailedAd",
   data() {
@@ -151,31 +142,17 @@ export default {
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
-      reviews: [
-        {
-          name: "per persen",
-          rating: "5/10",
-          message:
-            "Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt",
-        },
-      ],
+      reviews: [],
       ad: {
-        distance: null,
-        address: "Nordre hallsetveg",
-        pictures: [],
-        latitudeForItem: 10,
-        longitudeForItem: 64,
-        headerText: "Stekeovn",
-        rentalPrice: 10,
-        unitPeriod: "dag",
-        description: "veldig flott å bruke",
+
       },
       lender: {
-        name: "Arne Bjarne",
-        number: 333333333,
-        trustedUser: true,
       },
     };
+  },
+  async created() {
+    this.ad = localStorage.getItem("currentAd");
+    await this.setLender();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -191,6 +168,30 @@ export default {
     };
   },
   methods: {
+    async getReviews(){
+      await lendingService.getAllReviewsForAd(this.ad.id).then(response => {
+        this.reviews = response.data;
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
+    async setLender(){
+      await lendingService.getUserById(this.ad.userId).then(response => {
+        this.lender = response.data
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
     startChat() {},
     makeRequest() {
       if (this.showRequestDetails) {
@@ -200,9 +201,17 @@ export default {
       }
     },
     sendRequest : async function() {
-      const startDate = this.date[0].toISOString().substring(0,10);
-      const endDate = this.date[1].toISOString().substring(0,10);
-      console.log(startDate + " " + endDate);
+      await lendingService.createRental(
+          new Date().toLocaleDateString(),
+          this.date[0].toISOString().substring(0,10),
+          this.date[1].toISOString().substring(0,10),
+          this.date[0].toISOString().substring(0,10),
+          //TODO fix this correct
+          ((this.date[0].getDate - this.date[0].getDate) * this.ad.price),
+          this.lender.id,
+          this.ad.userId,
+          this.ad.id
+      )
     },
     dropDown() {
       if (this.showRightArrow) {
@@ -225,7 +234,6 @@ export default {
   height: 400px;
   width: 100%;
 }
-<<<<<<< src/views/DetailedAd.vue
   #adPictureDiv{
     padding: 10vw 10vw 0 10vw;
   }

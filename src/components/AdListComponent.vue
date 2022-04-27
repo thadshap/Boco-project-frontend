@@ -5,6 +5,7 @@
         <div class="d-flex flex-row flex-wrap">
 
           <AdComponent
+            v-on:click="adClicked($event)"
             v-for="ad in ads"
             :key="ad"
             :id="ad.id"
@@ -34,6 +35,12 @@ export default {
       type: Array,
     }
   },
+  methods: {
+    adClicked(e){
+      localStorage.setItem("currentAd", e.currentTarget);
+      console.log(e.currentTarget);
+    },
+  }
 
 }
 </script>
