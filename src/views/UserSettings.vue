@@ -68,6 +68,7 @@ import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
 import lendingService from "../services/lendingService";
+import MainPage from "./MainPage";
 
 
 export default {
@@ -110,17 +111,15 @@ export default {
     return { state, v$ };
   },
   created: async function() {
-    /**
     await this.disableChangeBtn()
     await this.getUserInfo()
-     */
   },
   methods:{
     back() {
       this.$router.go(-1)
     },
     getUserInfo:async function(){
-      await lendingService.getUserById(localStorage.getItem("account").Id)
+      await lendingService.getUserById(localStorage.getItem("account").userId)
         .then(response => {
           this.firstname = response.data.firstname
           this.lastname = response.data.lastname
@@ -142,7 +141,7 @@ export default {
       this.username = this.usernameChange
       this.email = this.state.emailChange
       this.password = this.state.passwordChange
-      await lendingService.updateUser(this.firstname,this.lastname,this.email,this.password,localStorage.getItem("account").Id)
+      await lendingService.updateUser(this.firstname,this.lastname,this.email,this.password,localStorage.getItem("account").userId)
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
@@ -174,13 +173,13 @@ export default {
     existingUserImg(){
       // TODO: sette inn eksisterende profilbilde fra databasen hvis den eksisterer
     },
-    submit(){
+    submit: async function(){
       this.v$.$validate()
       if (this.v$.$error){
         this.disableBtn = true
       }
       else {
-        this.changeUserInfo()
+        await this.changeUserInfo()
         this.firstnameChange = ""
         this.lastnameChange = ""
         this.usernameChange = ""
@@ -193,23 +192,21 @@ export default {
     deleteUser:async function(){
       let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
       if (deleteAccount == "JA") {
-        await lendingService.deleteUser(localStorage.getItem("account").id)
+        await lendingService.deleteUser(localStorage.getItem("account").userId)
           .then(response => {
-            this.GStore.flashMessage = "Kontoen har blitt sletta"
-            this.GStore.variant = "Success"
-            setTimeout(() => {
-              this.GStore.flashMessage = ""
-            }, 4000)
             console.log(response)
+            this.$router.push({
+              name: "MainPage",
+              component: MainPage,
+            });
           }).catch(error => {
-            this.GStore.flashMessage = "Fikk slettet brukeren!"
+            this.GStore.flashMessage = "Ops... Noe gikk galt!"
             this.GStore.variant = "Error"
             setTimeout(() => {
               this.GStore.flashMessage = ""
             }, 4000)
             console.log(error)
           })
-        //TODO: når brukeren blir slettet så sendes brukeren til hjemmesiden og er ikke pålogget
       } else return
     }
   },
