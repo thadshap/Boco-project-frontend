@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import lendingService from "@/services/lendingService";
 export default {
   name: "UserProfile",
   data(){
@@ -64,7 +65,24 @@ export default {
       } else {
         this.showRightArrow = true;
       }
+    },
+    async getLender(){
+      await lendingService
+      .getUserById(parseInt(localStorage.getItem("lenderId"))) //TODO: in DetailedAd.vue change this.user.id in seeLenderDetails method so this method works
+      .then(response => {
+        this.lender.firstname = response.data.firstName
+        this.lender.lastname = response.data.lastName
+        this.lender.trusted = response.data.verified
+        this.lender.email = response.data.email
+        this.lender.rating = response.data.rating
+      })      
+      .catch(function (error) {
+        console.log(error);
+      });
     }
+  },
+  async mounted(){
+    await this.getLender()
   }
 }
 </script>

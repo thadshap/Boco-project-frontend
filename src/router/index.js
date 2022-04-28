@@ -9,8 +9,10 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
-import UserProfile from "@/views/UserProfile";
+import ResetPassword from "../views/ResetPassword";
 import { authGuard } from "@/helpers/auth.guard";
+import MyRentals from "@/views/MyRentals";
+import UserProfile from "@/views/UserProfile";
 
 const routes = [
   {
@@ -34,6 +36,11 @@ const routes = [
     component: Register
   },
   {
+    path: "/auth/renewYourPassword",
+    name: "ResetPassword",
+    component: ResetPassword
+  },
+  {
     path: "/new_ad",
     name: "New Ad",
     component: LendingPage,
@@ -49,6 +56,12 @@ const routes = [
     name: "Messages",
     component: Chat,
     beforeEnter: authGuard
+  },
+  {
+    path: "/rentals",
+    name: "Rental",
+    component: MyRentals,
+    // beforeEnter: authGuard
   },
   {
     path: "/profile",
