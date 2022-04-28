@@ -22,104 +22,20 @@
 
 <script>
 import AdComponent from "@/components/AdComponent";
-import axios from "axios"
 
 export default {
   name: "AdListComponent",
   components: {
     AdComponent
   },
-  data() {
-    return{
-        ads: [
-          {
-            id:1,
-            title: "Ski",
-            img: "ski.jpg",
-            place: "Trondheim",
-            price: 200
-          },
-          {
-            id: 2,
-            title: "Space",
-            img: "space.jpg",
-            place: "Tromsø",
-            price: 100
-          },
-          {
-            id: 3,
-            title: "Spaceman",
-            img: "spaceman.jpg",
-            place: "Kristiansand",
-            price: 300
-          },
-          {
-            id: 4,
-            title: "Ski",
-            img: "ski.jpg",
-            place: "Molde",
-            price: 400
-          },
-          {
-            id: 5,
-            title: "Ski",
-            img: "ski.jpg",
-            place: "Oslo",
-            price: 500
-          },
-        ]
-    };
-  },
 
   props: {
-    myAds:{
-      type:Boolean,
-      required:true,
-    },
-    loanedAds:{
-      type:Boolean,
-      required:true,
+    ads: {
+      type: Array,
     }
   },
 
-  methods: {
-    async mounted() {
-      this.setAdSpecification()
-      await this.getAds()
-    },
-    setAdSpecification(){
-
-
-      if(this.myAds){
-        this.adSpecification = "myAds"
-      }
-      else if(this.loanedAds){
-        this.adSpecification = "loanedAds"
-      }
-      else{
-        this.adSpecification = "allAds"
-      }
-
-    },
-    async getAds(){
-
-        let url = "http://localhost:8081/getads/ellernoe"+this.adSpecification
-
-        let jwtToken = JSON.parse(window.localStorage.getItem("token"))
-
-        await axios
-            .get( url, {
-              headers:{
-                Authorization: "Bearer" + " " + jwtToken,
-              },
-            })
-            .then(response => {
-              this.ads = response.data
-            })
-      },
-    }
-
-};
+}
 </script>
 
 <style scoped></style>
