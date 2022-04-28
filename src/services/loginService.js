@@ -32,25 +32,19 @@ export default {
    */
   signInFacebook() {
     const options = {
-      method: "POST",
-      url: `${url}${port}/auth/login/outside`,
+      method: "GET",
+      url: `${url}${port}/signin/facebook`,
       headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        name: name,
-        imgUrl: imgUrl,
-        email: email,
-        provider: provider
-      },
+        "Content-Type": "application/json"
+      }
     };
     axios
       .request(options)
-      .then(function (response) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.id);
+      .then(response => {
+        console.log(response)
+        window.open(response.data, "_blank")
       })
-      .catch(function (error) {
+      .catch(error => {
         console.error(error);
       });
   },
@@ -66,13 +60,7 @@ export default {
       url: `${url}${port}/auth/login/outside`,
       headers: {
         "Content-Type": "application/json",
-      },
-      data: {
-        name: name,
-        imgUrl: imgUrl,
-        email: email,
-        provider: provider
-      },
+      }
     };
     axios
       .request(options)

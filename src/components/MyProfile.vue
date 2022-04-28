@@ -102,7 +102,7 @@
           accountService.logoutFacebook()
         } else if(provider === "google") {
           accountService.logoutGoogle(this.$gAuth)
-        } else if(provider === "nonde") {
+        } else if(provider === "none") {
           this.$store.dispatch("setLoggedIn", false)
           this.$router.push("/")
           localStorage.clear()
