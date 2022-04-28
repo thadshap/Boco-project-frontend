@@ -3,8 +3,6 @@
     <div
       id="adPictureDiv"
       class="text-center"
-      v-for="picture in ad.picturesOut"
-      :key="picture"
     >
       <img src={{picture}}>
     </div>
@@ -76,7 +74,7 @@
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{ review.rating }}
+          {{ review.rating }} / 10 <br>
           {{ review.description}}
         </div>
       </div>
@@ -97,7 +95,7 @@
       >
         <ol-view
           ref="view"
-          :center="[ad.latitudeForItem, ad.longitudeForItem]"
+          :center="[ad.lat, ad.lng]"
           :rotation="rotation"
           :zoom="zoom"
           :projection="projection"
@@ -111,7 +109,7 @@
           <ol-source-vector>
             <ol-feature>
               <ol-geom-point
-                :coordinates="[ad.latitudeForItem, ad.longitudeForItem]"
+                :coordinates="[ad.lat, ad.lng]"
               ></ol-geom-point>
               <ol-style>
                 <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
@@ -151,8 +149,9 @@ export default {
     };
   },
   async created() {
-    this.ad = localStorage.getItem("currentAd");
+    await this.getCurrentAd();
     await this.setLender();
+    await this.getReviews();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -168,9 +167,22 @@ export default {
     };
   },
   methods: {
+    async getCurrentAd(){
+      await lendingService.getAdById(this.$store.getters.currentAd.id).then(response => {
+        this.ad = response.data[0];
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
     async getReviews(){
-      await lendingService.getAllReviewsForAd(this.ad.id).then(response => {
+      await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
         this.reviews = response.data;
+        console.log(response.data);
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
@@ -200,7 +212,7 @@ export default {
         this.showRequestDetails = true;
       }
     },
-    sendRequest : async function() {
+    async sendRequest(){
       await lendingService.createRental(
           new Date().toLocaleDateString(),
           this.date[0].toISOString().substring(0,10),
@@ -210,8 +222,10 @@ export default {
           ((this.date[0].getDate - this.date[0].getDate) * this.ad.price),
           this.lender.id,
           this.ad.userId,
-          this.ad.id
-      )
+          this.$store.getters.currentAd.id
+      ).catch(error => {
+        console.log(error);
+      })
     },
     dropDown() {
       if (this.showRightArrow) {
@@ -221,6 +235,7 @@ export default {
       }
     },
     seeLenderDetails() {
+      localStorage.setItem("lenderId", this.ad.userId);
       this.$router.push({
         name: "UserProfile",
       });
