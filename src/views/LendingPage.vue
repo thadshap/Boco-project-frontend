@@ -210,7 +210,7 @@ export default {
     }
   },
   created: async function() {
-    // await this.getCategories()
+    await this.getCategories()
   },
   methods: {
     chooseImages() {
@@ -238,37 +238,58 @@ export default {
         await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").userId, this.idToCategory)
       }
     },
-    /**
     getCategories:async function(){
-      //TODO: hente alle hoved kategoriene fra databasen og legge inn i  categories arrayen over
-    }
-     */
-    /**
-     clickedCategory:async function(id){
-      //TODO: lagre categories id og sette subCategories id lik ingenting
-      //TODO: hente alle sub kategoriene til den tilhørende hovedkategorien fra databasen og legge inn i subCategories arrayen over
-    }
-     */
-    /**
+      await lendingService.getAllCategories()
+      .then(response => {
+        this.categories = response.data
+      }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke hentet kategoriene!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
+    },
+    clickedCategory:async function(id){
+      this.categoriesId = id
+      this.subCategoriesId = ""
+      await lendingService.getAllSubCategoriesForCategory(id).then(response => {
+        this.subCategories = response.data
+      }).catch(error => {
+        this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+        console.log(error)
+      })
+    },
     clickedSubCategories:async function(id){
-      //TODO: lagre subCategories id og sette subSubCategories id lik ingenting
-      //TODO: hente alle sub sub kategoriene til den tilhørende sub kategorien fra databasen hvis de finnes og legge inn i subSubCategories arrayen over
-      //TODO: hvis det eksisterer så skal booleanen bli satt til true
-      //TODO: hvis ikke så skal booleanen bli satt til false
-    }
-     */
-    /**
-    clickedSubSubCategories:async function(id){
-      //TODO: lagre id til subSubCategories
-    }
-     */
-    /**
+      this.subCategoriesId = id
+      await lendingService.getAllSubCategoriesForCategory(id).then(response => {
+        this.subSubCategories = response.data
+        this.isSubSubCategory = true
+      }).catch(error => {
+        this.isSubSubCategory = false
+        this.GStore.flashMessage = "Fikk ikke hentet under under kategoriene!"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+        console.log(error)
+      })
+    },
+    clickedSubSubCategories(id){
+      this.subSubCategoriesId = id
+    },
      getSubSubCategories(){
       //TODO: sjekke om subSubCategories id er lik null, hvis ikke så skal den lagres i idToCategory
       //TODO: hvis subSubCategories id er lik null så skal subCategories id sjekkes mot om det står en id der, hvis ja så skal den lagres i idToCategory
       //TODO: hvis det har kun blitt trukket på en hoved kategori så skal id-en dens lagres i idToCategory
-    }
-     */
+      if (this.subSubCategoriesId === "") this.idToCategory = this.subCategoriesId
+       else this.idToCategory = this.subSubCategoriesId
+    },
     validateImages() {
       if(this.imgUrl.length === 0) {
         this.imgError = "Annonsen må ha minst ett bilde!"

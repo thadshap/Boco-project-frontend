@@ -1,6 +1,6 @@
 import axios from "axios";
 let url = 'http://localhost:'
-let port = "8080"
+let port = "8443"
 export default {
   /**
    *Methods for rental
@@ -145,6 +145,7 @@ export default {
         password: password
       }
     };
+    console.log("Kom meg her")
     return axios.request(options);
   },
 

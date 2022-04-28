@@ -81,7 +81,7 @@ import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
 import lendingService from "../services/lendingService";
-import MainPage from "./MainPage";
+import Login from "./Login";
 
 
 export default {
@@ -132,7 +132,6 @@ export default {
     getUserInfo:async function(){
       await lendingService.getUserById(parseInt(localStorage.getItem("userId")))
         .then(response => {
-          console.log(response.data)
           this.state.firstname = response.data.firstName
           this.state.lastname = response.data.lastName
           this.state.email = response.data.email
@@ -200,8 +199,8 @@ export default {
           .then(response => {
             console.log(response)
             this.$router.push({
-              name: "MainPage",
-              component: MainPage,
+              name: "Login",
+              component: Login
             });
           }).catch(error => {
             this.GStore.flashMessage = "Ops... Noe gikk galt!"
