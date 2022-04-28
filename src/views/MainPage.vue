@@ -2,8 +2,8 @@
   <div class="container">
     <div class="d-flex justify-content-center search-box-container-style">
       <div class="d-flex search-container">
-        <input type="search" placeholder="Søk" class="w-100" />
-        <button class="btn btn-primary btn-style" type="button">
+        <input type="search" placeholder="Søk" class="w-100" v-model="searchWord"/>
+        <button class="btn btn-primary btn-style" type="button" @click="search">
           <i class="fa fa-search"></i>
         </button>
       </div>
@@ -97,7 +97,7 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent v-bind:ads="this.ads"/>
+    <AdListComponent :ads="this.ads"/>
   </div>
   </div>
 </template>
@@ -105,8 +105,10 @@
 <script>
 import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
+import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
+import lendingService from "@/services/lendingService";
 
 export default {
   name: "MainPage",
@@ -125,6 +127,7 @@ export default {
   },
   data() {
     return {
+      searchWord: "",
       priceRangeValue : 0,
       distanceRangeValue : 0,
       showUnderCategories : 0,
@@ -230,11 +233,6 @@ export default {
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
     },
-  },
-  watch:{
-    $route:"getAdsWhenOnMainpage"
-  },
-  methods: {
     chosenMainCat(title) {
       this.chosenMainCategory = title
 
@@ -261,7 +259,24 @@ export default {
         //
         // }
       }
+    },
+    search() {
+      if(this.searchWord === "") {
+        return
+      }
+
+      lendingService
+        .getAdsBySearch(this.searchWord)
+        .then(res => {
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
+  },
+  watch:{
+    $route: "getAdsWhenOnMainpage",
   },
   created() {
     this.getRandomAds()
