@@ -79,10 +79,21 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+    async getReviewsByLender(){
+      await lendingService
+      .getReviewsByUserId(parseInt(localStorage.getItem("lenderId")))
+      .then(response =>{
+        this.reviews = response.data
+      })
+      .catch(function (error){
+        console.log(error)
+      });
     }
   },
   async mounted(){
     await this.getLender()
+    await this.getReviewsByLender()
   }
 }
 </script>
