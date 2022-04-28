@@ -9,7 +9,6 @@
       <img>
     </div>
     <div class="text-center">
-
       <label id="adHeader" class="form-label">{{ ad.headerText }}</label>
     </div>
     <div class="text-center">
@@ -226,82 +225,83 @@ export default {
   height: 400px;
   width: 100%;
 }
-#adPictureDiv {
-  padding: 10vw 10vw 0 10vw;
-}
-#adPicture {
-  width: 250px;
-  height: auto;
-}
-#adHeader {
-  font-weight: bold;
-  font-size: 22px;
-}
-button {
-  padding: 4px;
-  font-size: 14px;
-}
-#description {
-  padding: 0px 10px 0px 10px;
-}
-#descriptionLabel {
-  font-size: 12px;
-  font-style: italic;
-}
-i {
-  color: blue;
-  padding: 0.5vw;
-}
-#lenderDetails {
-  height: 4vh;
-}
-#lenderName,
-#lenderNumberLabel {
-  font-size: 12px;
-  color: blue;
-  text-decoration: underline;
-  cursor: pointer;
-}
-#lenderNumber {
-  height: 5vh;
-}
-#lenderHeader {
-  height: 2vh;
-}
-#distance {
-  padding: 0px 10px 0px 10px;
-}
-#address {
-  padding: 0px 5vw 0px 5vw;
-}
-img {
-  width: 30vw;
-}
-button {
-  margin: 5px;
-}
-#makeRequest {
-  background-color: green;
-}
-.earlierReviews {
-  border-style: solid;
-  border-color: grey;
-  width: 50%;
-}
-#review {
-  display: grid;
-  justify-items: center;
-  font-size: 10px;
-}
-.material-icons {
-  cursor: pointer;
-}
-#time {
-  width: 30%;
-}
-#time {
-  width: 100%;
-  display: grid;
-  justify-items: center;
-}
+<<<<<<< src/views/DetailedAd.vue
+  #adPictureDiv{
+    padding: 10vw 10vw 0 10vw;
+  }
+  #adPicture{
+    width: 250px;
+    height: auto;
+  }
+  #adHeader{
+    font-weight: bold;
+    font-size: 22px;
+  }
+  button{
+    padding: 4px;
+    font-size: 14px;
+  }
+  #description{
+    padding: 0px 10px 0px 10px;
+  }
+  #descriptionLabel{
+    font-size: 12px;
+    font-style: italic;
+  }
+  i{
+    color: blue;
+    padding: 0.5vw;
+  }
+  #lenderDetails{
+    height: 4vh;
+  }
+  #lenderName, #lenderNumberLabel{
+    font-size: 12px;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  #lenderNumber{
+    height: 5vh;
+  }
+  #lenderHeader{
+    height: 2vh;
+  }
+  #distance{
+    padding: 0px 10px 0px 10px;
+  }
+  #address{
+    padding: 0px 5vw 0px 5vw;
+  }
+  img{
+    width : 30vw;
+  }
+  button{
+    margin: 5px;
+  }
+  #makeRequest{
+    background-color: green;
+  }
+  .earlierReviews{
+    border-style: solid;
+    border-color: grey;
+    width: 50%;
+  }
+  #review{
+    display: grid;
+    justify-items: center;
+    font-size: 10px;
+  }
+  .material-icons{
+    cursor: pointer;
+  }
+  #time{
+    width: 30%;
+  }
+  #time{
+    width: 100%;
+    display: grid;
+    justify-items: center;
+  }
+
 </style>
