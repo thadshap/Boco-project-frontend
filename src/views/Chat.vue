@@ -12,6 +12,7 @@
             <img class="profile-picture">
         </div>
         <div class="flex-grow-1 chat-container">
+            <h1>WIP</h1>
             <MessageComponent
             v-for="message in messages"
             :key="message"

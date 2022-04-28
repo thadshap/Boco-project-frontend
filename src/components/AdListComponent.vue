@@ -3,7 +3,6 @@
     <section class="portfolio-block project-no-images">
       <div class="container">
         <div class="d-flex flex-row flex-wrap">
-
           <AdComponent
             v-for="ad in ads"
             :key="ad"
@@ -13,7 +12,6 @@
             :place="ad.place"
             :price="ad.price"
           />
-
         </div>
       </div>
     </section>
@@ -28,7 +26,6 @@ export default {
   components: {
     AdComponent
   },
-
   props: {
     ads: {
       type: Array,

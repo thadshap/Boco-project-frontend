@@ -1,4 +1,5 @@
 <template>
+<div class="d-flex justify-content-space-between flex-column height">
   <HeaderComponent />
   <main class="pt-5 pb-5">
     <router-view />
@@ -11,10 +12,13 @@
       </div>
     </div>
   </main>
+  <FooterComponent />
+</div>
 </template>
 
 <script>
 import HeaderComponent from "@/components/HeaderComponent";
+import FooterComponent from "@/components/FooterComponent";
 
 const $ = require("jquery");
 window.$ = $;
@@ -25,7 +29,8 @@ export default {
   inject: ["GStore"],
   name: "App",
   components: {
-    HeaderComponent
+    HeaderComponent,
+    FooterComponent
   }
 }
 </script>
@@ -40,6 +45,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100vh;
 }
 
 * {
@@ -52,5 +58,11 @@ export default {
 #flashMessageError{
   background-color: rgba(139, 0, 0, 0.50);
   color: #5e0000;
+}
+.height{
+  height: 100%;
+}
+main{
+  flex-grow: 1;
 }
 </style>
