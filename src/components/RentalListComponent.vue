@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     rentalClick(e){
-
+      console.log(e)
     }
   }
 
