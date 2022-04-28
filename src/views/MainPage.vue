@@ -265,6 +265,9 @@ export default {
         return
       }
 
+      console.log(this.searchWord)
+      console.log(typeof this.searchWord)
+
       lendingService
         .getAdsBySearch(this.searchWord)
         .then(res => {

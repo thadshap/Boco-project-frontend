@@ -507,7 +507,7 @@ export default {
   getAdsBySearch(searchString) {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/search/` + searchString,
+      url: `${url}${port}/api/search/${searchString}`,
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
