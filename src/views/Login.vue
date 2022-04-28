@@ -117,11 +117,10 @@ export default {
           .then(response => {
             this.GStore.flashMessage = "Sent! Sjekk den oppgitte e-posten"
             this.GStore.variant = "Success"
-            console.log("funker")
             setTimeout(() => {
               this.GStore.flashMessage = ""
             }, 6000)
-            console.log(response)
+            localStorage.setItem("forgotPasswordToken", response.data);
           }).catch(error => {
             this.GStore.flashMessage = "Ops...Noe gikk galt. Har du skrevet riktig email"
             this.GStore.variant = "Error"

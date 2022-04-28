@@ -83,7 +83,7 @@ export default {
       console.log(this.$router.currentRoute)
       this.password = this.state.passwordChange
       this.repeatPassword = this.state.repeatPasswordChange
-      await lendingService.renewPassword(this.password,this.repeatPassword,new URL(location.href).searchParams.get('page'))
+      await lendingService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("forgotPasswordToken"))
         .then(response => {
           this.GStore.flashMessage = "Passoret har blitt endret!"
           this.GStore.variant = "Success"
