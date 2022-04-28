@@ -33,20 +33,20 @@
           </div>
           <div>
 
-<!--            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button">-->
-<!--              <i class="fab fa-facebook facebook-icon-style"></i>-->
-<!--              Logg inn med Facebook-->
-<!--            </button>-->
+            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button" @click="loginFacebook">
+              <i class="fab fa-facebook facebook-icon-style"></i>
+              Logg inn med Facebook
+            </button>
 
-            <vue-facebook-login-component-next-es
-              app-id="3598318360302645"
-              class="btn w-100" style="background-color: #0a58ca"
-              logo-style="color: white"
-              text-style="color: white"
-              @sdk-init="handleSdkInit"
-              @click="loginFacebook"
-              v-if="!this.$store.getters.isLoggedIn"
-            />
+<!--            <vue-facebook-login-component-next-es-->
+<!--              app-id="3598318360302645"-->
+<!--              class="btn w-100" style="background-color: #0a58ca"-->
+<!--              logo-style="color: white"-->
+<!--              text-style="color: white"-->
+<!--              @sdk-init="handleSdkInit"-->
+<!--              @click="loginFacebook"-->
+<!--              v-if="!this.$store.getters.isLoggedIn"-->
+<!--            />-->
 
 <!--            @click="login"-->
 <!--            scope="{ login: login(), logout: logout() }"-->
@@ -69,18 +69,20 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import {helpers, email} from "@vuelidate/validators";
-import { computed, reactive } from "vue";
 import lendingService from "@/services/lendingService";
+import loginService from "@/services/loginService";
+import { helpers, email } from "@vuelidate/validators";
+import { computed, reactive } from "vue";
 
-import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
-import { accountService } from "@/services/account.service";
+// import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
+// import { accountService } from "@/services/account.service";
+
 
 export default {
   inject: ["GStore"],
   name: "Login",
   components: {
-    VueFacebookLoginComponentNextEs
+    // VueFacebookLoginComponentNextEs
   },
   setup() {
     const state = reactive({
@@ -143,7 +145,7 @@ export default {
       if (this.v$.$error){
         return
       }
-      await lendingService.logIn(this.state.email, this.password)
+      await loginService.logIn(this.state.email, this.password)
           .then(response => {
             console.log(response.status)
             if(response.status === 404) {
@@ -169,15 +171,17 @@ export default {
 
       await this.$router.push("/")
     },
-    handleSdkInit({ FB, scope }) {
-      this.FB = FB
-      this.scope = scope
-    },
+    // handleSdkInit({ FB, scope }) {
+    //   this.FB = FB
+    //   this.scope = scope
+    // },
     loginFacebook() {
-      accountService.loginFacebook(this.FB);
+      // accountService.loginFacebook(this.FB);
+      loginService.signInFacebook();
     },
     loginGoogle(){
-      accountService.loginGoogle(this.$gAuth);
+      // accountService.loginGoogle(this.$gAuth);
+      loginService.signInGoogle();
     },
   }
 };
