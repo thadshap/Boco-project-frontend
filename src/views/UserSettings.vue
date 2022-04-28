@@ -11,51 +11,65 @@
         <div class="d-flex flex-column align-content-center flex-wrap">
           <div class="d-flex flex-column user-img-container">
             <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
-            <img class="ms-auto user-img" v-if="url" :src="url">
+            <img alt="Profilbilde" class="ms-auto user-img" v-if="url" :src="url" width="150" height="200">
             <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
         </div>
-        <div class="w-100 user-info-container">
+        <div class="w-100">
           <div class="header">Om meg</div>
+          <div class="w-100 overview-container">
+          <div class="mt-auto w-50 overview">
+            <div class="d-inline-flex w-100 firstname-container">
+              <p class="form-label overview-header">Fornavn</p>
+              <p class="form-label">{{state.firstname}}</p>
+            </div>
+            <div class="d-inline-flex w-100 lastname-container">
+              <p class="form-label overview-header">Etternavn</p>
+              <p class="form-label">{{state.lastname}}</p>
+            </div>
+            <div class="d-inline-flex w-100 email-container">
+              <p class="form-label overview-header">E-post</p>
+              <p class="form-label">{{state.email}}</p>
+            </div>
+          </div>
+          </div>
+          <div class="header">Personopplysning</div>
           <div class="mt-auto w-100 personal-info">
             <div class="d-inline-flex w-100 firstname-container">
               <label class="form-label firstname-label">Fornavn</label>
-              <input class="user-input" type="text" id="firstname" :placeholder="firstname" v-model="firstnameChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="text" id="firstname" v-model="state.firstnameChange" v-on:change="disableChangeBtn">
             </div>
             <div class="d-inline-flex w-100 lastname-container">
               <label class="form-label lastname-label">Etternavn</label>
-              <input class="user-input" type="text" id="lastname" :placeholder="lastname" v-model="lastnameChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="text" id="lastname" v-model="state.lastnameChange" v-on:change="disableChangeBtn">
             </div>
           </div>
-          <div class="header">Bruker opplysning</div>
+          <div class="header">Brukeropplysning</div>
           <div class="me-auto w-100 user-info">
-            <div class="d-inline-flex w-100 username-container">
-              <label class="form-label username-label">Brukernavn</label>
-              <input class="user-input" type="text" id="username" name="username" :placeholder="username" v-model="usernameChange" v-on:change="disableChangeBtn">
-            </div>
             <div class="d-inline-flex w-100 email-container">
               <label class="form-label email-label">Epost</label>
-              <input class="user-input" type="email" id="email" name="email" :placeholder="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="email" id="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
               <span id="emailError" class="text-danger w-65" v-if="v$.emailChange.$error">
                 {{ v$.emailChange.$errors[0].$message }}
               </span>
             </div>
             <div class="d-inline-flex w-100 password-container">
               <label class="form-label password-label">Passord</label>
-              <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
+              <input class="user-input" type="password" id="password" v-model="state.passwordChange" v-on:change="disableChangeBtn">
               <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
                 {{ v$.passwordChange.$errors[0].$message }}
               </span>
             </div>
             <div class="d-inline-flex w-100 password-container">
-              <label class="form-label password-label">Befrekt passord*</label>
-              <input class="user-input" type="password" id="repeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
+              <label class="form-label password-label">Bekreft passord*</label>
+              <input class="user-input" type="password" id="repeatPassword" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
               <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
                 {{ v$.repeatPasswordChange.$errors[0].$message }}
               </span>
             </div>
           </div>
           <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
+          <button class="btn btn-primary w-100 delete-user-btn" type="button"  @click="deleteUser">Slett konto</button>
         </div>
       </div>
     </div>
@@ -66,27 +80,27 @@
 import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
+import lendingService from "../services/lendingService";
+import MainPage from "./MainPage";
+
 
 export default {
   inject: ["GStore"],
   name: "UserSettings",
   data(){
     return{
-    // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
-      firstname: "Thadsha",
-      lastname: "Paramsothy",
-      username: "Thadsha1710",
-      email: "thadsha1710@live.no",
-      password: "heisann",
       disableBtn: true,
-      firstnameChange: "",
-      lastnameChange: "",
-      usernameChange: "",
       url: null,
     };
   },
   setup(){
     const state = reactive({
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      firstnameChange: "",
+      lastnameChange: "",
       emailChange:"",
       passwordChange:"",
       repeatPasswordChange: ""
@@ -107,52 +121,50 @@ export default {
     const v$ = useValidate(rules, state);
     return { state, v$ };
   },
-  created() {
-    this.disableChangeBtn()
-    //TODO: alltid vis informasjonen om en bruker når siden blir åpnet
+  created: async function() {
+    await this.disableChangeBtn()
+    await this.getUserInfo()
   },
   methods:{
     back() {
       this.$router.go(-1)
     },
-    getUserInfo(){
-      //  TODO: her burde det settes lik den informasjonen som hentes fra databasen som
-      this.firstname = ''
-      this.lastname = ''
-      this.username = ''
-      this.email = ''
-      this.password = ''
-      this.repeatPassword = ''
+    getUserInfo:async function(){
+      await lendingService.getUserById(parseInt(localStorage.getItem("userId")))
+        .then(response => {
+          console.log(response.data)
+          this.state.firstname = response.data.firstName
+          this.state.lastname = response.data.lastName
+          this.state.email = response.data.email
+        }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke hentet brukeren!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
     },
-    changeUserInfo(){
-      // TODO:isteden for this.firstname og sånt så må man hente fra den arrayen som sendes fra databasen om en bruker
-      if (this.firstnameChange !== this.firstname){
-        // TODO: endre inn på databasen
-        this.firstnameChange = this.firstname
-      }
-      if (this.lastnameChange !== this.lastname){
-        // TODO: endre inn på databasen
-        this.lastnameChange = this.lastname
-      }
-      if (this.usernameChange !== this.username){
-        // TODO: endre inn på databasen
-        this.usernameChange = this.username
-      }
-      if (this.state.emailChange !== this.email){
-        // TODO: endre inn på databasen
-        this.state.emailChange = this.email
-      }
-      if (this.state.passwordChange !== this.password){
-        // TODO: endre inn på databasen
-        this.state.passwordChange = this.password
-      }
-      if (this.state.repeatPasswordChange !== this.repeatPassword){
-        // TODO: endre inn på databasen
-        this.state.repeatPasswordChange = this.repeatPassword
-      }
+    changeUserInfo:async function(){
+      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.emailChange,this.state.passwordChange,localStorage.getItem("userId"))
+      .then(response => {
+        this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
+        this.GStore.variant = "Success"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+        console.log(response)
+      }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke endret bruker informasjonen!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
     },
     disableChangeBtn(){
-      if (this.firstnameChange === '' && this.lastnameChange === '' && this.usernameChange === '' &&this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
+      if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
@@ -164,26 +176,42 @@ export default {
       this.url = URL.createObjectURL(file);
     },
     existingUserImg(){
-      // TODO: sette inn eksisterende profilbilde fra databasen
+      // TODO: sette inn eksisterende profilbilde fra databasen hvis den eksisterer
     },
-    submit(){
+    submit: async function(){
       this.v$.$validate()
       if (this.v$.$error){
         this.disableBtn = true
       }
       else {
-        this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
-        this.GStore.variant = "Success"
-        setTimeout(() => {
-          this.GStore.flashMessage = ""
-        }, 4000)
-        this.firstnameChange = ""
-        this.lastnameChange = ""
-        this.usernameChange = ""
-        this.emailChange = ""
-        this.passwordChange = ""
+        await this.changeUserInfo()
+        this.state.firstnameChange = ""
+        this.state.lastnameChange = ""
+        this.state.emailChange = ""
+        this.state.passwordChange = ""
+        this.state.repeatPasswordChange = ""
         this.disableBtn = true
       }
+    },
+    deleteUser:async function(){
+      let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
+      if (deleteAccount == "JA") {
+        await lendingService.deleteUser(localStorage.getItem("userId"))
+          .then(response => {
+            console.log(response)
+            this.$router.push({
+              name: "MainPage",
+              component: MainPage,
+            });
+          }).catch(error => {
+            this.GStore.flashMessage = "Ops... Noe gikk galt!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
+      } else return
     }
   },
 };
@@ -202,8 +230,6 @@ export default {
 .user-img{
   border-radius: 1px;
   margin-bottom: 10px;
-  height:200px;
-  width: 150px;
   object-fit:cover;
   object-position:50% 50%;
 }
@@ -212,16 +238,18 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.user-info-container{
-  text-align: center;
-  padding-top: 1em;
-}
 .personal-info{
   background: rgba(255,253,253,0.74);
   border-radius: 4px;
   text-align: center;
-  padding: 10px;
+  padding: 4%;
   margin-bottom: 20px;
+}
+.overview{
+  background: rgba(110, 179, 211, 0.2);
+  border-radius: 4px;
+  text-align: center;
+  padding: 4%;
 }
 .firstname-label{
   border-width: 8px;
@@ -231,10 +259,10 @@ export default {
   background: rgba(255,253,253,0.74);
   border-radius: 4px;
   text-align: center;
-  padding: 10px;
+  padding: 4%;
 
 }
-.password-label, .email-label, .lastname-label, .firstname-label, .username-label{
+.password-label, .email-label, .lastname-label, .firstname-label{
   font-size: 1.2em;
 }
 .user-input{
@@ -242,9 +270,10 @@ export default {
   border-radius: 4px;
   border: 0.5px solid rgb(201,197,197);
   height: 35px;
-  width: 65%;
+  width: 50%;
+  font-size: 1em;
 }
-.firstname-container,.lastname-container,.email-container,.password-container, .username-container{
+.firstname-container,.lastname-container,.email-container,.password-container{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -253,13 +282,26 @@ export default {
   background: #03991b;
   border-radius: 6px;
   text-align: center;
-  font-size: 30px;
+  font-size: 1.5em;
   margin-top: 20px;
 }
-span{
+.update-user-info-btn:hover{
+  background: rgba(3, 153, 27, 0.7);
+}
+.delete-user-btn{
+  background: rgb(227, 2, 2);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 20px;
+}
+.delete-user-btn:hover{
+  background: rgba(227, 2, 2, 0.7);
+}
+#emailError, #passwordError, #repeatPasswordError{
   display: flex;
-  width: 75%;
-  left: 35%;
+  width: 50%;
+  left: 50%;
   position: relative;
 }
 .header{
@@ -268,8 +310,51 @@ span{
   font-weight: bold;
   color: rgba(44, 62, 80, 0.8);
 }
-
 .back-arrow-container {
   cursor: pointer;
+}
+.overview-container{
+  display: flex;
+  justify-content: center;
+  background-color: rgba(255,253,253,0.74);
+  padding: 4%;
+}
+@media (max-width: 573px) {
+  .password-label, .email-label, .lastname-label, .firstname-label{
+    font-size: 1em;
+  }
+  .user-input{
+    height: 30px;
+    font-size: 0.7em;
+  }
+  .update-user-info-btn, .delete-user-btn{
+    font-size: 1em;
+  }
+  .user-img-upload-btn{
+    font-size: 0.9em;
+  }
+  #emailError, #passwordError, #repeatPasswordError{
+    font-size: 0.7em;
+  }
+}
+@media (max-width: 370px){
+  .password-label, .email-label, .lastname-label, .firstname-label{
+    font-size: 0.9em;
+  }
+  .user-input{
+    height: 25px;
+    font-size: 0.5em;
+  }
+  .update-user-info-btn, .delete-user-btn{
+    font-size: 0.9em;
+  }
+  .user-img-upload-btn{
+    font-size: 0.7em;
+  }
+}
+@media (max-width: 300px){
+  .password-label, .email-label, .lastname-label, .firstname-label{
+    font-size: 0.6em;
+  }
 }
 </style>

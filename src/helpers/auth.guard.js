@@ -2,8 +2,8 @@
 
 export function authGuard(to, from, next) {
   // const account = accountService.accountValue;
-  const account = localStorage.getItem("vue-login-accounts") !== null && localStorage.getItem("vue-login-accounts") !== undefined
-
+  const account = localStorage.getItem("token") !== null && localStorage.getItem("token") !== undefined
+  //  const account = localStorage.getItem("vue-login-accounts") !== null && localStorage.getItem("vue-login-accounts") !== undefined
   console.log(account)
 
   if(!account) {
