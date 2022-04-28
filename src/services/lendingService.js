@@ -1,107 +1,107 @@
 import axios from "axios";
 let url = 'http://localhost:'
-let port = "8443"
+let port = "8080"
 export default {
   /**
    *Methods for rental
    */
 
-    /**
-     * Method to create a request for a rental
-     * @param deadline for cancelling the rental, 24 hours before rent starts
-     * @param price
-     */
-    createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderId, userId, adId){
-        const options = {
-            method: 'POST',
-            url: `${url}${port}/rental/create`,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            },
-            data: {
-                dateOfRental: dateOfRental,
-                rentFrom: rentFrom,
-                rentTo: rentTo,
-                deadline: deadline,
-                //change to false when chat works TODO
-                active: 'true',
-                price: price,
-                owner: lenderId,
-                borrower: userId,
-                ad: adId
-            }
-        };
+  /**
+   * Method to create a request for a rental
+   * @param deadline for cancelling the rental, 24 hours before rent starts
+   * @param price
+   */
+  createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderId, userId, adId){
+    const options = {
+      method: 'POST',
+      url: `${url}${port}/rental/create`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+      data: {
+        dateOfRental: dateOfRental,
+        rentFrom: rentFrom,
+        rentTo: rentTo,
+        deadline: deadline,
+        //change to false when chat works TODO
+        active: 'true',
+        price: price,
+        owner: lenderId,
+        borrower: userId,
+        ad: adId
+      }
+    };
 
-        return axios.request(options)
-    },
-    /**
-     * Method to activate a rental when the lender has accepted the request
-     */
-    activateRental(rentalId){
-        const options = {
-            method: 'PUT',
-            url: `${url}${port}/rental/` + rentalId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            }
-        };
+    return axios.request(options)
+  },
+  /**
+   * Method to activate a rental when the lender has accepted the request
+   */
+  activateRental(rentalId){
+    const options = {
+      method: 'PUT',
+      url: `${url}${port}/rental/` + rentalId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      }
+    };
 
-        return axios.request(options);
-    },
-    deleteRental(rentalId){
-        const options = {
-            method: 'DELETE',
-            url: `${url}${port}/rental/delete/` + rentalId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            }
-        };
+    return axios.request(options);
+  },
+  deleteRental(rentalId){
+    const options = {
+      method: 'DELETE',
+      url: `${url}${port}/rental/delete/` + rentalId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      }
+    };
 
     return axios.request(options);
   },
 
-    updateRental(rentalId, dateRentFrom, dateRentTo, deadline, price){
-        const options = {
-            method: 'PUT',
-            url: `${url}${port}/rental/update/` + rentalId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            },
-            data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
-        };
+  updateRental(rentalId, dateRentFrom, dateRentTo, deadline, price){
+    const options = {
+      method: 'PUT',
+      url: `${url}${port}/rental/update/` + rentalId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+      data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
+    };
 
     return axios.request(options);
   },
 
   getRentalById(rentalId){
-      const options = {
-          method: 'GET',
-          url: `${url}${port}/rental/` + rentalId,
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer'
-          }
-      };
-      return axios.request(options);
+    const options = {
+      method: 'GET',
+      url: `${url}${port}/rental/` + rentalId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      }
+    };
+    return axios.request(options);
   },
 
   /**
    * Gets all the items a user have lent, and all items it has rented out
    */
   getHistoryRentalForUser(userId){
-      const options = {
-          method: 'GET',
-          url: `${url}${port}/rental/s/` + userId,
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer'
-          }
-      };
-      return axios.request(options);},
+    const options = {
+      method: 'GET',
+      url: `${url}${port}/rental/s/` + userId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      }
+    };
+    return axios.request(options);},
 
   getAllAdsForCategory(categoryId){
     const options = {method: 'GET', url: `${url}${port}/api/categories/ads/` + categoryId};
@@ -122,55 +122,55 @@ export default {
    */
   getAllSubCategoriesForCategory(categoryName){
     const options = {method: 'GET', url: `${url}${port}/api/categories/` + categoryName};
-          return axios.request(options);
+    return axios.request(options);
   },
   /**
    *Methods for user
    */
-    /**
-     * Method to update a user
-     */
-    updateUser(firstName, lastName, email, password, userId){
-        const options = {
-            method: 'PUT',
-            url: `${url}${port}/user/` + userId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            },
-            data: {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: password
-            }
-        };
-        return axios.request(options);
+  /**
+   * Method to update a user
+   */
+  updateUser(firstName, lastName, email, password, userId){
+    const options = {
+      method: 'PUT',
+      url: `${url}${port}/user/` + userId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
       },
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password
+      }
+    };
+    return axios.request(options);
+  },
 
 
-    getUserById(userId){
-        const options = {
-            method: 'GET',
-            url: `${url}${port}/user/` + userId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            },
-        };
+  getUserById(userId){
+    const options = {
+      method: 'GET',
+      url: `${url}${port}/user/` + userId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+    };
 
-        return axios.request(options);
-    },
-    deleteUser(userId){
-        const options = {
-            method: 'DELETE',
-            url: `${url}${port}/user/` + userId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            },
-            data: {}
-        };
+    return axios.request(options);
+  },
+  deleteUser(userId){
+    const options = {
+      method: 'DELETE',
+      url: `${url}${port}/user/` + userId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+      data: {}
+    };
 
     return axios.request(options);
   },
@@ -215,14 +215,14 @@ export default {
       },
     };
     axios
-      .request(options)
-      .then(function (response) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.id);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+        .request(options)
+        .then(function (response) {
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userId", response.data.id);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
   },
 
   /**
@@ -246,39 +246,38 @@ export default {
     };
     return axios.request(options);
   },
-    /**
-     * method to send email to user where they can change password
-     */
-    forgotPassword(email){
-        const options = {
-            method: 'POST',
-            url: `${url}${port}/auth/forgotPassword`,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {email: email}
-        };
+  /**
+   * method to send email to user where they can change password
+   */
+  forgotPassword(email){
+    const options = {
+      method: 'POST',
+      url: `${url}${port}/auth/forgotPassword`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {email: email}
+    };
 
     return axios.request(options);
   },
-    /**
-     * method to renew password
-     * @token the token in the url when the user clicked on the link in email
-     */
-    renewPassword(password, confPassword, token){
-        const options = {
-            method: 'POST',
-            url: `${url}${port}/auth/renewPassword`,
-            params: {token: token},
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {password: password, confirmPassword: confPassword}
-        };
+  /**
+   * method to renew password
+   * @token the token in the url when the user clicked on the link in email
+   */
+  renewPassword(password, confPassword, token){
+    const options = {
+      method: 'POST',
+      url: `${url}${port}/auth/renewPassword?token=`+token,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: {password: password, confirmPassword: confPassword}
+    };
 
-        return axios.request(options);
+    return axios.request(options);
 
-    },
+  },
 
   /**
    * Methods for reviews
@@ -514,8 +513,8 @@ export default {
 
     return axios.request(options);
   },
-    getAdsByRentalType(){
-        const options = {method: 'GET', url: `${url}${port}/api/ads/rental/true`};
+  getAdsByRentalType(){
+    const options = {method: 'GET', url: `${url}${port}/api/ads/rental/true`};
 
     return axios.request(options);
   },
@@ -532,7 +531,7 @@ export default {
     const options = {
       method: "DELETE",
       url: `${url}${port}/api/ads/` + adId,
-        headers: {Authorization: 'Bearer'}
+      headers: {Authorization: 'Bearer'}
     };
 
     return axios.request(options);
@@ -541,19 +540,19 @@ export default {
    * Method to update an ad, can change one to all attributes
    */
   updateAd(
-    adId,
-    newTitle,
-    newPrice,
-    newDescription,
-    newDurationType,
-    newCategoryId,
-    newStreetAdress,
-    newPostalCode
+      adId,
+      newTitle,
+      newPrice,
+      newDescription,
+      newDurationType,
+      newCategoryId,
+      newStreetAdress,
+      newPostalCode
   ) {
     const options = {
       method: "PUT",
       url: `${url}${port}/api/ads/` + adId,
-        headers: {'Content-Type': 'application/json', Authorization: 'Bearer'},
+      headers: {'Content-Type': 'application/json', Authorization: 'Bearer'},
       data: {
         title: newTitle,
         price: newPrice,
@@ -602,14 +601,14 @@ export default {
    * @param categoryId is the id of the subcategory
    */
   postNewAdd(
-    title,
-    description,
-    durationType,
-    price,
-    streetaddress,
-    postalCode,
-    userId,
-    categoryId
+      title,
+      description,
+      durationType,
+      price,
+      streetaddress,
+      postalCode,
+      userId,
+      categoryId
   ) {
     const options = {
       method: "POST",

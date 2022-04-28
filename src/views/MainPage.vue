@@ -2,8 +2,8 @@
   <div class="container">
     <div class="d-flex justify-content-center search-box-container-style">
       <div class="d-flex search-container">
-        <input type="search" placeholder="Søk" class="w-100" />
-        <button class="btn btn-primary btn-style" type="button">
+        <input type="search" placeholder="Søk" class="w-100" v-model="searchWord"/>
+        <button class="btn btn-primary btn-style" type="button" @click="search">
           <i class="fa fa-search"></i>
         </button>
       </div>
@@ -19,6 +19,26 @@
           :key="category"
           :title="category.title"
           :icon="category.icon"
+          @last-clicked-main-cat="chosenMainCat"
+        />
+      </div>
+      <div v-if="chosenMainCategory !== ''" class="my-5">
+        <h5>Underkategori</h5>
+        <SubCategoryComponent
+          v-for="cat in subCategories"
+          :key="cat"
+          :label="cat"
+          category-type="subCategories"
+          @chosen-sub-cat="chosenSubCat"
+        />
+      </div>
+      <div v-if="chosenSubCategory !== ''" class="my-5">
+        <h6>Underkategori</h6>
+        <SubCategoryComponent
+          v-for="cat in subSubCategories"
+          :key="cat"
+          :label="cat"
+          category-type="subSubCategories"
         />
       </div>
     </div>
@@ -77,7 +97,7 @@
   <div>
     <h3>Newest items</h3>
 
-    <AdListComponent v-bind:ads="this.ads"/>
+    <AdListComponent :ads="this.ads"/>
   </div>
   </div>
 </template>
@@ -85,8 +105,9 @@
 <script>
 import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
-import { geolocationForUser } from "@/geolocationForUser";
-import { computed } from "vue";
+import SubCategoryComponent from "@/components/SubCategoryComponent";
+import { geolocationForUser } from '@/geolocationForUser'
+import { computed } from 'vue'
 import lendingService from "@/services/lendingService";
 
 export default {
@@ -94,6 +115,7 @@ export default {
   components: {
     AdListComponent,
     CategoryComponent,
+    SubCategoryComponent
   },
   setup() {
     const { coords } = geolocationForUser();
@@ -105,6 +127,7 @@ export default {
   },
   data() {
     return {
+      searchWord: "",
       priceRangeValue : 0,
       distanceRangeValue : 0,
       showUnderCategories : 0,
@@ -116,16 +139,52 @@ export default {
         {
           title: "Verktøy",
           icon: "fa-hammer",
+          subCategories: [
+            "Sag",
+            "Hammer",
+            "Vater"
+          ]
         },
         {
-          title: "Bil",
+          title: "Kjøretøy",
           icon: "fa-car",
+          subCategories: [
+            "Bil",
+            "Båt",
+            "Sykkel",
+            "Sparkesykkel"
+          ]
         },
         {
-          title: "Båt",
-          icon: "fa-ship",
+          title: "Lyd",
+          icon: "fa-headphones",
+          subCategories: [
+            "Høyttaler",
+            "CD-Spiller",
+            "Platespiller",
+            "Hodetelefoner"
+          ]
         },
+        {
+          title: "Sport",
+          icon: "fa-dumbbell",
+          subCategories: [
+            {
+              title: "Ballsport",
+              subCategories: [
+                "Håndball",
+                "Fotball",
+                "Basketball",
+                "Annet"
+              ]
+            }
+          ]
+        }
       ],
+      subCategories: [],
+      subSubCategories: [],
+      chosenMainCategory: "",
+      chosenSubCategory: ""
     };
   },
   methods: {
@@ -174,9 +233,50 @@ export default {
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
     },
+    chosenMainCat(title) {
+      this.chosenMainCategory = title
+
+      for(let i = 0; i < this.categories.length; i++) {
+        if(this.categories[i].title === title) {
+          if(this.categories[i].subCategories.some(x => x.title !== null && x.title !== undefined)) {
+            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
+              this.subCategories = this.categories[i].subCategories[j].title
+            }
+          } else {
+            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
+              this.subCategories = this.categories[i].subCategories[j]
+            }
+          }
+        }
+      }
+    },
+    chosenSubCat(subCat) {
+      this.chosenSubCat = subCat
+
+      for(let i = 0; i < this.categories.length; i++) {
+        this.subSubCategories = this.categories[3].subCategories
+        // for(let j = 0; j < this.categories[i].subCategories.length; j++) {
+        //
+        // }
+      }
+    },
+    search() {
+      if(this.searchWord === "") {
+        return
+      }
+
+      lendingService
+        .getAdsBySearch(this.searchWord)
+        .then(res => {
+          this.ads = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   },
   watch:{
-    $route:"getAdsWhenOnMainpage"
+    $route: "getAdsWhenOnMainpage",
   },
   created() {
     this.getRandomAds()
