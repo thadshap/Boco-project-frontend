@@ -266,11 +266,12 @@ export default {
       }
 
       console.log(this.searchWord)
-      console.log(typeof this.searchWord)
 
       lendingService
         .getAdsBySearch(this.searchWord)
         .then(res => {
+          console.log("Recieved from server")
+          console.log(res.data)
           this.ads = res.data
         })
         .catch(err => {
