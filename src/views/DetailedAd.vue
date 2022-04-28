@@ -128,6 +128,7 @@ import { ref } from "vue";
 import mapIcon from "@/assets/img/mapIcon.png";
 import Datepicker from "@vuepic/vue-datepicker";
 import lendingService from "@/services/lendingService";
+import moment from 'moment';
 
 export default {
   inject : ["GStore"],
@@ -182,7 +183,6 @@ export default {
     async getReviews(){
       await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
         this.reviews = response.data;
-        console.log(response.data);
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
@@ -213,15 +213,20 @@ export default {
       }
     },
     async sendRequest(){
+      //TODO fix this correct with other pricetypes than days
+      const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
+      const dateto = moment(this.date[1]).format('YYYY-MM-DD')
+      console.log(localStorage.getItem("userId"));
+      const diffTime = Math.abs(this.date[1] - this.date[0]);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       await lendingService.createRental(
-          new Date().toLocaleDateString(),
-          this.date[0].toISOString().substring(0,10),
-          this.date[1].toISOString().substring(0,10),
-          this.date[0].toISOString().substring(0,10),
-          //TODO fix this correct
-          ((this.date[0].getDate - this.date[0].getDate) * this.ad.price),
+          new Date().toLocaleDateString('en-CA'),
+          datefrom,
+          dateto,
+          datefrom,
+          (diffDays*this.ad.price),
           this.lender.id,
-          this.ad.userId,
+          localStorage.getItem("userId"),
           this.$store.getters.currentAd.id
       ).catch(error => {
         console.log(error);
