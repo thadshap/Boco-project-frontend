@@ -268,7 +268,7 @@ export default {
       lendingService
         .getAdsBySearch(this.searchWord)
         .then(res => {
-          console.log(res.data)
+          this.ads = res.data
         })
         .catch(err => {
           console.log(err)
