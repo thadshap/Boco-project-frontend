@@ -4,6 +4,7 @@
       <div class="container">
         <div class="d-flex flex-row flex-wrap">
           <RentalComponent
+              v-on:click="rentalClick($event)"
               v-for="rental in rentals"
               :key="rental"
               :id="rental.id"
@@ -36,6 +37,11 @@ export default {
       type: Array,
     }
   },
+  methods: {
+    rentalClick(e){
+
+    }
+  }
 
 }
 </script>

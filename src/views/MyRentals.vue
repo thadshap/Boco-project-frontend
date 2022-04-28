@@ -35,8 +35,6 @@
   <div>
     <RentalListComponent
         :rentals="rentals"
-        :loaned-ads="false"
-        :my-ads="true"
     />
   </div>
 </template>
