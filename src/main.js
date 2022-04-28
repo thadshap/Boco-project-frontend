@@ -12,6 +12,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import "nprogress/nprogress.css";
 import gAuthPlugin from "vue3-google-oauth2";
 
+
 let gauthClientId = "736018580187-kmhgjhg8i7ttrsh2k2b8gjk6v8jd1nsi.apps.googleusercontent.com";
 
 createApp(App)

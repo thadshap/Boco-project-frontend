@@ -28,6 +28,7 @@
 </template>
 
 <script>
+
 export default {
   name: "AdComponent",
   props: {
@@ -56,7 +57,8 @@ export default {
       return require("../assets/img/" + img);
     },
     goToDetailedView(){
-      console.log(this.$props.id);
+      this.$store.dispatch("setCurrentAd", this.$props);
+
       this.$router.push({
         path: "/ad/:id",
         name : "Ad",
