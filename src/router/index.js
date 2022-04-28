@@ -11,6 +11,7 @@ import Register from "@/views/Register";
 import Chat from "@/views/Chat";
 import ResetPassword from "../views/ResetPassword";
 import { authGuard } from "@/helpers/auth.guard";
+import MyRentals from "@/views/MyRentals";
 import UserProfile from "@/views/UserProfile";
 
 const routes = [
@@ -55,6 +56,12 @@ const routes = [
     name: "Messages",
     component: Chat,
     beforeEnter: authGuard
+  },
+  {
+    path: "/rentals",
+    name: "Rental",
+    component: MyRentals,
+    // beforeEnter: authGuard
   },
   {
     path: "/profile",
