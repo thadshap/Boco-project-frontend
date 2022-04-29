@@ -18,7 +18,7 @@
         <div class="w-100">
           <div class="header">Om meg</div>
           <div class="w-100 overview-container">
-          <div class="mt-auto w-50 overview">
+          <div class="mt-auto overview">
             <div class="d-inline-flex w-100 firstname-container">
               <p class="form-label overview-header">Fornavn</p>
               <p class="form-label">{{state.firstname}}</p>
@@ -46,13 +46,6 @@
           </div>
           <div class="header">Brukeropplysning</div>
           <div class="me-auto w-100 user-info">
-            <div class="d-inline-flex w-100 email-container">
-              <label class="form-label email-label">Epost</label>
-              <input class="user-input" type="email" id="email" v-model="state.emailChange" v-on:change="disableChangeBtn">
-              <span id="emailError" class="text-danger w-65" v-if="v$.emailChange.$error">
-                {{ v$.emailChange.$errors[0].$message }}
-              </span>
-            </div>
             <div class="d-inline-flex w-100 password-container">
               <label class="form-label password-label">Passord</label>
               <input class="user-input" type="password" id="password" v-model="state.passwordChange" v-on:change="disableChangeBtn">
@@ -101,7 +94,6 @@ export default {
       password: "",
       firstnameChange: "",
       lastnameChange: "",
-      emailChange:"",
       passwordChange:"",
       repeatPasswordChange: ""
     });
@@ -145,7 +137,7 @@ export default {
         })
     },
     changeUserInfo:async function(){
-      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.emailChange,this.state.passwordChange,localStorage.getItem("userId"))
+      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.passwordChange,localStorage.getItem("userId"))
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
@@ -163,7 +155,7 @@ export default {
         })
     },
     disableChangeBtn(){
-      if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.emailChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
+      if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
@@ -186,7 +178,6 @@ export default {
         await this.changeUserInfo()
         this.state.firstnameChange = ""
         this.state.lastnameChange = ""
-        this.state.emailChange = ""
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
         this.disableBtn = true
@@ -249,6 +240,7 @@ export default {
   border-radius: 4px;
   text-align: center;
   padding: 4%;
+  width: 60%;
 }
 .firstname-label{
   border-width: 8px;
@@ -261,7 +253,7 @@ export default {
   padding: 4%;
 
 }
-.password-label, .email-label, .lastname-label, .firstname-label{
+.password-label, .lastname-label, .firstname-label{
   font-size: 1.2em;
 }
 .user-input{
@@ -297,7 +289,7 @@ export default {
 .delete-user-btn:hover{
   background: rgba(227, 2, 2, 0.7);
 }
-#emailError, #passwordError, #repeatPasswordError{
+#passwordError, #repeatPasswordError{
   display: flex;
   width: 50%;
   left: 50%;
@@ -319,7 +311,7 @@ export default {
   padding: 4%;
 }
 @media (max-width: 573px) {
-  .password-label, .email-label, .lastname-label, .firstname-label{
+  .password-label, .lastname-label, .firstname-label{
     font-size: 1em;
   }
   .user-input{
@@ -332,12 +324,12 @@ export default {
   .user-img-upload-btn{
     font-size: 0.9em;
   }
-  #emailError, #passwordError, #repeatPasswordError{
+  #passwordError, #repeatPasswordError{
     font-size: 0.7em;
   }
 }
 @media (max-width: 370px){
-  .password-label, .email-label, .lastname-label, .firstname-label{
+  .password-label, .lastname-label, .firstname-label{
     font-size: 0.9em;
   }
   .user-input{
@@ -352,7 +344,7 @@ export default {
   }
 }
 @media (max-width: 300px){
-  .password-label, .email-label, .lastname-label, .firstname-label{
+  .password-label, .lastname-label, .firstname-label{
     font-size: 0.6em;
   }
 }
