@@ -76,7 +76,7 @@ export default {
         this.lender.email = response.data.email
         this.lender.rating = response.data.rating
       })      
-      .catch(function (error) {
+      .catch(error =>{
         console.log(error);
       });
     },
@@ -86,7 +86,7 @@ export default {
       .then(response =>{
         this.reviews = response.data
       })
-      .catch(function (error){
+      .catch(error => {
         console.log(error)
       });
     }
