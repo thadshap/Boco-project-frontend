@@ -6,7 +6,11 @@
         </svg>
     </button>
   <div class="d-flex flex-column groups" v-if="navbar">
-      <GroupComponent />
+      <GroupComponent 
+      v-for="group in groups"
+      :key="group"
+      :groupId="group.groupId"
+      :groupName="group.groupName"/>
   </div>
   <div class="d-flex flex-column chat" v-if="!navbar">
         <div class="d-flex justify-content-between align-items-center">
@@ -55,7 +59,7 @@ export default {
       return{
           navbar: false,
           messages:[],
-          users:[]
+          groups:[]
       }
   },
   components:{
@@ -70,7 +74,6 @@ export default {
       async getMessages(){
           await chatService.getMessagesByGroupId(1096)
           .then(response => {
-              console.log(response.data)
               this.messages = response.data
           })
           .catch(error => {
@@ -90,11 +93,22 @@ export default {
                         console.log(error)
                     })
                 }
+      },
+      async getGroups(){
+          await chatService.getGroupChatsByUserId(1) //parseInt(localStorage.getItem("userID"))
+          .then(response => {
+              this.groups = response.data
+              console.log(response.data)
+          })
+          .catch(error => {
+              console.log(error)
+          })
       }
   },
   
   mounted(){
       this.getMessages()
+      this.getGroups()
   }
 };
 </script>
