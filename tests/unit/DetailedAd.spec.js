@@ -2,8 +2,6 @@ import {mount} from "@vue/test-utils";
 import {createStore} from "vuex"
 import DetailedAd from "@/views/DetailedAd";
 
-import axios from "axios"
-jest.mock("axios")
 
 const ad = {
   "rental": true,
