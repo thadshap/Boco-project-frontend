@@ -1,4 +1,4 @@
-import {mount, shallowMount} from "@vue/test-utils";
+import {mount} from "@vue/test-utils";
 import {createStore} from "vuex"
 import DetailedAd from "@/views/DetailedAd";
 
@@ -81,7 +81,7 @@ describe("DetailedAd", () => {
     });
 
 
-    await wrapper.find('[id="makeRequest"]').trigger("click").catch(error => {console.log()});
+    await wrapper.find('[id="makeRequest"]').trigger("click");
     expect(wrapper.find('[id="makeRequest"]').exists()).toBe(true)
     expect(wrapper.find('[id="time"]').exists()).toBe(true);
     expect(wrapper.find('[id="sendRequest"]').element.disabled).toBe(true);
