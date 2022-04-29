@@ -6,6 +6,7 @@ export default createStore({
     // chosenMainCategory: "",
     lastClickedMainCat: null,
     currentAd : {},
+    navbarState: false,
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
@@ -19,6 +20,9 @@ export default createStore({
     // },
     SET_LAST_CLICKED_MAIN_CAT(state, lastClickedMainCat) {
       state.lastClickedMainCat = lastClickedMainCat;
+    },
+    SET_NAVBAR_STATE(state, navbarState){
+      state.navbarState = navbarState;
     }
   },
   actions: {
@@ -33,6 +37,9 @@ export default createStore({
     // },
     setLastClickedMainCat({ commit }, lastClickedMainCat) {
       commit("SET_LAST_CLICKED_MAIN_CAT", lastClickedMainCat)
+    },
+    setNavbarState({commit},navbarState){
+      commit("SET_NAVBAR_STATE", navbarState)
     }
   },
   getters: {
@@ -47,6 +54,9 @@ export default createStore({
     },
     currentAd(state) {
       return state.currentAd
+    },
+    messageNavbar(state) {
+      return state.navbarState;
     }
   },
 });
