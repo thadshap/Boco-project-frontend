@@ -1,12 +1,13 @@
 <template>
     <div class="d-flex message">
         <img class="profile-picture" src="{{profilePicture}}">
-        <div class="flex-grow-1 data">
-            <div>
-                <span class="username">{{username}}</span>
+        <div class="flex-grow-1 padding">
+            <div class="text">
+                <span class="name">{{firstName}}&nbsp;</span>
+                <span class="name">{{lastName}}&nbsp;</span>
                 <span class="timestamp">{{timestamp}}</span>
             </div>
-            <div class="message-content">{{content}}</div>
+            <div class="text">{{content}}</div>
         </div>
     </div>
 </template>
@@ -15,7 +16,11 @@
 export default {
     name: "MessageComponent",
     props:{
-        username:{
+        firstName:{
+            type: String,
+            required: true,
+        },
+        lastName:{
             type: String,
             required: true,
         },
@@ -35,26 +40,19 @@ export default {
 }
 </script>
 <style scoped>
-.message{
-    width: 100%;
-}
 .profile-picture{
-    width: 100px;
-    height: 100px;
-    margin: 10px;
+    width: 50px;
+    height: 50px;
     border-radius: 10px;
 }
-.data{
-    margin: 10px;
-}
-.username{
-    
+.text{
+    text-align: left;
+    padding-bottom: 10px;
 }
 .timestamp{
     font-size: 10px;
-    margin-left: 10px;
 }
-.message-content{
-
+.padding{
+    padding: 10px;
 }
 </style>
