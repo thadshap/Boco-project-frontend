@@ -19,7 +19,8 @@ export default {
   },
   methods:{
       changeNavbarState(){
-          this.$store.dispatch("setNavbarState")
+          this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
+          this.$store.dispatch("setGroupName", this.$props.groupName)
       }
   }
 };

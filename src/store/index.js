@@ -7,6 +7,7 @@ export default createStore({
     lastClickedMainCat: null,
     currentAd : {},
     navbarState: false,
+    groupName: null,
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
@@ -23,6 +24,9 @@ export default createStore({
     },
     SET_NAVBAR_STATE(state, navbarState){
       state.navbarState = navbarState;
+    },
+    SET_GROUP_NAME(state, groupName){
+      state.groupName = groupName
     }
   },
   actions: {
@@ -38,8 +42,11 @@ export default createStore({
     setLastClickedMainCat({ commit }, lastClickedMainCat) {
       commit("SET_LAST_CLICKED_MAIN_CAT", lastClickedMainCat)
     },
-    setNavbarState({commit},navbarState){
+    setNavbarState({commit}, navbarState){
       commit("SET_NAVBAR_STATE", navbarState)
+    },
+    setGroupName({commit}, groupName){
+      commit("SET_GROUP_NAME", groupName)
     }
   },
   getters: {
@@ -57,6 +64,9 @@ export default createStore({
     },
     messageNavbar(state) {
       return state.navbarState;
+    },
+    getGroupName(state) {
+      return state.groupName
     }
   },
 });
