@@ -206,11 +206,7 @@ export default {
     },
     startChat() {},
     makeRequest() {
-      if (this.showRequestDetails) {
-        this.showRequestDetails = false;
-      } else {
-        this.showRequestDetails = true;
-      }
+      this.showRequestDetails = !this.showRequestDetails;
     },
     async sendRequest(){
       //TODO fix this correct with other pricetypes than days
