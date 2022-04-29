@@ -6,6 +6,12 @@ export function authGuard(to, from, next) {
   //  const account = localStorage.getItem("vue-login-accounts") !== null && localStorage.getItem("vue-login-accounts") !== undefined
   console.log(account)
 
+  console.log("To path")
+  console.log(to.fullPath)
+
+  console.log("From path")
+  console.log(from.fullPath)
+
   if(!account) {
     // not logged in so redirect to login page with the return url
     return next({ path: "/login", query: { returnUrl: to.fullPath } });

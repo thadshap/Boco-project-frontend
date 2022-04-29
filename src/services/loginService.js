@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'http://localhost:'
+let url = "http://localhost:";
 let port = "8443"
 
 
@@ -16,7 +16,7 @@ export default {
   logIn(emailEntered, passwordEntered) {
     const options = {
       method: "POST",
-      url: `${url}${port}/auth/login`,
+      url: `${url}${port}/login`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -33,7 +33,7 @@ export default {
   signInFacebook() {
     const options = {
       method: "GET",
-      url: `${url}${port}/signin/facebook`,
+      url: `${url}${port}/auth/signin/facebook`,
       headers: {
         "Content-Type": "application/json"
       }
@@ -42,7 +42,7 @@ export default {
       .request(options)
       .then(response => {
         console.log(response)
-        window.open(response.data, "_blank")
+        window.open(response.data, "_self");
       })
       .catch(error => {
         console.error(error);
@@ -56,17 +56,17 @@ export default {
    */
   signInGoogle() {
     const options = {
-      method: "POST",
-      url: `${url}${port}/auth/login/outside`,
+      method: "GET",
+      url: `${url}${port}/auth/signin/google`,
       headers: {
         "Content-Type": "application/json",
       }
     };
     axios
       .request(options)
-      .then(function (response) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("userId", response.data.id);
+      .then(response => {
+        console.log(response)
+        window.open(response.data, "_self");
       })
       .catch(function (error) {
         console.error(error);

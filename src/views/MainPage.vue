@@ -279,13 +279,16 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   created() {
-    this.getRandomAds()
+    this.getRandomAds();
     //TODO send disse koordinatene til backend
     /*
     this.currPos.value.lat;
     this.currPos.value.lng;
 
      */
+  },
+  updated() {
+    console.log("Main page updated");
   }
 };
 </script>
