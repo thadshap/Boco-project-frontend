@@ -4,7 +4,6 @@ import router from "./router";
 import store from "./store";
 import "bootstrap";
 import OpenLayersMap from "vue3-openlayers";
-import Geolocation from 'ol/Geolocation';
 import "vue3-openlayers/dist/vue3-openlayers.css";
 import GStore from "./store/reactive";
 import "nprogress/nprogress.css";
@@ -21,7 +20,6 @@ createApp(App)
   .use(store)
   .use(router)
   .use(OpenLayersMap)
-    .use(Geolocation)
   .use(gAuthPlugin, {
     clientId: gauthClientId,
     prompt: "consent",

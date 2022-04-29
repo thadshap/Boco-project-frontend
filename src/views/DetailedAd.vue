@@ -153,7 +153,6 @@ export default {
     await this.getCurrentAd();
     await this.setLender();
     await this.getReviews();
-    //geocode("nedre");
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -172,7 +171,6 @@ export default {
     async getCurrentAd(){
       await lendingService.getAdById(this.$store.getters.currentAd.id).then(response => {
         this.ad = response.data;
-        console.log(response.data)
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
@@ -181,7 +179,6 @@ export default {
           this.GStore.flashMessage = ""
         }, 4000)
       })
-      //this.ad = this.$store.getters.currentAd;
     },
     async getReviews(){
       await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
@@ -219,8 +216,8 @@ export default {
       //TODO fix this correct with other pricetypes than days
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
-      console.log(localStorage.getItem("userId"));
-      const diffTime = Math.abs(this.date[1] - this.date[0]);
+      console.log(this.$store.getters.currentAd.id);
+      const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       await lendingService.createRental(
           new Date().toLocaleDateString('en-CA'),
@@ -233,6 +230,11 @@ export default {
           this.$store.getters.currentAd.id
       ).catch(error => {
         console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
       })
     },
     dropDown() {
