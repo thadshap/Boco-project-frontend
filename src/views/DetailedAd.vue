@@ -179,6 +179,18 @@ export default {
           this.GStore.flashMessage = ""
         }, 4000)
       })
+      this.getDurationTypeToNorwegian()
+    },
+    getDurationTypeToNorwegian(){
+      if (this.ad.durationType == 'MONTH'){
+        this.ad.durationType = "måned"
+      }else if (this.ad.durationType == 'DAY'){
+        this.ad.durationType = "dag"
+      }else if (this.ad.durationType == 'HOUR'){
+        this.ad.durationType = "time"
+      }else if (this.ad.durationType == 'WEEK'){
+        this.ad.durationType = "uke"
+      }
     },
     async getReviews(){
       await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
@@ -206,17 +218,12 @@ export default {
     },
     startChat() {},
     makeRequest() {
-      if (this.showRequestDetails) {
-        this.showRequestDetails = false;
-      } else {
-        this.showRequestDetails = true;
-      }
+      this.showRequestDetails = !this.showRequestDetails
     },
     async sendRequest(){
       //TODO fix this correct with other pricetypes than days
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
-      console.log(this.$store.getters.currentAd.id);
       const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       await lendingService.createRental(
@@ -230,7 +237,7 @@ export default {
           this.$store.getters.currentAd.id
       ).catch(error => {
         console.log(error);
-        this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
+        this.GStore.flashMessage = "Fikk ikke oprettet forespørsel"
         this.GStore.variant = "Error"
         setTimeout(() => {
           this.GStore.flashMessage = ""
