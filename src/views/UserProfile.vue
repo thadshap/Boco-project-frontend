@@ -76,13 +76,24 @@ export default {
         this.lender.email = response.data.email
         this.lender.rating = response.data.rating
       })      
-      .catch(function (error) {
+      .catch(error =>{
         console.log(error);
+      });
+    },
+    async getReviewsByLender(){
+      await lendingService
+      .getReviewsByUserId(parseInt(localStorage.getItem("lenderId")))
+      .then(response =>{
+        this.reviews = response.data
+      })
+      .catch(error => {
+        console.log(error)
       });
     }
   },
   async mounted(){
     await this.getLender()
+    await this.getReviewsByLender()
   }
 }
 </script>
