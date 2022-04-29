@@ -27,7 +27,8 @@
             :lastName="message.lastName"
             :timestamp="message.timestamp"
             :content="message.content"
-            :profilePicture="message.picture"/>
+            :profilePicture="message.picture"
+            :userId="message.user_id"/>
         </div>
         <div class="d-flex align-items-end bottom-toolbar">
             <button class="btn btn-primary plus-button" type="button">
@@ -78,13 +79,11 @@ export default {
               console.log(error)
           })
           await this.getUsers()
-          console.log(this.messages)
       },
       async getUsers(){
         for(let i = 0; i<this.messages.length; i++){ 
                 await lendingService.getUserById(this.messages[i].user_id)
                   .then(response => { 
-                      console.log(response.data)
                       this.messages[i].firstName = response.data.firstName; this.messages[i].lastName=response.data.lastName 
                     })
                     .catch(error => {
@@ -93,10 +92,9 @@ export default {
                 }
       },
       async getGroups(){
-          await chatService.getGroupChatsByUserId(1) //parseInt(localStorage.getItem("userID"))
+          await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId"))) 
           .then(response => {
               this.groups = response.data
-              console.log(response.data)
           })
           .catch(error => {
               console.log(error)

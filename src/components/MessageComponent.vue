@@ -3,9 +3,9 @@
         <img class="profile-picture" src="{{profilePicture}}">
         <div class="flex-grow-1 padding">
             <div class="text">
-                <span class="name">{{firstName}}&nbsp;</span>
-                <span class="name">{{lastName}}&nbsp;</span>
-                <span class="timestamp">{{timestamp}}</span>
+                <span v-on:click="routeToProfile" class="name">{{firstName}}&nbsp;</span>
+                <span v-on:click="routeToProfile" class="name">{{lastName}}</span>
+                <span class="timestamp">&nbsp;{{timestamp}}</span>
             </div>
             <div class="text">{{content}}</div>
         </div>
@@ -35,6 +35,16 @@ export default {
         profilePicture:{
             type: Image,
             required: true,
+        },
+        userId:{
+            type: Number,
+            required: true,
+        }
+    },
+    methods:{
+        routeToProfile(){
+            localStorage.setItem("lenderId", this.$props.userId)
+            this.$router.push({name:"UserProfile"})
         }
     }
 }
@@ -54,5 +64,10 @@ export default {
 }
 .padding{
     padding: 10px;
+}
+.name{
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
 }
 </style>
