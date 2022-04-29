@@ -153,6 +153,7 @@ export default {
     await this.getCurrentAd();
     await this.setLender();
     await this.getReviews();
+    //geocode("nedre");
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -170,7 +171,8 @@ export default {
   methods: {
     async getCurrentAd(){
       await lendingService.getAdById(this.$store.getters.currentAd.id).then(response => {
-        this.ad = response.data[0];
+        this.ad = response.data;
+        console.log(response.data)
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
@@ -179,6 +181,7 @@ export default {
           this.GStore.flashMessage = ""
         }, 4000)
       })
+      //this.ad = this.$store.getters.currentAd;
     },
     async getReviews(){
       await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
