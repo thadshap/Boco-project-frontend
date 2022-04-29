@@ -43,8 +43,13 @@ export default {
     },
     methods:{
         routeToProfile(){
-            localStorage.setItem("lenderId", this.$props.userId)
-            this.$router.push({name:"UserProfile"})
+            if (this.$props.userId!=localStorage.getItem("userId")) {
+                localStorage.setItem("lenderId", this.$props.userId)
+                this.$router.push({name:"UserProfile"}) 
+            }else{
+                this.$router.push("my_profile")
+            }
+            
         }
     }
 }
