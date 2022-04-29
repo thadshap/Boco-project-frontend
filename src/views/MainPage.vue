@@ -191,19 +191,11 @@ export default {
     showSorting() {
       console.log(new URL(location.href).searchParams.get('page'));
       this.showMenuBarFiltering = false;
-      if (this.showMenuBarSorting) {
-        this.showMenuBarSorting = false;
-      } else {
-        this.showMenuBarSorting = true;
-      }
+      this.showMenuBarSorting = !this.showMenuBarSorting;
     },
     showFiltering() {
       this.showMenuBarSorting = false;
-      if (this.showMenuBarFiltering) {
-        this.showMenuBarFiltering = false;
-      } else {
-        this.showMenuBarFiltering = true;
-      }
+      this.showMenuBarFiltering = !this.showMenuBarFiltering;
     },
     sortingPicked(e){
       this.sorting = e.currentTarget.id;
@@ -214,7 +206,6 @@ export default {
       lendingService.getPageWithRandomAds(24)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
-              console.log(i)
               //få poststed
               let ad = {
                 id: response.data[i].adId,
