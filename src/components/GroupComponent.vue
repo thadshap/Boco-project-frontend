@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <button class="name">{{groupName}}</button>
+        <button class="name" v-on:click="changeNavbarState">{{groupName}}</button>
     </div>
 </template>
 

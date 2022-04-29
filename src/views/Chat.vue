@@ -1,18 +1,18 @@
 <template>
 <div class="d-flex flex-column screen">
-    <button class="btn btn-primary menu-button" type="button" v-on:click="showNavbar">
+    <button class="btn btn-primary menu-button" type="button" v-on:click="changeNavbarState">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
         </svg>
     </button>
-  <div class="d-flex flex-column groups" v-if="navbar">
+  <div class="d-flex flex-column groups" v-if="this.$store.getters.messageNavbar">
       <GroupComponent 
       v-for="group in groups"
       :key="group"
       :groupId="group.groupId"
       :groupName="group.groupName"/>
   </div>
-  <div class="d-flex flex-column chat" v-if="!navbar">
+  <div class="d-flex flex-column chat" v-if="!this.$store.getters.messageNavbar">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
                 <span class="name">Group</span>
@@ -57,7 +57,6 @@ export default {
   name: "Chat",
   data(){
       return{
-          navbar: false,
           messages:[],
           groups:[]
       }
@@ -67,9 +66,8 @@ export default {
       GroupComponent
   },
   methods:{
-      showNavbar(){
-          var navbar = this.navbar
-          this.navbar = !navbar
+      changeNavbarState(){
+          this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
       },
       async getMessages(){
           await chatService.getMessagesByGroupId(1096)
