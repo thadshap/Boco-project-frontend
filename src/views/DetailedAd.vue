@@ -220,18 +220,34 @@ export default {
     makeRequest() {
       this.showRequestDetails = !this.showRequestDetails
     },
+    /**
+     * method to calculate the price of the rental depending on the durationType of price
+     */
+    calculatePrice(duration){
+      if (this.ad.durationType == 'måned'){
+        return duration/30 * this.ad.price
+      }else if (this.ad.durationType == 'dag'){
+        return duration*this.ad.price
+      }else if (this.ad.durationType == 'time'){
+        return duration*this.ad.price*24
+      }else if (this.ad.durationType == 'uke'){
+        return duration/7 * this.ad.price
+      }
+    },
     async sendRequest(){
       //TODO fix this correct with other pricetypes than days
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
       const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const price = this.calculatePrice(diffDays)
+      if(this)
       await lendingService.createRental(
           new Date().toLocaleDateString('en-CA'),
           datefrom,
           dateto,
           datefrom,
-          (diffDays*this.ad.price),
+          price,
           this.lender.id,
           localStorage.getItem("userId"),
           this.$store.getters.currentAd.id
