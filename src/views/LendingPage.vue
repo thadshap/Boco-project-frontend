@@ -21,8 +21,8 @@
           <label class="form-label">
             Hoved kategori
           </label>
-          <select v-model="state.category" class="form-select">
-            <option v-for="category in categories" :key="category.name" v-bind:id="category.name" v-on:click="clickedCategory($event)">{{ category.name }}</option>
+          <select v-model="state.category" class="form-select" id="category" v-on:change="clickedCategory('category')">
+            <option v-for="category in categories" :key="category" v-bind:id="category.id" v-on:click="clickedCategory($event)">{{ category.name }}</option>
           </select>
           <span class="text-danger" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
@@ -33,15 +33,15 @@
             Under kategori
           </label>
           <select v-model="state.subCategory" class="form-select">
-            <option v-for="subCategory in subCategories" :key="subCategory.name" v-bind:id="subCategory.name" v-on:click="clickedSubCategory($event)">{{ subCategory.name }}</option>
+            <option v-for="subCategory in subCategories" :key="subCategory" v-bind:id="subCategory.id" v-on:click="clickedSubCategories($event)">{{ subCategory.name }}</option>
           </select>
         </div>
-        <div class="d-flex flex-column" v-if="isSubSubCategori">
+        <div class="d-flex flex-column" v-if="isSubSubCategory">
           <label class="form-label">
             ... kategori
           </label>
           <select v-model="state.subSubCategory" class="form-select">
-            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory.name" v-bind:id="subSubcategory.name" v-on:click="clickedSubSubCategory($event)">{{ subSubCategory.name }}</option>
+            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory" v-bind:id="subSubCategory.id" v-on:click="clickedSubSubCategories($event)">{{ subSubCategory.name }}</option>
           </select>
         </div>
 <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
@@ -196,8 +196,6 @@ export default {
     return {
       imgUrl: [],
       imgError: "",
-
-      //TODO: Hente kategori data fra backend og legge inn i array listene
       categories: [],
       subCategories:[],
       subSubCategories:[],
@@ -239,7 +237,7 @@ export default {
       }
     },
     getCategories:async function(){
-      await lendingService.getAllCategories()
+      await lendingService.getAllParentCategories()
       .then(response => {
         this.categories = response.data
       }).catch(error => {
@@ -251,11 +249,15 @@ export default {
           console.log(error)
         })
     },
-    clickedCategory:async function(id){
-      this.categoriesId = id
+    clickedCategory:async function(e){
+      let clickedCategory = document.getElementById(e);
+      let displayText = clickedCategory.options[clickedCategory.selectedIndex].text;
+
+      this.categoriesId = displayText
       this.subCategoriesId = ""
-      await lendingService.getAllSubCategoriesForCategory(id).then(response => {
+      await lendingService.getAllSubCategoriesForCategory(displayText).then(response => {
         this.subCategories = response.data
+        console.log(response.data)
       }).catch(error => {
         this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
         this.GStore.variant = "Error"
