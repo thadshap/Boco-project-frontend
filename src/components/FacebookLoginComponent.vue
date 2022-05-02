@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import facebookLogin from "@/services/loginService"
+import {facebookLogin} from "@/services/loginService"
 
 export default {
   name: "FacebookLoginComponent",
@@ -16,7 +16,7 @@ export default {
       window.FB.login(response => {
         if(response.status === "connected") {
           facebookLogin(response.authResponse.accessToken)
-          console.log(response.authResponse.accessToken)
+          console.log(response)
           console.log(response)
         }
         if (response.authResponse) {

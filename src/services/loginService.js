@@ -16,20 +16,20 @@ export default {
   logIn(emailEntered, passwordEntered) {
     const options = {
       method: "POST",
-      url: `${url}:${port}/login`,
+      url: `${url}${port}/auth/login`,
       headers: {
         "Content-Type": "application/json",
       },
-      data: { email: emailEntered, password: passwordEntered },
+      data: {email: emailEntered, password: passwordEntered},
     };
     return axios.request(options);
   },
-
+}
   /**
    * Method to sign in a user through the users facebook account
    * @param facebookLoginRequest
    */
-  facebookLogin(facebookLoginRequest) {
+  export function facebookLogin(facebookLoginRequest) {
     const options = {
       method: 'POST',
       url: `${url}:${port}/auth/facebook/signin`,
@@ -41,18 +41,18 @@ export default {
       }
     };
 
-    return axios.request(options).then(function(response) {
+    return axios.request(options).then(function (response) {
       console.log(response.data);
-    }).catch(function(error) {
+    }).catch(function (error) {
       console.error(error);
     });
-  },
+  }
 
   /**
    * Method to sign in a user through the users google account
    * @param googleLoginRequest
    */
-  googleLogin(googleLoginRequest) {
+  export function googleLogin(googleLoginRequest) {
     const options = {
       method: "POST",
       url: `${url}:${port}/auth/google/signin`,
@@ -69,5 +69,4 @@ export default {
     }).catch(function(error) {
       console.error(error);
     });
-  }
 }

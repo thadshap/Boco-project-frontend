@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import googleLogin from "@/services/loginService";
+import {googleLogin} from "@/services/loginService";
 
 export default {
   name: "GoogleLoginComponent",
