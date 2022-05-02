@@ -130,6 +130,7 @@ import adService from "@/services/adService";
 import reviewService from "@/services/reviewService";
 import userService from "@/services/userService";
 import rentalService from "@/services/rentalService";
+import chatService from "@/services/chatService";
 import moment from 'moment';
 
 export default {
@@ -157,6 +158,7 @@ export default {
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
+    this.setLenderId();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -250,7 +252,19 @@ export default {
         }, 4000)
       })
     },
-    startChat() {},
+    async startChat() {
+      if (this.$store.getters.loggedIn) {
+        if (localStorage.getItem("userId") !== this.lender.id) {
+          var chatName = this.lender.firstName
+          await chatService.createGroupChatWithTwoUsers(chatName, localStorage.getItem("userId"), this.lender.id)
+          this.$router.push("/messages")
+        }else{
+          alert('Cannot create chat with self')
+        }
+      } else {
+        this.$router.push("/login")
+      }      
+    },
     makeRequest() {
       this.showRequestDetails = !this.showRequestDetails
     },
@@ -308,8 +322,10 @@ export default {
         this.showRightArrow = true;
       }
     },
-    seeLenderDetails() {
+    setLenderId(){
       localStorage.setItem("lenderId", this.ad.userId);
+    },
+    seeLenderDetails() {
       this.$router.push({
         name: "UserProfile",
       });

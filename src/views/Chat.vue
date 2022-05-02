@@ -53,11 +53,14 @@
 import MessageComponent from "@/components/MessageComponent";
 import GroupComponent from "@/components/GroupComponent";
 import chatService from "@/services/chatService";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 export default {  
   name: "Chat",
   data(){
       return{
-          groups:[]
+          groups:[],
+          stompClient:null,
       }
   },
   components:{
@@ -72,12 +75,30 @@ export default {
           await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId"))) 
           .then(response => {
               this.groups = response.data
-              console.log(this.groups)
           })
           .catch(error => {
               console.log(error)
           })
-      }
+      },
+      connect() {
+            var socket = new SockJS(`http://localhost:8443/ws/`);
+            var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
+            console.log("creating socket")
+            this.stompClient = Stomp.over(socket, options);
+        
+            console.log("connecting...")
+            this.stompClient.connect({
+                Authorization: 'Bearer '+localStorage.getItem("token")},function(frame){
+                    console.log("connected to socket " + frame);
+                
+                    this.stompClient.subscribe(`/topic/messages`, function(messageOutput){
+                    console.log("message sent from websocket" + JSON.parse(messageOutput.body))
+                    this.$store.dispatch("addMessage", messageOutput)
+                })
+            })
+        }
+    
+
   },
   
   mounted(){

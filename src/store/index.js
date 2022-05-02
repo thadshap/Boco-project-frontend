@@ -35,6 +35,9 @@ export default createStore({
     },
     SET_MESSAGES(state, messages){
       state.messages = messages
+    },
+    ADD_MESSAGE(state, message){
+      state.messages.push(message)
     }
   },
   actions: {
@@ -61,6 +64,9 @@ export default createStore({
     },
     setMessages({commit}, messages){
       commit("SET_MESSAGES", messages)
+    },
+    addMessage({commit}, message){
+      commit("ADD_MESSAGE", message)
     }
   },
   getters: {

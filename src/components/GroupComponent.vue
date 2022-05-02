@@ -26,7 +26,6 @@ export default {
           this.$store.dispatch("setGroupId", this.$props.groupId)
           this.getMessages()
           this.getUsers()
-          console.log(this.$store.getters.getGroupId)
       },
       async getMessages(){
           await chatService.getMessagesByGroupId(this.$store.getters.getGroupId)
