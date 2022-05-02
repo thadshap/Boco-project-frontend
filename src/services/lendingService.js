@@ -403,10 +403,10 @@ export default {
     return axios.request(options);
   },
   //Available
-  getAdsByUserId() {
+  getAllAvailableAdsByUserId(userId) {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/ads/available/1`,
+      url: `${url}${port}/api/ads/available/` + userId,
     };
 
     return axios.request(options);
@@ -465,7 +465,6 @@ export default {
       url: `${url}${port}/api/ads/page/` + pageSize,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
     };
 
@@ -480,7 +479,9 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/search/${searchString}`,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+      headers: {
+        "Content-Type": "application/json"
+      },
     };
 
     return axios.request(options);

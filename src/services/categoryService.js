@@ -4,7 +4,10 @@ let port = "8443"
 
 export default {
     getAllAdsForCategory(categoryId){
-        const options = {method: 'GET', url: `${url}${port}/api/categories/ads/` + categoryId};
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/categories/ads/` + categoryId
+        };
         return axios.request(options);
     },
 
@@ -12,7 +15,10 @@ export default {
      *get all categories
      */
     getAllCategories(){
-        const options = {method: 'GET', url: `${url}${port}/api/categories`};
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/categories`
+        };
         return axios.request(options);
     },
 
@@ -21,7 +27,10 @@ export default {
      * @param categoryName is the name of the parent category
      */
     getAllSubCategoriesForCategory(categoryName){
-        const options = {method: 'GET', url: `${url}${port}/api/categories/` + categoryName};
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/categories/` + categoryName
+        };
         return axios.request(options);
     },
 }
