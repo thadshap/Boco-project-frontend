@@ -330,7 +330,6 @@ export default {
         }
       }
 
-
       if (name == '--Velg kategori--') return
       else if (isChild == false && isParent == false) this.idToCategory = this.subCategoriesId
       else if (isChild == true && isParent == true) {
@@ -349,6 +348,7 @@ export default {
           this.GStore.flashMessage = ""
         }, 4000)
       }
+
     },
     clickedSubSubCategories(id){
       this.subSubCategoriesId = id

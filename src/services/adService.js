@@ -10,8 +10,11 @@ export default {
     deleteAd(adId) {
         const options = {
             method: "DELETE",
-            url: `${url}${port}/api/ads/` + adId,
-            headers: {Authorization: 'Bearer'}
+            url: `${url}${port}/api/auth/ads/` + adId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
         };
 
         return axios.request(options);
@@ -31,8 +34,11 @@ export default {
     ) {
         const options = {
             method: "PUT",
-            url: `${url}${port}/api/ads/` + adId,
-            headers: {'Content-Type': 'application/json', Authorization: 'Bearer'},
+            url: `${url}${port}/api/auth/ads/` + adId,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
             data: {
                 title: newTitle,
                 price: newPrice,
@@ -69,10 +75,10 @@ export default {
 
         const options = {
             method: 'POST',
-            url: `${url}${port}/api/ads/newPicture`,
+            url: `${url}${port}/api/auth/ads/newPicture`,
             headers: {
                 'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
-                Authorization: 'Bearer '
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: '[form]'
         };
@@ -85,7 +91,6 @@ export default {
             url: `${url}${port}/api/calender/get`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: { adId : adId}
         };
@@ -108,8 +113,11 @@ export default {
     ) {
         const options = {
             method: "POST",
-            url: `${url}${port}/api/ads/newAd`,
-            headers: { "Content-Type": "application/json" },
+            url: `${url}${port}/api/auth/ads/newAd`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
             data: {
                 title: title,
                 description: description,
