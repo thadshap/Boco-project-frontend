@@ -13,6 +13,7 @@ import ResetPassword from "../views/ResetPassword";
 import { authGuard } from "@/helpers/auth.guard";
 import MyRentals from "@/views/MyRentals";
 import UserProfile from "@/views/UserProfile";
+import { redirectGuard } from "@/helpers/redirect.guard";
 
 const routes = [
   {
@@ -29,11 +30,13 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+    beforeEnter: redirectGuard
   },
   {
     path: "/register",
     name: "Register",
-    component: Register
+    component: Register,
+    beforeEnter: redirectGuard
   },
   {
     path: "/auth/renewYourPassword",

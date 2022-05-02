@@ -28,6 +28,8 @@ export default {
       console.log(googleUser.getAuthResponse().id_token);
       googleLogin(googleUser.getAuthResponse().id_token)
         .then(response => {
+          localStorage.setItem("token", response.data.token)
+          this.$router.push("/")
           console.log(response)
         })
         .catch(error => {
