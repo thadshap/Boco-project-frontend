@@ -11,8 +11,8 @@
           </h3>
           <h4>Eier: {{ ownerName }}</h4>
           <h4>Låner: {{ borrowerName }}</h4>
-          <h4>Leie fra: {{ price }}</h4>
-          <h4>Leie til: {{ price }}</h4>
+          <h4>Leie fra: {{ rentFrom }}</h4>
+          <h4>Leie til: {{ rentTo }}</h4>
           <h4>Total pris: {{ price }} kr</h4>
           <h4>Aktiv: {{ active }} </h4>
         </div>
