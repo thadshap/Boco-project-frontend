@@ -39,6 +39,7 @@
           :key="cat"
           :label="cat"
           category-type="subSubCategories"
+          @chosen-sub-cat="chosenSubSubCat"
         />
       </div>
     </div>
@@ -109,7 +110,6 @@ import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import adsService from "@/services/adsService";
-import lendingService from "@/services/lendingService";
 import categoryService from "@/services/categoryService";
 
 export default {
@@ -141,7 +141,8 @@ export default {
       subCategories: [],
       subSubCategories: [],
       chosenMainCategory: "",
-      chosenSubCategory: ""
+      chosenSubCategory: "",
+      chosenSubSubCategory: ""
     };
   },
   methods: {
@@ -181,12 +182,80 @@ export default {
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
     },
-    chosenMainCat(title) {
-      this.chosenMainCategory = title
-    },
     async getMainCategories() {
       await categoryService
         .getAllParentCategories()
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            let cat = {
+              title: response.data[i].name,
+              icon: response.data[i].icon
+            }
+            this.categories.push(cat)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async chosenMainCat(title) {
+      this.chosenMainCategory = title
+      this.subCategories = []
+      this.subSubCategories = []
+
+      await categoryService
+        .getAllSubCategoriesForCategory(title)
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            this.subCategories.push(response.data[i].name)
+          }
+
+          categoryService
+            .getAllAdsForCategoryAndSubCategories(title)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async chosenSubCat(subCat) {
+      this.chosenSubCategory = subCat
+      this.subSubCategories = []
+
+      await categoryService
+        .getAllSubCategoriesForCategory(subCat)
+        .then(response => {
+          if(response.status !== 204) {
+            for(let i = 0; i < response.data.length; i++) {
+              this.subSubCategories.push(response.data[i].name)
+            }
+          }
+
+          categoryService
+            .getAllAdsForCategoryAndSubCategories(subCat)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    chosenSubSubCat(subSubCat) {
+      this.chosenSubSubCategory = subSubCat
+
+      categoryService
+        .getAllAdsForCategoryAndSubCategories(subSubCat)
         .then(response => {
           console.log(response)
         })
@@ -194,22 +263,12 @@ export default {
           console.log(error)
         })
     },
-    chosenSubCat(subCat) {
-      this.chosenSubCat = subCat
-
-      for(let i = 0; i < this.categories.length; i++) {
-        this.subSubCategories = this.categories[3].subCategories
-        // for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-        //
-        // }
-      }
-    },
-    search() {
+    async search() {
       if(this.searchWord === "") {
         return
       }
 
-      adsService
+      await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
           this.ads = []

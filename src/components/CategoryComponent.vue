@@ -1,5 +1,5 @@
 <template>
-  <div class="card card-style" @click="clicked">
+  <div class="card card-style" :class="{ 'card-style-clicked': this.$store.getters.lastClickedMainCat === title }" @click="clicked">
     <div
       class="card-body d-flex flex-column justify-content-center align-items-center card-body-style"
     >
@@ -24,28 +24,9 @@ export default {
     }
   },
   methods: {
-    clicked(e) {
-      // console.log(e.getCurrentComponent)
-
-      if(this.$store.getters.lastClickedMainCat === "") {
-        console.log(this.$store.getters.lastClickedMainCat)
-
-        e.currentTarget.classList.toggle("card-style-clicked");
-        this.$store.dispatch("setLastClickedMainCat", e.currentTarget)
-        this.$emit("lastClickedMainCat", this.$props.title);
-        this.$store.dispatch("setLastClickedMainCat", this.$props.title)
-
-      } else if(this.$store.getters.lastClickedMainCat !== "") {
-        // console.log("LastClickedEL")
-        // console.log(this.$store.getters.lastClickedMainCat)
-        // if(this.$props.title === prevMainCat) {
-        //
-        // }
-
-        this.$store.dispatch("setLastClickedMainCat", this.$props.title)
-        this.$emit("lastClickedMainCat", this.$props.title);
-        e.currentTarget.classList.toggle("card-style-clicked");
-      }
+    clicked() {
+      this.$emit("lastClickedMainCat", this.$props.title);
+      this.$store.dispatch("setLastClickedMainCat", this.$props.title)
     }
   }
 };
