@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'https://localhost:'
+let url = 'http://localhost:'
 let port = "8443"
 
 export default {
@@ -11,7 +11,9 @@ export default {
         const options = {
             method: "POST",
             url: `${url}${port}/api/sort/list/price/ascending`,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json"
+            },
             data: [{ list: listOfAds }],
         };
 
@@ -25,7 +27,9 @@ export default {
         const options = {
             method: "POST",
             url: `${url}${port}/api/sort/list/price/descending`,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json"
+            },
             data: [
                 {
                     list: listOfAds,
@@ -44,7 +48,9 @@ export default {
         const options = {
             method: "POST",
             url: `${url}${port}/api/sort/list/distance/ascending`,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json"
+            },
             data: [{ list: listOfAds }],
         };
 
@@ -58,7 +64,9 @@ export default {
         const options = {
             method: "POST",
             url: `${url}${port}/api/sort/list/distance/descending`,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json",
+            },
             data: [{ list: listOfAds }],
         };
 
@@ -72,7 +80,9 @@ export default {
         const options = {
             method: 'POST',
             url: `${url}${port}/api/getListWithinPriceRange`,
-            headers: {'Content-Type': 'application/json', Authorization: 'Bearer '},
+            headers: {
+                'Content-Type': 'application/json'
+            },
             data: {
                 list: listOfAds,
                 upperLimit: upperLimit,
@@ -91,7 +101,9 @@ export default {
         const options = {
             method: "POST",
             url: `${url}${port}/api/filterByDistance`,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json"
+            },
             data: { list: listOfAds, upperLimit: limitUpper },
         };
 
@@ -109,10 +121,10 @@ export default {
         return axios.request(options);
     },
     //Available
-    getAdsByUserId() {
+    getAllAvailableAdsByUserId(userId) {
         const options = {
             method: "GET",
-            url: `${url}${port}/api/ads/available/1`,
+            url: `${url}${port}/api/ads/available/`+userId,
         };
 
         return axios.request(options);
@@ -169,7 +181,9 @@ export default {
         const options = {
             method: "GET",
             url: `${url}${port}/api/ads/page/` + pageSize,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json"
+            },
         };
 
         return axios.request(options);
@@ -183,13 +197,18 @@ export default {
         const options = {
             method: "GET",
             url: `${url}${port}/api/search/` + searchString,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                "Content-Type": "application/json"
+            },
         };
 
         return axios.request(options);
     },
     getAdsByRentalType(){
-        const options = {method: 'GET', url: `${url}${port}/api/ads/rental/true`};
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/ads/rental/true`
+        };
 
         return axios.request(options);
     },
