@@ -1,6 +1,6 @@
 import axios from "axios";
-let url = 'http://localhost:'
-let port = "8080"
+let url = 'https://localhost:'
+let port = "8443"
 
 export default {
     getAllAdsForCategory(categoryId){

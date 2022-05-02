@@ -70,22 +70,19 @@
             Filtrer
           </button>
           <div style="text-align: left" v-if="showMenuBarFiltering">
-            <a class="dropdown-item" href="#">Pris 0-{{priceRangeValue}}kr<br>
+            <a class="dropdown-item" href="#">max-pris:<br>
               <input
-                class="form-range"
-                type="range"
-                min="0"
-                max="1000"
-                step="50"
+                type="number"
                 v-model="priceRangeValue"
-            /></a
-            ><a class="dropdown-item" href="#">Avstand 0-{{distanceRangeValue}} km<br>
+            />
+              <input
+                  type="button"
+                  v-on:click="filterByPriceRange"
+                  value="filtrer"
+              /></a
+            ><a class="dropdown-item" href="#">max-avstand:<br>
             <input
-                class="form-range"
-                type="range"
-                min="0"
-                max="60"
-                step="2"
+                type="number"
                 v-model="distanceRangeValue"
             />
           </a
@@ -109,6 +106,7 @@ import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import lendingService from "@/services/lendingService";
+import adsService from "@/services/adsService";
 
 export default {
   name: "MainPage",
@@ -135,6 +133,7 @@ export default {
       showMenuBarSorting : false,
       showMenuBarFiltering : false,
       ads:[],
+      adsRightFormat:[],
       categories: [
         {
           title: "Verktøy",
@@ -191,28 +190,76 @@ export default {
     showSorting() {
       console.log(new URL(location.href).searchParams.get('page'));
       this.showMenuBarFiltering = false;
-      if (this.showMenuBarSorting) {
-        this.showMenuBarSorting = false;
-      } else {
-        this.showMenuBarSorting = true;
-      }
+      this.showMenuBarSorting = !this.showMenuBarSorting
     },
     showFiltering() {
       this.showMenuBarSorting = false;
-      if (this.showMenuBarFiltering) {
-        this.showMenuBarFiltering = false;
-      } else {
-        this.showMenuBarFiltering = true;
-      }
+      this.showMenuBarFiltering = !this.showMenuBarFiltering
     },
-    sortingPicked(e){
+    async sortingPicked(e){
+      this.ads = [];
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
       console.log(this.sorting);
+      if(this.sorting == "lav-hoy"){
+        await this.sortByIncreasingPrice()
+      } else if(this.sorting == "hoy-lav"){
+        await this.sortByDecreasingPrice()
+      } else if (this.sorting == "ny-eld"){
+        //TODO
+      } else if (this.sorting == "eld-ny"){
+        //TODO
+      }
+    },
+    async filterByPriceRange(){
+      this.showMenuBarFiltering = false;
+      console.log("hei")
+    },
+    async filterByDistanceRange(){
+
+    },
+    async sortByIncreasingPrice(){
+      await adsService.sortListOfAdsByIncreasingPrice(this.adsRightFormat).then(response => {
+        this.adsRightFormat = response.data;
+        for (let i = 0; i < response.data.length; i++) {
+          //få poststed
+          let ad = {
+            id: response.data[i].adId,
+            title: response.data[i].title,
+            img: "ski.jpg",
+            place: response.data[i].postalCode.toString(),
+            price: response.data[i].price
+          }
+          this.ads.push(ad)
+        }
+      })
+          .catch(error => {
+            console.error(error)
+          })
+    },
+    async sortByDecreasingPrice(){
+      await adsService.sortListByDescendingPrice(this.adsRightFormat).then(response => {
+        this.adsRightFormat = response.data;
+        for (let i = 0; i < response.data.length; i++) {
+          //få poststed
+          let ad = {
+            id: response.data[i].adId,
+            title: response.data[i].title,
+            img: "ski.jpg",
+            place: response.data[i].postalCode.toString(),
+            price: response.data[i].price
+          }
+          this.ads.push(ad)
+        }
+      })
+          .catch(error => {
+            console.error(error)
+          })
     },
     getRandomAds(){
       lendingService.getPageWithRandomAds(24)
           .then(response => {
+            this.adsRightFormat = response.data
             for (let i = 0; i < response.data.length; i++) {
               //få poststed
               let ad = {
