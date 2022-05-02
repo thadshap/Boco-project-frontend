@@ -40,7 +40,7 @@ export default {
             url: `${url}${port}/user/` + userId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: {}
         };
