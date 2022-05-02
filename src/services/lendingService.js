@@ -440,6 +440,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/users/ads/` + userId,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
