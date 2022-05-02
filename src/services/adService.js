@@ -96,7 +96,7 @@ export default {
      * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
      * @param categoryId is the id of the subcategory
      */
-    postNewAdd(
+    postNewAd(
         title,
         description,
         durationType,

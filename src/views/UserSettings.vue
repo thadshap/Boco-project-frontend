@@ -73,8 +73,8 @@
 import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
-import lendingService from "../services/lendingService";
 import Login from "./Login";
+import userService from "@/services/userService";
 
 
 export default {
@@ -122,7 +122,7 @@ export default {
       this.$router.go(-1)
     },
     getUserInfo:async function(){
-      await lendingService.getUserById(parseInt(localStorage.getItem("userId")))
+      await userService.getUserById(parseInt(localStorage.getItem("userId")))
         .then(response => {
           this.state.firstname = response.data.firstName
           this.state.lastname = response.data.lastName
@@ -138,7 +138,7 @@ export default {
     },
     changeUserInfo:async function(){
       console.log(parseInt(localStorage.getItem("userId")))
-      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,localStorage.getItem("userId"))
+      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,localStorage.getItem("userId"))
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
@@ -187,7 +187,7 @@ export default {
     deleteUser:async function(){
       let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
       if (deleteAccount == "JA") {
-        await lendingService.deleteUser(localStorage.getItem("userId"))
+        await userService.deleteUser(localStorage.getItem("userId"))
           .then(response => {
             console.log(response)
             this.$router.push({

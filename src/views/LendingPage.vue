@@ -20,7 +20,7 @@
           <label class="form-label">
             Hovedkategori
           </label>
-          <select class="form-select" id="" v-on:change="clickedCategory($event)">
+          <select class="form-select" id="category" v-on:change="clickedCategory($event)">
             <option value="">--Velg kategori--</option>
             <option v-for="category in categories" :key="category" value="category.name">{{ category.name }} </option>
           </select>
@@ -32,7 +32,7 @@
           <label class="form-label">
             Underkategori
           </label>
-          <select class="form-select" id="" v-on:change="clickedSubCategories($event)">
+          <select class="form-select" id="subCategory" v-on:change="clickedSubCategories($event)">
             <option value="">--Velg kategori--</option>
             <option v-for="subCategory in subCategories" :key="subCategory" value="subCategory.name">{{ subCategory.name }}</option>
           </select>
@@ -41,7 +41,7 @@
           <label class="form-label">
             ... kategori
           </label>
-          <select class="form-select" id="" >
+          <select class="form-select" id="subSubCategory" >
             <option value="">--Velg kategori--</option>
             <option v-for="subSubCategory in subSubCategories" :key="subSubCategory" value="subSubCategory.name" v-on:change="clickedSubSubCategories(subSubCategory.id)">{{ subSubCategory.name }}</option>
           </select>
@@ -140,8 +140,9 @@ import useValidate from "@vuelidate/core";
 import { helpers, required, integer, minLength, maxLength } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import axios from "axios"
-import lendingService from "../services/lendingService";
 import MainPage from "./MainPage";
+import categoryService from "@/services/categoryService";
+import adService from "@/services/adService";
 
 export default {
   inject: ["GStore"],
@@ -232,7 +233,7 @@ export default {
 
       if(!this.v$.$error && this.imgError === "") {
 
-        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("userId"), this.idToCategory)
+        await adService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("userId"), this.idToCategory)
           .then(response => {
             this.GStore.flashMessage = "Annonsen ble opprettet!"
             this.GStore.variant = "Success"
@@ -255,7 +256,7 @@ export default {
       }
     },
     getCategories:async function(){
-      await lendingService.getAllParentCategories()
+      await categoryService.getAllParentCategories()
       .then(response => {
         this.categories = response.data
       }).catch(error => {
@@ -291,7 +292,7 @@ export default {
 
       if (name == '--Velg kategori--') this.isSubCategory = false
       else {
-        await lendingService.getAllSubCategoriesForCategory(name).then(response => {
+        await categoryService.getAllSubCategoriesForCategory(name).then(response => {
           this.subCategories = response.data
           this.isSubCategory = true
           this.idToCategory = this.categoriesId
@@ -333,7 +334,7 @@ export default {
       if (name == '--Velg kategori--') return
       else if (isChild == false && isParent == false) this.idToCategory = this.subCategoriesId
       else if (isChild == true && isParent == true) {
-        await lendingService.getAllSubCategoriesForCategory(name).then(response => {
+        await categoryService.getAllSubCategoriesForCategory(name).then(response => {
           this.isSubSubCategory = true
           this.subSubCategories = response.data
         }).catch(error => {
