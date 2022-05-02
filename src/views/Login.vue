@@ -33,20 +33,10 @@
           </div>
           <div class="d-flex flex-column justify-content-center">
 
-<!--            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button" @click="loginFacebook">-->
-<!--              <i class="fab fa-facebook facebook-icon-style"></i>-->
-<!--              Logg inn med Facebook-->
-<!--            </button>-->
-
-<!--            <button class="btn btn-primary w-100 mb-5 form-continue-with-google-btn" type="button" @click="loginGoogle">-->
-<!--              <i class="fab fa-google google-icon-style"></i>-->
-<!--              Logg inn med Google-->
-<!--            </button>-->
-
             <FacebookLoginComponent />
             <GoogleLoginComponent />
-          </div>
 
+          </div>
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
             <router-link to="/register" class="btn btn-primary w-100 form-register-btn-style">Registrer</router-link>
           </div>
@@ -60,22 +50,18 @@
 <script>
 import useValidate from "@vuelidate/core";
 import lendingService from "@/services/lendingService";
-import loginService from "@/services/loginService";
 import { helpers, email } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
 import FacebookLoginComponent from "@/components/FacebookLoginComponent";
 import GoogleLoginComponent from "@/components/GoogleLoginComponent";
-
-// import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
-// import { accountService } from "@/services/account.service";
+import { logIn } from "@/services/loginService";
 
 
 export default {
   inject: ["GStore"],
   name: "Login",
   components: {
-    // VueFacebookLoginComponentNextEs
     FacebookLoginComponent,
     GoogleLoginComponent
   },
@@ -98,35 +84,9 @@ export default {
   data(){
     return{
       password:'',
-      FB: {},
-      scope: {}
     }
   },
-  async mounted() {
-    await this.loadFacebookSDK(document, "script", "facebook-jssdk");
-    await this.initFacebook();
-  },
   methods:{
-    initFacebook() {
-      window.fbAsyncInit = function() {
-        window.FB.init({
-          appId: "1181763609285094", //You will need to change this
-          status: true, // This is important, it's not enabled by default
-          xfbml: true,
-          version: "v2.7"
-        });
-      };
-    },
-    loadFacebookSDK(d, s, id) {
-      let js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {
-        return;
-      }
-      js = d.createElement(s);
-      js.id = id;
-      js.src = "//connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    },
     back() {
       this.$router.go(-1)
     },
@@ -164,7 +124,7 @@ export default {
       if (this.v$.$error){
         return
       }
-      await loginService.logIn(this.state.email, this.password)
+      await logIn(this.state.email, this.password)
         .then((response) => {
             console.log(response.status)
             if(response.status === 404) {
@@ -189,19 +149,7 @@ export default {
           });
 
       await this.$router.push("/")
-    },
-    // handleSdkInit({ FB, scope }) {
-    //   this.FB = FB
-    //   this.scope = scope
-    // },
-    // loginFacebook() {
-    //   // accountService.loginFacebook(this.FB);
-    //   loginService.signInFacebook();
-    // },
-    // loginGoogle(){
-    //   // accountService.loginGoogle(this.$gAuth);
-    //   loginService.signInGoogle();
-    // },
+    }
   }
 };
 </script>
