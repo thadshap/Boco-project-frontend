@@ -191,19 +191,11 @@ export default {
     showSorting() {
       console.log(new URL(location.href).searchParams.get('page'));
       this.showMenuBarFiltering = false;
-      if (this.showMenuBarSorting) {
-        this.showMenuBarSorting = false;
-      } else {
-        this.showMenuBarSorting = true;
-      }
+      this.showMenuBarSorting = !this.showMenuBarSorting;
     },
     showFiltering() {
       this.showMenuBarSorting = false;
-      if (this.showMenuBarFiltering) {
-        this.showMenuBarFiltering = false;
-      } else {
-        this.showMenuBarFiltering = true;
-      }
+      this.showMenuBarFiltering = !this.showMenuBarFiltering;
     },
     sortingPicked(e){
       this.sorting = e.currentTarget.id;
@@ -211,10 +203,9 @@ export default {
       console.log(this.sorting);
     },
     getRandomAds(){
-      lendingService.getPageWithRandomAds(24)
+      lendingService.getPageWithRandomAds(5)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
-              console.log(i)
               //få poststed
               let ad = {
                 id: response.data[i].adId,
@@ -268,7 +259,19 @@ export default {
       lendingService
         .getAdsBySearch(this.searchWord)
         .then(res => {
-          this.ads = res.data
+          this.ads = []
+          console.log("Received from server")
+          console.log(res.data)
+          for(let i = 0; i < res.data.length; i++) {
+            let ad = {
+              id: res.data[i].adId,
+              title: res.data[i].title,
+              img: "ski.jpg",
+              place: res.data[i].city,
+              price: res.data[i].price
+            }
+            this.ads.push(ad)
+          }
         })
         .catch(err => {
           console.log(err)
@@ -279,13 +282,16 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   created() {
-    this.getRandomAds()
+    this.getRandomAds();
     //TODO send disse koordinatene til backend
     /*
     this.currPos.value.lat;
     this.currPos.value.lng;
 
      */
+  },
+  updated() {
+    console.log("Main page updated");
   }
 };
 </script>

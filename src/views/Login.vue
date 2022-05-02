@@ -31,32 +31,12 @@
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-signin-btn-container-style">
             <button class="btn btn-primary w-100 form-signin-btn-style" @click="loginSubmit">Logg inn</button>
           </div>
-          <div>
+          <div class="d-flex flex-column justify-content-center">
 
-<!--            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button">-->
-<!--              <i class="fab fa-facebook facebook-icon-style"></i>-->
-<!--              Logg inn med Facebook-->
-<!--            </button>-->
+            <FacebookLoginComponent />
+            <GoogleLoginComponent />
 
-            <vue-facebook-login-component-next-es
-              app-id="3598318360302645"
-              class="btn w-100" style="background-color: #0a58ca"
-              logo-style="color: white"
-              text-style="color: white"
-              @sdk-init="handleSdkInit"
-              @click="loginFacebook"
-              v-if="!this.$store.getters.isLoggedIn"
-            />
-
-<!--            @click="login"-->
-<!--            scope="{ login: login(), logout: logout() }"-->
-
-            <button class="btn btn-primary w-100 mb-5 form-continue-with-google-btn" type="button" @click="loginGoogle">
-              <i class="fab fa-google google-icon-style"></i>
-              Logg inn med Google
-            </button>
           </div>
-
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
             <router-link to="/register" class="btn btn-primary w-100 form-register-btn-style">Registrer</router-link>
           </div>
@@ -69,18 +49,21 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import {helpers, email} from "@vuelidate/validators";
-import { computed, reactive } from "vue";
 import lendingService from "@/services/lendingService";
+import { helpers, email } from "@vuelidate/validators";
+import { computed, reactive } from "vue";
 
-import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
-import { accountService } from "@/services/account.service";
+import FacebookLoginComponent from "@/components/FacebookLoginComponent";
+import GoogleLoginComponent from "@/components/GoogleLoginComponent";
+import { logIn } from "@/services/loginService";
+
 
 export default {
   inject: ["GStore"],
   name: "Login",
   components: {
-    VueFacebookLoginComponentNextEs
+    FacebookLoginComponent,
+    GoogleLoginComponent
   },
   setup() {
     const state = reactive({
@@ -101,8 +84,6 @@ export default {
   data(){
     return{
       password:'',
-      FB: {},
-      scope: {}
     }
   },
   methods:{
@@ -143,8 +124,8 @@ export default {
       if (this.v$.$error){
         return
       }
-      await lendingService.logIn(this.state.email, this.password)
-          .then(response => {
+      await logIn(this.state.email, this.password)
+        .then((response) => {
             console.log(response.status)
             if(response.status === 404) {
               alert("Feil brukernavn eller passord")
@@ -168,17 +149,7 @@ export default {
           });
 
       await this.$router.push("/")
-    },
-    handleSdkInit({ FB, scope }) {
-      this.FB = FB
-      this.scope = scope
-    },
-    loginFacebook() {
-      accountService.loginFacebook(this.FB);
-    },
-    loginGoogle(){
-      accountService.loginGoogle(this.$gAuth);
-    },
+    }
   }
 };
 </script>

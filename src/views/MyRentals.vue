@@ -17,20 +17,6 @@
         </button>
       </div>
     </div>
-
-    <div>
-      <h3>Categories</h3>
-      <div
-          class="d-flex flex-row justify-content-center align-items-center flex-wrap categories-card-container-style"
-      >
-        <CategoryComponent
-            v-for="category in categories"
-            :key="category"
-            :title="category.title"
-            :icon="category.icon"
-        />
-      </div>
-    </div>
   </div>
   <div>
     <RentalListComponent
@@ -41,32 +27,16 @@
 
 <script>
 import RentalListComponent from "@/components/RentalListComponent";
-import CategoryComponent from "@/components/CategoryComponent";
 import lendingService from "@/services/lendingService";
 
 export default {
   name: "MyRentals",
   components: {
     RentalListComponent,
-    CategoryComponent,
   },
   data() {
     return {
       rentals: [],
-      categories: [
-        {
-          "title": "Verktøy",
-          "icon": "fa-hammer"
-        },
-        {
-          "title": "Bil",
-          "icon": "fa-car"
-        },
-        {
-          "title": "Båt",
-          "icon": "fa-ship"
-        }
-      ],
     };
   },
   methods: {
@@ -78,21 +48,13 @@ export default {
       lendingService
           .getHistoryRentalForUser(localStorage.getItem("userId"))
           .then(response => {
-            // this.rentals = response.data
             for (let i = 0; i < response.data.rentals.length; i++) {
               this.rentals.push(response.data.rentals[i])
-              console.log(response.data.rentals[1])
             }
-            console.log(response.data.rentals)
-            console.log(response.status)
             console.log(this.rentals)
             if(response.status!==200){
-              //legg til nettverksfeil tilbakemelding
-              alert("fikk ikke kontakt med backend")
-              return
+              alert("Fikk ikke kontakt med serveren")
             }
-            // alert(response.data)
-            // this.$router.push("/login")
           })
           .catch(function (error) {
             console.log(error);

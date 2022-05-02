@@ -27,9 +27,9 @@
       <i class="material-icons" v-if="!showRightArrow" v-on:click="dropDown">keyboard_arrow_down</i>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{review.name}}<br>
-          {{review.rating}}<br>
-          {{review.message}}
+          {{review.rating}}/10<i class="fas fa-star" style="color: rgb(255,214,70);"></i><br>
+          {{review.firstName }} {{review.lastName}}<br>
+          {{review.description}}
         </div>
       </div>
     </div>
@@ -38,23 +38,16 @@
 
 <script>
 import lendingService from "@/services/lendingService";
+import userService from "@/services/userService";
 export default {
   name: "UserProfile",
   data(){
     return {
       showRightArrow : true,
       lender : {
-        firstname : "Karoline",
-        lastname : "Wahl",
-        trusted : true,
-        email : "karo@kul.no",
-        rate : 10,
       },
       reviews : [
-          {
-            name : 'per persen',
-            rating : '5/10',
-            message : 'Veldig fin, litt upraktisk'}],
+          ],
 
     }
   },
@@ -76,13 +69,42 @@ export default {
         this.lender.email = response.data.email
         this.lender.rating = response.data.rating
       })      
-      .catch(function (error) {
+      .catch(error =>{
         console.log(error);
       });
-    }
+    },
+    async getReviewsByLender(){
+      await lendingService
+      .getReviewsByUserId(parseInt(localStorage.getItem("lenderId")))
+      .then(response =>{
+        console.log(response.data)
+        this.reviews = response.data
+        for(let i=0; i<response.data.length; i++){
+          this.setNameOfUserLeftReview(response.data[i].userId, i)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      });
+    },
+  async setNameOfUserLeftReview(id, i){
+    await userService.getUserById(id).then(response => {
+      console.log(response.data)
+      this.reviews[i].firstName = response.data.firstName;
+      this.reviews[i].lastName = response.data.lastName;
+    }).catch(error => {
+      console.log(error);
+      this.GStore.flashMessage = "Fikk ikke hentet navn på anmeldelsene"
+      this.GStore.variant = "Error"
+      setTimeout(() => {
+        this.GStore.flashMessage = ""
+      }, 4000)
+    })
+  },
   },
   async mounted(){
     await this.getLender()
+    await this.getReviewsByLender()
   }
 }
 </script>
