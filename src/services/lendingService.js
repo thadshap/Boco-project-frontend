@@ -390,6 +390,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/users/ads/` + userId,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
@@ -471,7 +475,7 @@ export default {
   getAdsBySearch(searchString) {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/search/` + searchString,
+      url: `${url}${port}/api/search/${searchString}`,
       headers: { "Content-Type": "application/json", Authorization: "Bearer " },
     };
 
@@ -518,7 +522,8 @@ export default {
     const options = {
       method: "PUT",
       url: `${url}${port}/api/ads/` + adId,
-      headers: {'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
       data: {
@@ -538,6 +543,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/ads/` + adId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      }
     };
 
     return axios.request(options);
