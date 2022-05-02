@@ -74,7 +74,8 @@
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{ review.rating }} / 10 <br>
+          {{ review.rating }} / 10 <i class="fas fa-star" style="color: rgb(255,214,70);"></i><br>
+          {{review.firstName }} {{review.lastName}}<br>
           {{ review.description}}
         </div>
       </div>
@@ -130,7 +131,6 @@ import reviewService from "@/services/reviewService";
 import userService from "@/services/userService";
 import rentalService from "@/services/rentalService";
 import moment from 'moment';
-import {computed} from "@vue/reactivity";
 
 export default {
   inject : ["GStore"],
@@ -199,6 +199,9 @@ export default {
     async getReviews(){
       await reviewService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
         this.reviews = response.data;
+        for(let i=0; i<response.data.length; i++){
+          this.setNameOfUserLeftReview(response.data[i].userId, i)
+        }
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
@@ -208,9 +211,24 @@ export default {
         }, 4000)
       })
     },
+    async setNameOfUserLeftReview(id, i){
+      await userService.getUserById(id).then(response => {
+        this.reviews[i].firstName = response.data.firstName;
+        this.reviews[i].lastName = response.data.lastName;
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet navn på anmeldelsene"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+
+    },
     async getUnavailableDates(){
       await adService.getAllUnavailableDatesForAd(1).then(response => {
         console.log(response.data)
+        this.disable = response.data;
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet utilgjengelige datoer for annonsen"
