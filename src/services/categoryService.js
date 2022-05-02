@@ -17,6 +17,14 @@ export default {
     },
 
     /**
+     *get parent categories
+     */
+    getAllParentCategories() {
+        const options = {method: "GET", url: `${url}${port}/api/categories/parent`};
+        return axios.request(options);
+    },
+
+    /**
      *get all categories
      * @param categoryName is the name of the parent category
      */

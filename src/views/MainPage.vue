@@ -109,6 +109,7 @@ import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import lendingService from "@/services/lendingService";
+import categoryService from "@/services/categoryService";
 
 export default {
   name: "MainPage",
@@ -135,52 +136,7 @@ export default {
       showMenuBarSorting : false,
       showMenuBarFiltering : false,
       ads:[],
-      categories: [
-        {
-          title: "Verktøy",
-          icon: "fa-hammer",
-          subCategories: [
-            "Sag",
-            "Hammer",
-            "Vater"
-          ]
-        },
-        {
-          title: "Kjøretøy",
-          icon: "fa-car",
-          subCategories: [
-            "Bil",
-            "Båt",
-            "Sykkel",
-            "Sparkesykkel"
-          ]
-        },
-        {
-          title: "Lyd",
-          icon: "fa-headphones",
-          subCategories: [
-            "Høyttaler",
-            "CD-Spiller",
-            "Platespiller",
-            "Hodetelefoner"
-          ]
-        },
-        {
-          title: "Sport",
-          icon: "fa-dumbbell",
-          subCategories: [
-            {
-              title: "Ballsport",
-              subCategories: [
-                "Håndball",
-                "Fotball",
-                "Basketball",
-                "Annet"
-              ]
-            }
-          ]
-        }
-      ],
+      categories: [],
       subCategories: [],
       subSubCategories: [],
       chosenMainCategory: "",
@@ -226,20 +182,16 @@ export default {
     },
     chosenMainCat(title) {
       this.chosenMainCategory = title
-
-      for(let i = 0; i < this.categories.length; i++) {
-        if(this.categories[i].title === title) {
-          if(this.categories[i].subCategories.some(x => x.title !== null && x.title !== undefined)) {
-            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-              this.subCategories = this.categories[i].subCategories[j].title
-            }
-          } else {
-            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-              this.subCategories = this.categories[i].subCategories[j]
-            }
-          }
-        }
-      }
+    },
+    async getMainCategories() {
+      await categoryService
+        .getAllParentCategories()
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
     chosenSubCat(subCat) {
       this.chosenSubCat = subCat
@@ -283,6 +235,7 @@ export default {
   },
   created() {
     this.getRandomAds();
+    this.getMainCategories();
     //TODO send disse koordinatene til backend
     /*
     this.currPos.value.lat;
