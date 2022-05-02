@@ -38,7 +38,7 @@
       </button><br>
       <div id="time" class="text-center" v-if="showRequestDetails">
         Tidsperiode:
-        <Datepicker v-model="date" range :min-date='new Date()' :disabled-dates="disabledDates.dates" :prevent-disable-date-selection="true"/>
+        <Datepicker v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button
           id="sendRequest"
           class="btn btn-primary"
@@ -130,6 +130,7 @@ import reviewService from "@/services/reviewService";
 import userService from "@/services/userService";
 import rentalService from "@/services/rentalService";
 import moment from 'moment';
+import {computed} from "@vue/reactivity";
 
 export default {
   inject : ["GStore"],
@@ -142,14 +143,8 @@ export default {
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
-      disabledDates: {
-        dates: [ // Disable an array of dates
-          new Date(2022, 5, 16),
-          new Date(2022, 5, 17),
-          new Date(2022, 5, 18)
-        ],
-      },
       reviews: [],
+      disable: [new Date()],
       ad: {
 
       },
@@ -173,7 +168,7 @@ export default {
       zoom,
       rotation,
       strokeWidth,
-      mapIcon,
+      mapIcon
     };
   },
   methods: {
