@@ -8,6 +8,7 @@ export default createStore({
     currentAd : {},
     navbarState: false,
     groupName: null,
+    groupId: null,
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
@@ -27,6 +28,9 @@ export default createStore({
     },
     SET_GROUP_NAME(state, groupName){
       state.groupName = groupName
+    },
+    SET_GROUP_ID(state, groupId){
+      state.groupId = groupId
     }
   },
   actions: {
@@ -47,7 +51,10 @@ export default createStore({
     },
     setGroupName({commit}, groupName){
       commit("SET_GROUP_NAME", groupName)
-    }
+    },
+    setGroupId({commit}, groupId){
+      commit("SET_GROUP_ID", groupId)
+    },
   },
   getters: {
     loggedIn(state) {
@@ -67,6 +74,9 @@ export default createStore({
     },
     getGroupName(state) {
       return state.groupName
+    },
+    getGroupId(state){
+      return state.groupId
     }
   },
 });

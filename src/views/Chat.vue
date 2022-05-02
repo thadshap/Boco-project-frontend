@@ -15,7 +15,7 @@
   <div class="d-flex flex-column chat" v-if="!this.$store.getters.messageNavbar">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
-                <span class="name">Group</span>
+                <span class="name">{{this.$store.getters.getGroupName}}</span>
             </div>
             <img class="profile-picture">
         </div>
@@ -71,7 +71,7 @@ export default {
           this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
       },
       async getMessages(){
-          await chatService.getMessagesByGroupId(1096)
+          await chatService.getMessagesByGroupId(this.$store.getters.getGroupId)
           .then(response => {
               this.messages = response.data
           })

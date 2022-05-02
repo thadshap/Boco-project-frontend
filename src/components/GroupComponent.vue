@@ -21,6 +21,7 @@ export default {
       changeNavbarState(){
           this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
           this.$store.dispatch("setGroupName", this.$props.groupName)
+          this.$store.dispatch("setGroupId", this.$props.groupId)
       }
   }
 };
