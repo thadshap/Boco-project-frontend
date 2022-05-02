@@ -7,7 +7,7 @@
       <div class="d-flex flex-column ad-details-container-style">
         <div class="d-flex flex-column align-items-start">
           <h3 class="ad-heading-style" style="margin-bottom: 10px;">
-<!--            <b> Tittel {{ title }}</b>-->
+            <b> {{ title }}</b>
           </h3>
           <h4>Eier: {{ ownerName }}</h4>
           <h4>Låner: {{ borrowerName }}</h4>
@@ -39,7 +39,8 @@ export default {
   data(){
     return {
       ownerName: "",
-      borrowerName: ""
+      borrowerName: "",
+      title:"",
     }
   },
     props: {
@@ -126,6 +127,10 @@ methods: {
         .catch(function (error) {
           console.log(error);
         });
+    lendingService.getAdById(this.adId)
+      .then(response => {
+        this.title = response.data.title
+      })
   }
 };
 </script>
