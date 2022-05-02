@@ -507,7 +507,7 @@ export default {
       url: `${url}${port}/api/ads/page/` + pageSize,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        'Authorization': 'Bearer '
       },
     };
 

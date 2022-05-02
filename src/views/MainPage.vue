@@ -257,7 +257,7 @@ export default {
           })
     },
     getRandomAds(){
-      lendingService.getPageWithRandomAds(24)
+      lendingService.getPageWithRandomAds(2)
           .then(response => {
             this.adsRightFormat = response.data
             for (let i = 0; i < response.data.length; i++) {
