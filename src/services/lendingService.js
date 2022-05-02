@@ -505,7 +505,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/ads/page/` + pageSize,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
