@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = "http://localhost:";
+let url = "https://localhost";
 let port = "8443"
 
 
@@ -16,7 +16,7 @@ export default {
   logIn(emailEntered, passwordEntered) {
     const options = {
       method: "POST",
-      url: `${url}${port}/login`,
+      url: `${url}:${port}/login`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -27,49 +27,47 @@ export default {
 
   /**
    * Method to sign in a user through the users facebook account
-   * @param emailEntered is the email the user entered
-   * @param passwordEntered is the password the user entered
+   * @param facebookLoginRequest
    */
-  signInFacebook() {
+  facebookLogin(facebookLoginRequest) {
     const options = {
-      method: "GET",
-      url: `${url}${port}/auth/signin/facebook`,
+      method: 'POST',
+      url: `${url}:${port}/auth/facebook/signin`,
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
+      },
+      data: {
+        id_token: facebookLoginRequest
       }
     };
-    axios
-      .request(options)
-      .then(response => {
-        console.log(response)
-        window.open(response.data, "_self");
-      })
-      .catch(error => {
-        console.error(error);
-      });
+
+    return axios.request(options).then(function(response) {
+      console.log(response.data);
+    }).catch(function(error) {
+      console.error(error);
+    });
   },
 
   /**
    * Method to sign in a user through the users google account
-   * @param emailEntered is the email the user entered
-   * @param passwordEntered is the password the user entered
+   * @param googleLoginRequest
    */
-  signInGoogle() {
+  googleLogin(googleLoginRequest) {
     const options = {
-      method: "GET",
-      url: `${url}${port}/auth/signin/google`,
+      method: "POST",
+      url: `${url}:${port}/auth/google/signin`,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json'
+      },
+      data: {
+        id_token: googleLoginRequest
       }
     };
-    axios
-      .request(options)
-      .then(response => {
-        console.log(response)
-        window.open(response.data, "_self");
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+
+    axios.request(options).then(function(response) {
+      console.log(response.data);
+    }).catch(function(error) {
+      console.error(error);
+    });
   }
 }

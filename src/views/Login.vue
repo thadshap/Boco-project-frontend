@@ -31,30 +31,20 @@
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-signin-btn-container-style">
             <button class="btn btn-primary w-100 form-signin-btn-style" @click="loginSubmit">Logg inn</button>
           </div>
-          <div>
+          <div class="d-flex flex-column justify-content-center">
 
-            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button" @click="loginFacebook">
-              <i class="fab fa-facebook facebook-icon-style"></i>
-              Logg inn med Facebook
-            </button>
+<!--            <button class="btn btn-primary w-100 form-continue-with-facebook-btn" type="button" @click="loginFacebook">-->
+<!--              <i class="fab fa-facebook facebook-icon-style"></i>-->
+<!--              Logg inn med Facebook-->
+<!--            </button>-->
 
-<!--            <vue-facebook-login-component-next-es-->
-<!--              app-id="3598318360302645"-->
-<!--              class="btn w-100" style="background-color: #0a58ca"-->
-<!--              logo-style="color: white"-->
-<!--              text-style="color: white"-->
-<!--              @sdk-init="handleSdkInit"-->
-<!--              @click="loginFacebook"-->
-<!--              v-if="!this.$store.getters.isLoggedIn"-->
-<!--            />-->
+<!--            <button class="btn btn-primary w-100 mb-5 form-continue-with-google-btn" type="button" @click="loginGoogle">-->
+<!--              <i class="fab fa-google google-icon-style"></i>-->
+<!--              Logg inn med Google-->
+<!--            </button>-->
 
-<!--            @click="login"-->
-<!--            scope="{ login: login(), logout: logout() }"-->
-
-            <button class="btn btn-primary w-100 mb-5 form-continue-with-google-btn" type="button" @click="loginGoogle">
-              <i class="fab fa-google google-icon-style"></i>
-              Logg inn med Google
-            </button>
+            <FacebookLoginComponent />
+            <GoogleLoginComponent />
           </div>
 
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
@@ -74,6 +64,9 @@ import loginService from "@/services/loginService";
 import { helpers, email } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
+import FacebookLoginComponent from "@/components/FacebookLoginComponent";
+import GoogleLoginComponent from "@/components/GoogleLoginComponent";
+
 // import VueFacebookLoginComponentNextEs from "vue-facebook-login-component-next"
 // import { accountService } from "@/services/account.service";
 
@@ -83,6 +76,8 @@ export default {
   name: "Login",
   components: {
     // VueFacebookLoginComponentNextEs
+    FacebookLoginComponent,
+    GoogleLoginComponent
   },
   setup() {
     const state = reactive({
@@ -107,7 +102,31 @@ export default {
       scope: {}
     }
   },
+  async mounted() {
+    await this.loadFacebookSDK(document, "script", "facebook-jssdk");
+    await this.initFacebook();
+  },
   methods:{
+    initFacebook() {
+      window.fbAsyncInit = function() {
+        window.FB.init({
+          appId: "1181763609285094", //You will need to change this
+          status: true, // This is important, it's not enabled by default
+          xfbml: true,
+          version: "v2.7"
+        });
+      };
+    },
+    loadFacebookSDK(d, s, id) {
+      let js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    },
     back() {
       this.$router.go(-1)
     },
@@ -146,7 +165,7 @@ export default {
         return
       }
       await loginService.logIn(this.state.email, this.password)
-          .then(response => {
+        .then((response) => {
             console.log(response.status)
             if(response.status === 404) {
               alert("Feil brukernavn eller passord")
@@ -175,14 +194,14 @@ export default {
     //   this.FB = FB
     //   this.scope = scope
     // },
-    loginFacebook() {
-      // accountService.loginFacebook(this.FB);
-      loginService.signInFacebook();
-    },
-    loginGoogle(){
-      // accountService.loginGoogle(this.$gAuth);
-      loginService.signInGoogle();
-    },
+    // loginFacebook() {
+    //   // accountService.loginFacebook(this.FB);
+    //   loginService.signInFacebook();
+    // },
+    // loginGoogle(){
+    //   // accountService.loginGoogle(this.$gAuth);
+    //   loginService.signInGoogle();
+    // },
   }
 };
 </script>

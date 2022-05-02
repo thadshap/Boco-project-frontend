@@ -4,14 +4,20 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="google-signin-client_id" content="736018580187-kmhgjhg8i7ttrsh2k2b8gjk6v8jd1nsi.apps.googleusercontent.com">
+<!--    <script src="https://apis.google.com/js/api:client.js"></script>-->
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
+    <div id="fb-root"></div>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/nn_NO/sdk.js#xfbml=1&version=v13.0&appId=3598318360302645&autoLogAppEvents=1" nonce="YNJo7M38"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
     <!-- built files will be auto injected -->
   </body>
 </html>
