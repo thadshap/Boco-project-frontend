@@ -16,6 +16,13 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
+                <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
+                <button v-if="changeGroupName" v-on:click="editGroupName">Change group name</button>
+                <button v-on:click="changeGroupNameState">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+                    </svg>
+                </button>
             </div>
             <img class="profile-picture">
         </div>
@@ -61,6 +68,8 @@ export default {
       return{
           groups:[],
           stompClient:null,
+          changeGroupName: false,
+          newGroupName: null
       }
   },
   components:{
@@ -70,6 +79,9 @@ export default {
   methods:{
       changeNavbarState(){
           this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
+      },
+      changeGroupNameState(){
+          this.changeGroupName = !this.changeGroupName
       },
       async getGroups(){
           await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId"))) 
@@ -96,9 +108,12 @@ export default {
                     this.$store.dispatch("addMessage", messageOutput)
                 })
             })
-        }
-    
-
+        },
+        async editGroupName(){
+          await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
+          this.$store.dispatch("setGroupName", this.newGroupName)
+          alert(`Changed group name to: ${this.newGroupName}`)
+      }
   },
   
   mounted(){

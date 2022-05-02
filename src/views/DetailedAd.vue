@@ -256,12 +256,7 @@ export default {
       if (this.$store.getters.loggedIn) {
         var userId = localStorage.getItem("userId")
         if (userId != this.lender.id) {
-          var userName
-          await userService.getUserById(userId)
-          .then(response => {
-            userName = response.data
-          })
-          await chatService.createGroupChatWithTwoUsers(`${userName.firstName} og ${this.lender.firstName}`, userId, this.lender.id)
+          await chatService.createGroupChatWithTwoUsers(this.ad.title, userId, this.lender.id)
           this.$router.push("/messages")
         }else{
           alert('Cannot create chat with self')

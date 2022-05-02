@@ -1,6 +1,9 @@
 <template>
     <div class="">
-        <button class="name" v-on:click="changeNavbarState">{{groupName}}</button>
+        <form action="submit">
+            <button class="groupName" type="submit" v-on:click="changeNavbarState">{{groupName}}</button>
+            <button v-on:click="leaveChat">Leave group</button>
+        </form>
     </div>
 </template>
 
@@ -48,6 +51,10 @@ export default {
                     })
                 }
       },
+      async leaveChat(){
+          await chatService.leaveChat(this.$props.groupId, localStorage.getItem("userId"))
+          alert(`Left group: ${this.$props.groupName}`)
+      }
   }
 };
 </script>
