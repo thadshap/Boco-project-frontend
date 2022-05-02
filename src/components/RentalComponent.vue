@@ -7,7 +7,7 @@
       <div class="d-flex flex-column ad-details-container-style">
         <div class="d-flex flex-column align-items-start">
           <h3 class="ad-heading-style" style="margin-bottom: 10px;">
-            <b> Tittel {{ title }}</b>
+<!--            <b> Tittel {{ title }}</b>-->
           </h3>
           <h4>Eier: {{ ownerName }}</h4>
           <h4>Låner: {{ borrowerName }}</h4>
@@ -85,7 +85,6 @@ methods: {
     return require("../assets/img/" + img);
   },
   goToDetailedView(){
-    // localStorage.setItem("currentAd",)
     console.log(this.$props.adId);
     this.$router.push({
       path: "/ad/:id",
@@ -110,16 +109,9 @@ methods: {
     lendingService.getUserById(this.borrower)
         .then(response => {
           this.borrowerName = response.data.firstName + " " + response.data.lastName
-          console.log(response.data)
-          console.log(response.status)
-          console.log(this.ownerName)
           if(response.status!==200){
-            //legg til nettverksfeil tilbakemelding
-            alert("fikk ikke kontakt med backend")
-            return
+            alert("Fikk ikke kontakt med serveren")
           }
-          // alert(response.data)
-          // this.$router.push("/login")
         })
         .catch(function (error) {
           console.log(error);
@@ -127,16 +119,9 @@ methods: {
     lendingService.getUserById(this.owner)
         .then(response => {
           this.ownerName = response.data.firstName + " " + response.data.lastName
-          console.log(response.data)
-          console.log(response.status)
-          console.log(this.ownerName)
           if(response.status!==200){
-            //legg til nettverksfeil tilbakemelding
-            alert("fikk ikke kontakt med backend")
-            return
+            alert("Fikk ikke kontakt med serveren")
           }
-          // alert(response.data)
-          // this.$router.push("/login")
         })
         .catch(function (error) {
           console.log(error);
@@ -185,8 +170,6 @@ methods: {
 
 @media screen and (max-width: 992px) {
   .project-card-container {
-    /*display: flex;*/
-    /*justify-content: center;*/
     width: 100%;
   }
 
