@@ -1,6 +1,6 @@
 import axios from "axios";
-let url = 'http://localhost:'
-let port = "8080"
+let url = 'https://localhost:'
+let port = "8443"
 
 export default {
     /**
@@ -14,7 +14,7 @@ export default {
             url: `${url}${port}/rental/create`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: {
                 dateOfRental: dateOfRental,

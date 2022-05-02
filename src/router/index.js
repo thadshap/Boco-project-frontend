@@ -58,12 +58,6 @@ const routes = [
     beforeEnter: authGuard
   },
   {
-    path: "/rentals",
-    name: "Rental",
-    component: MyRentals,
-    // beforeEnter: authGuard
-  },
-  {
     path: "/profile",
     name: "Profile",
     component: Profile,
@@ -85,6 +79,12 @@ const routes = [
         path: "/settings",
         name: "Settings",
         component: UserSettings,
+        beforeEnter: authGuard
+      },
+      {
+        path: "/rentals",
+        name: "My Rentals",
+        component: MyRentals,
         beforeEnter: authGuard
       },
       {

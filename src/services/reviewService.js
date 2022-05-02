@@ -1,6 +1,6 @@
 import axios from "axios";
-let url = 'http://localhost:'
-let port = "8080"
+let url = 'https://localhost:'
+let port = "8443"
 
 export default {
     /**
@@ -27,7 +27,10 @@ export default {
         const options = {
             method: "GET",
             url: `${url}${port}/api/reviews/` + adId,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
         };
 
         return axios.request(options);
