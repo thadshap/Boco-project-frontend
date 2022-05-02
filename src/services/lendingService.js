@@ -330,6 +330,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/users/ads/reviews/` + userId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
@@ -621,6 +625,18 @@ export default {
     };
     return axios.request(options);
 
+  },
+  getAllUnavailableDatesForAd(adId){
+    const options = {
+      method: 'POST',
+      url: `${url}${port}/api/calender/get`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+      data: { adId : adId}
+    };
+    return axios.request(options);
   },
   /**
    *
