@@ -6,7 +6,6 @@ export default createStore({
     // chosenMainCategory: "",
     lastClickedMainCat: null,
     currentAd : {},
-    navbarState: false,
     groupName: null,
     groupId: null,
     messages: []
@@ -23,9 +22,6 @@ export default createStore({
     // },
     SET_LAST_CLICKED_MAIN_CAT(state, lastClickedMainCat) {
       state.lastClickedMainCat = lastClickedMainCat;
-    },
-    SET_NAVBAR_STATE(state, navbarState){
-      state.navbarState = navbarState;
     },
     SET_GROUP_NAME(state, groupName){
       state.groupName = groupName
@@ -53,9 +49,6 @@ export default createStore({
     setLastClickedMainCat({ commit }, lastClickedMainCat) {
       commit("SET_LAST_CLICKED_MAIN_CAT", lastClickedMainCat)
     },
-    setNavbarState({commit}, navbarState){
-      commit("SET_NAVBAR_STATE", navbarState)
-    },
     setGroupName({commit}, groupName){
       commit("SET_GROUP_NAME", groupName)
     },
@@ -81,9 +74,6 @@ export default createStore({
     },
     currentAd(state) {
       return state.currentAd
-    },
-    messageNavbar(state) {
-      return state.navbarState;
     },
     getGroupName(state) {
       return state.groupName

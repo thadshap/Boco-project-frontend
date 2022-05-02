@@ -1,9 +1,5 @@
 import axios from "axios";
-<<<<<<< HEAD
 let url = 'http://localhost:'
-=======
-let url = 'https://localhost:'
->>>>>>> 5123624083864fa565d469c36ef81c45bbaa90df
 let port = "8443"
 export default {
   /**
