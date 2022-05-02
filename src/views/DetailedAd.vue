@@ -267,6 +267,7 @@ export default {
       }else if (this.ad.durationType == 'uke'){
         return duration/7 * this.ad.price
       }
+      this.showRequestDetails = !this.showRequestDetails;
     },
     async sendRequest(){
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
