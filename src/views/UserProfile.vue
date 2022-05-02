@@ -44,17 +44,9 @@ export default {
     return {
       showRightArrow : true,
       lender : {
-        firstname : "Karoline",
-        lastname : "Wahl",
-        trusted : true,
-        email : "karo@kul.no",
-        rate : 10,
       },
       reviews : [
-          {
-            name : 'per persen',
-            rating : '5/10',
-            message : 'Veldig fin, litt upraktisk'}],
+          ],
 
     }
   },

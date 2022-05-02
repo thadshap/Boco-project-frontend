@@ -38,7 +38,7 @@
       </button><br>
       <div id="time" class="text-center" v-if="showRequestDetails">
         Tidsperiode:
-        <Datepicker v-model="date" range />
+        <Datepicker v-model="date" range :min-date='new Date()' :disabled-dates="disabledDates.dates" :prevent-disable-date-selection="true"/>
         <button
           id="sendRequest"
           class="btn btn-primary"
@@ -87,7 +87,6 @@
     <div id="address" class="text-center">
       <label class="form-label"> Adresse : {{ ad.streetAddress }}&nbsp; </label>
     </div>
-    <div class="text-center" style="padding: 0px">
       <ol-map
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
@@ -120,14 +119,16 @@
         </ol-vector-layer>
       </ol-map>
     </div>
-  </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import mapIcon from "@/assets/img/mapIcon.png";
 import Datepicker from "@vuepic/vue-datepicker";
-import lendingService from "@/services/lendingService";
+import adService from "@/services/adService";
+import reviewService from "@/services/reviewService";
+import userService from "@/services/userService";
+import rentalService from "@/services/rentalService";
 import moment from 'moment';
 
 export default {
@@ -141,6 +142,13 @@ export default {
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
+      disabledDates: {
+        dates: [ // Disable an array of dates
+          new Date(2022, 5, 16),
+          new Date(2022, 5, 17),
+          new Date(2022, 5, 18)
+        ],
+      },
       reviews: [],
       ad: {
 
@@ -153,6 +161,7 @@ export default {
     await this.getCurrentAd();
     await this.setLender();
     await this.getReviews();
+    await this.getUnavailableDates();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -169,7 +178,7 @@ export default {
   },
   methods: {
     async getCurrentAd(){
-      await lendingService.getAdById(this.$store.getters.currentAd.id).then(response => {
+      await adService.getAdById(this.$store.getters.currentAd.id).then(response => {
         this.ad = response.data;
       }).catch(error => {
         console.log(error);
@@ -193,7 +202,7 @@ export default {
       }
     },
     async getReviews(){
-      await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
+      await reviewService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
         this.reviews = response.data;
       }).catch(error => {
         console.log(error);
@@ -204,8 +213,20 @@ export default {
         }, 4000)
       })
     },
+    async getUnavailableDates(){
+      await adService.getAllUnavailableDatesForAd(1).then(response => {
+        console.log(response.data)
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet utilgjengelige datoer for annonsen"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
     async setLender(){
-      await lendingService.getUserById(this.ad.userId).then(response => {
+      await userService.getUserById(this.ad.userId).then(response => {
         this.lender = response.data
       }).catch(error => {
         console.log(error);
@@ -235,14 +256,12 @@ export default {
       }
     },
     async sendRequest(){
-      //TODO fix this correct with other pricetypes than days
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
       const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       const price = this.calculatePrice(diffDays)
-      if(this)
-      await lendingService.createRental(
+      await rentalService.createRental(
           new Date().toLocaleDateString('en-CA'),
           datefrom,
           dateto,
@@ -251,7 +270,15 @@ export default {
           this.lender.id,
           localStorage.getItem("userId"),
           this.$store.getters.currentAd.id
-      ).catch(error => {
+      ).then(response => {
+        console.log(response)
+        this.showRequestDetails = false;
+        this.GStore.flashMessage = "Forespørsel om utlån opprette! Se detaljer på dine sider"
+        this.GStore.variant = "Success"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 40000)
+      }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke oprettet forespørsel"
         this.GStore.variant = "Error"
