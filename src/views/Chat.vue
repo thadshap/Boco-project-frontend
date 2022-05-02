@@ -5,14 +5,14 @@
             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
         </svg>
     </button>
-  <div class="d-flex flex-column groups" v-if="this.$store.getters.messageNavbar">
+  <div class="d-flex flex-column groups" v-if="!this.$store.getters.messageNavbar">
       <GroupComponent 
       v-for="group in groups"
       :key="group"
       :groupId="group.groupId"
       :groupName="group.groupName"/>
   </div>
-  <div class="d-flex flex-column chat" v-if="!this.$store.getters.messageNavbar">
+  <div class="d-flex flex-column chat" v-if="this.$store.getters.messageNavbar">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
@@ -21,7 +21,7 @@
         </div>
         <div class="flex-grow-1 chat-container">
             <MessageComponent
-            v-for="message in messages"
+            v-for="message in this.$store.getters.getMessages"
             :key="message"
             :firstName="message.firstName"
             :lastName="message.lastName"
@@ -53,12 +53,10 @@
 import MessageComponent from "@/components/MessageComponent";
 import GroupComponent from "@/components/GroupComponent";
 import chatService from "@/services/chatService";
-import lendingService from "@/services/lendingService";
 export default {  
   name: "Chat",
   data(){
       return{
-          messages:[],
           groups:[]
       }
   },
@@ -70,31 +68,11 @@ export default {
       changeNavbarState(){
           this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
       },
-      async getMessages(){
-          await chatService.getMessagesByGroupId(this.$store.getters.getGroupId)
-          .then(response => {
-              this.messages = response.data
-          })
-          .catch(error => {
-              console.log(error)
-          })
-          await this.getUsers()
-      },
-      async getUsers(){
-        for(let i = 0; i<this.messages.length; i++){ 
-                await lendingService.getUserById(this.messages[i].user_id)
-                  .then(response => { 
-                      this.messages[i].firstName = response.data.firstName; this.messages[i].lastName=response.data.lastName 
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                }
-      },
       async getGroups(){
           await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId"))) 
           .then(response => {
               this.groups = response.data
+              console.log(this.groups)
           })
           .catch(error => {
               console.log(error)
@@ -103,7 +81,6 @@ export default {
   },
   
   mounted(){
-      this.getMessages()
       this.getGroups()
   }
 };
