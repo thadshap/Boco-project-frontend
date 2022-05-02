@@ -235,7 +235,7 @@ export default {
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
-        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").userId, this.idToCategory)
+        await lendingService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").userId, this.idToCategory)
       }
     },
     /**

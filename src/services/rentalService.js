@@ -42,8 +42,8 @@ export default {
             url: `${url}${port}/rental/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            }
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
         };
 
         return axios.request(options);
@@ -54,8 +54,8 @@ export default {
             url: `${url}${port}/rental/delete/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            }
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
         };
 
         return axios.request(options);
@@ -67,7 +67,7 @@ export default {
             url: `${url}${port}/rental/update/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
         };
@@ -81,8 +81,8 @@ export default {
             url: `${url}${port}/rental/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            }
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
         };
         return axios.request(options);
     },
@@ -96,8 +96,8 @@ export default {
             url: `${url}${port}/rental/s/` + userId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
-            }
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
         };
         return axios.request(options);
     },
