@@ -9,6 +9,7 @@ import Profile from "@/views/Profile";
 import Login from "@/views/Login";
 import Register from "@/views/Register";
 import Chat from "@/views/Chat";
+import Group from "@/views/Group"
 import ResetPassword from "../views/ResetPassword";
 import { authGuard } from "@/helpers/auth.guard";
 import MyRentals from "@/views/MyRentals";
@@ -52,9 +53,15 @@ const routes = [
     component: DetailedAd,
   },
   {
-    path: "/messages",
-    name: "Messages",
+    path: "/chat/:id",
+    name: "Chat",
     component: Chat,
+    beforeEnter: authGuard
+  },
+  {
+    path: "/groups",
+    name: "Group",
+    component: Group,
     beforeEnter: authGuard
   },
   {

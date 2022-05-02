@@ -1,18 +1,11 @@
 <template>
 <div class="d-flex flex-column screen">
-    <button class="btn btn-primary menu-button" type="button" v-on:click="changeNavbarState">
+    <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
         </svg>
     </button>
-  <div class="d-flex flex-column groups" v-if="!this.$store.getters.messageNavbar">
-      <GroupComponent 
-      v-for="group in groups"
-      :key="group"
-      :groupId="group.groupId"
-      :groupName="group.groupName"/>
-  </div>
-  <div class="d-flex flex-column chat" v-if="this.$store.getters.messageNavbar">
+  <div class="d-flex flex-column chat">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
@@ -58,7 +51,6 @@
 
 <script>
 import MessageComponent from "@/components/MessageComponent";
-import GroupComponent from "@/components/GroupComponent";
 import chatService from "@/services/chatService";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -66,31 +58,17 @@ export default {
   name: "Chat",
   data(){
       return{
-          groups:[],
           stompClient:null,
           changeGroupName: false,
           newGroupName: null
       }
   },
   components:{
-      MessageComponent,
-      GroupComponent
+      MessageComponent
   },
   methods:{
-      changeNavbarState(){
-          this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
-      },
       changeGroupNameState(){
           this.changeGroupName = !this.changeGroupName
-      },
-      async getGroups(){
-          await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId"))) 
-          .then(response => {
-              this.groups = response.data
-          })
-          .catch(error => {
-              console.log(error)
-          })
       },
       connect() {
             var socket = new SockJS(`http://localhost:8443/ws/`);
@@ -113,11 +91,22 @@ export default {
           await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
           this.$store.dispatch("setGroupName", this.newGroupName)
           alert(`Changed group name to: ${this.newGroupName}`)
-      }
+      },
+      toGroups(){
+          this.$router.push("/groups")
+      },
+      async getMessages(){
+          await chatService.getMessagesByGroupId(this.$store.getters.getGroupId)
+          .then(response => {
+              this.$store.dispatch("setMessages", response.data)
+          })
+          .catch(error => {
+              console.log(error)
+          })
+      },
   },
-  
   mounted(){
-      this.getGroups()
+      this.getMessages()
   }
 };
 </script>

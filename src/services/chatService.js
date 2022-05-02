@@ -53,5 +53,27 @@ export default{
             }
           };
           return axios.request(options)
+    },
+    addUserToGroup(groupId, newUser){
+        const options = {
+            method: 'PUT',
+            url: `${url}${port}/api/group/add/user/${groupId}/${newUser}`,
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+          };
+          return axios.request(options)
+    },
+    createGroupWithUsers(chatName, listOfUsers){
+        const options = {
+            method: 'POST',
+            url: `${url}${port}api/create/group/list`,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem("token")}`
+            },
+            data: {groupName: chatName, userIds: listOfUsers}
+          };
+          return axios.request(options)
     }
 }

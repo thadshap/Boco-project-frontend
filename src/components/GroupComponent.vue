@@ -1,7 +1,7 @@
 <template>
     <div class="">
         <form action="submit">
-            <button class="groupName" type="submit" v-on:click="changeNavbarState">{{groupName}}</button>
+            <button class="groupName" type="submit" v-on:click="goToChat">{{groupName}}</button>
             <button v-on:click="leaveChat">Leave group</button>
         </form>
     </div>
@@ -23,22 +23,17 @@ export default {
       }
   },
   methods:{
-      changeNavbarState(){
-          this.$store.dispatch("setNavbarState", !this.$store.getters.messageNavbar)
+      goToChat(){
           this.$store.dispatch("setGroupName", this.$props.groupName)
           this.$store.dispatch("setGroupId", this.$props.groupId)
-          this.getMessages()
           this.getUsers()
-      },
-      async getMessages(){
-          await chatService.getMessagesByGroupId(this.$store.getters.getGroupId)
-          .then(response => {
-              this.$store.dispatch("setMessages", response.data)
-          })
-          .catch(error => {
-              console.log(error)
-          })
-          await this.getUsers()
+          this.$router.push({
+                path: "/chat/:id",
+                name : "Chat",
+                params : {
+                id : this.$props.groupId
+                }
+            })
       },
       async getUsers(){
         for(let i = 0; i<this.$store.getters.getMessages.length; i++){ 
@@ -52,6 +47,7 @@ export default {
                 }
       },
       async leaveChat(){
+          this.$router.push("/")
           await chatService.leaveChat(this.$props.groupId, localStorage.getItem("userId"))
           alert(`Left group: ${this.$props.groupName}`)
       }
