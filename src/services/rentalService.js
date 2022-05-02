@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'https://localhost:'
+let url = 'http://localhost:'
 let port = "8443"
 
 export default {
@@ -78,7 +78,7 @@ export default {
     getRentalById(rentalId) {
         const options = {
             method: 'GET',
-            url: `${url}${port}/rental/` + rentalId,
+            url: `${url}${port}/auth/rental/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
@@ -93,7 +93,7 @@ export default {
     getHistoryRentalForUser(userId) {
         const options = {
             method: 'GET',
-            url: `${url}${port}/rental/s/` + userId,
+            url: `${url}${port}/auth/rental/s/` + userId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
