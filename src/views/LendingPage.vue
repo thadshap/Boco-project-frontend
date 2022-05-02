@@ -22,7 +22,7 @@
           </label>
           <select class="form-select" id="" v-on:change="clickedCategory($event)">
             <option value="">--Velg kategori--</option>
-            <option v-for="category in categories" :key="category" value="category.name">{{ category.name }}</option>
+            <option v-for="category in categories" :key="category" value="category.name">{{ category.name }} </option>
           </select>
           <span class="text-danger" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
@@ -141,6 +141,7 @@ import { helpers, required, integer, minLength, maxLength } from "@vuelidate/val
 import { computed, reactive } from "vue";
 import axios from "axios"
 import lendingService from "../services/lendingService";
+import MainPage from "./MainPage";
 
 export default {
   inject: ["GStore"],
@@ -152,7 +153,8 @@ export default {
       price: "",
       streetAddress: "",
       postalCode: "",
-      phoneNumber: ""
+      phoneNumber: "",
+      category: ""
     });
 
     const rules = computed(() => {
@@ -226,15 +228,30 @@ export default {
     },
     submit:async function() {
       this.v$.$validate()
-      this.validateImages()
+      //this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
-        this.GStore.flashMessage = "Annonsen ble opprettet!"
-        this.GStore.variant = "Success"
-        setTimeout(() => {
-          this.GStore.flashMessage = ""
-        }, 4000)
-        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").userId, this.idToCategory)
+
+        await lendingService.postNewAdd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("userId"), this.idToCategory)
+          .then(response => {
+            this.GStore.flashMessage = "Annonsen ble opprettet!"
+            this.GStore.variant = "Success"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(response)
+            this.$router.push({
+              name: "MainPage",
+              component: MainPage,
+            });
+          }).catch(error => {
+            this.GStore.flashMessage = "Anonsen ble ikke opprettet!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
       }
     },
     getCategories:async function(){
@@ -250,20 +267,34 @@ export default {
           console.log(error)
         })
     },
-    clickedCategory:async function(e){
+    resetClickedCategory(){
       this.isSubCategory = false
       this.isSubSubCategory = false
       this.subCategoriesId = ""
       this.subSubCategoriesId = ""
       this.idToCategory = ""
+    },
+    searchClickedCategory(name){
+      for (let i = 0; i<this.categories.length; i++){
+        if (this.categories[i].name == name){
+          this.categoriesId = this.categories[i].id
+        }
+      }
+    },
+    clickedCategory:async function(e){
+      this.resetClickedCategory()
 
-      let name = e.target.options[e.target.options.selectedIndex].text;
+      let name = e.target.options[e.target.options.selectedIndex].text
+      this.state.category = name
+      console.log(this.state.category)
+      this.searchClickedCategory(name)
 
       if (name == '--Velg kategori--') this.isSubCategory = false
       else {
         await lendingService.getAllSubCategoriesForCategory(name).then(response => {
           this.subCategories = response.data
           this.isSubCategory = true
+          this.idToCategory = this.categoriesId
         }).catch(error => {
           this.isSubCategory = false
           this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
@@ -275,27 +306,33 @@ export default {
         })
       }
     },
-    clickedSubCategories:async function(e){
+    resetClickedSubCategories(){
       this.isSubSubCategory = false
       this.subSubCategoriesId = ""
       this.idToCategory = ""
+    },
+    clickedSubCategories:async function(e){
 
-      let name = e.target.options[e.target.options.selectedIndex].text;
+      this.resetClickedSubCategories()
 
-      let hasChild = false
-      Boolean(hasChild)
+      let name = e.target.options[e.target.options.selectedIndex].text
+      let isChild = false
+      Boolean(isChild)
 
+      let isParent = false
+      Boolean(isParent)
       for (let i = 0; i<this.subCategories.length; i++){
         if (this.subCategories[i].name == name){
-          //hasChild = this.subCategories[i].child
+          isChild = this.subCategories[i].child
+          isParent = this.subCategories[i].parent
           this.subCategoriesId = this.subCategories[i].id
-          console.log(this.subCategories[i])
         }
       }
 
+
       if (name == '--Velg kategori--') return
-      else if (hasChild == false) this.idToCategory = this.subCategoriesId
-      else {
+      else if (isChild == false && isParent == false) this.idToCategory = this.subCategoriesId
+      else if (isChild == true && isParent == true) {
         await lendingService.getAllSubCategoriesForCategory(name).then(response => {
           this.isSubSubCategory = true
           this.subSubCategories = response.data
@@ -304,11 +341,17 @@ export default {
           console.log(error)
         })
       }
+      else {
+        this.GStore.flashMessage = "Noe gikk galt!!!"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      }
     },
     clickedSubSubCategories(id){
       this.subSubCategoriesId = id
       this.idToCategory = this.subSubCategoriesId
-      console.log(this.idToCategory)
     },
     validateImages() {
       if(this.imgUrl.length === 0) {
