@@ -40,9 +40,9 @@
       </div>
       <div class="cardDiv">
         <div class="card cardBodyStyle">
-          <div class="card-body cardBodyStyle">
-            <h4 class="card-title">Favoritter</h4>
-            <p class="card-text">Se alle annonsene du har lagret her</p>
+          <div class="card-body cardBodyStyle" @click="myRentals">
+            <h4 class="card-title">Mine lån</h4>
+            <p class="card-text">Se alle dine lån, både som utleier og låner</p>
           </div>
         </div>
       </div>
@@ -87,6 +87,14 @@
           }
         })
       },
+      myRentals(){
+        this.$router.push({
+          name: "My Rentals",
+          query:{
+            redirect: "/profile/rentals"
+          }
+        })
+      },
       userSettings() {
         this.$router.push({
           name: "Settings",
@@ -102,7 +110,7 @@
           accountService.logoutFacebook()
         } else if(provider === "google") {
           accountService.logoutGoogle(this.$gAuth)
-        } else if(provider === "nonde") {
+        } else if(provider === "none") {
           this.$store.dispatch("setLoggedIn", false)
           this.$router.push("/")
           localStorage.clear()

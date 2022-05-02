@@ -61,7 +61,7 @@ import $ from "jquery";
         $("#navbarToggler").css("display", "none");
       },
       checkLoggedIn() {
-        if(localStorage.getItem('vue-login-accounts') || this.$store.getters.loggedIn) {
+        if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
           this.$store.dispatch("setLoggedIn", true);
         } else {
           this.$store.dispatch("setLoggedIn", false);

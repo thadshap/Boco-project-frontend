@@ -14,6 +14,7 @@ import ResetPassword from "../views/ResetPassword";
 import { authGuard } from "@/helpers/auth.guard";
 import MyRentals from "@/views/MyRentals";
 import UserProfile from "@/views/UserProfile";
+import { redirectGuard } from "@/helpers/redirect.guard";
 
 const routes = [
   {
@@ -29,12 +30,14 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: Login
+    component: Login,
+    beforeEnter: redirectGuard
   },
   {
     path: "/register",
     name: "Register",
-    component: Register
+    component: Register,
+    beforeEnter: redirectGuard
   },
   {
     path: "/auth/renewYourPassword",
@@ -95,6 +98,12 @@ const routes = [
         beforeEnter: authGuard
       },
       {
+        path: "/rentals",
+        name: "My Rentals",
+        component: MyRentals,
+        beforeEnter: authGuard
+      },
+      {
         path: "*",
         redirect: "/"
       }
@@ -106,5 +115,19 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+router.beforeResolve((to) => {
+  if(to.fullPath.includes("/login/facebook")) {
+    let route = to.fullPath.split(new RegExp("[/#]"));
+
+    localStorage.setItem("jwtoken", route[3])
+
+  } else if(to.fullPath.includes("/login/google")) {
+    let route = to.fullPath.split(new RegExp("[/#]"));
+
+    localStorage.setItem("jwtoken", route[3])
+
+  }
+})
 
 export default router;

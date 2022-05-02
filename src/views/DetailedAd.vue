@@ -281,16 +281,20 @@ export default {
      * method to calculate the price of the rental depending on the durationType of price
      */
     calculatePrice(duration){
-      if (this.ad.durationType == 'måned'){
+      if (this.ad.durationType === 'måned'){
         return duration/30 * this.ad.price
-      }else if (this.ad.durationType == 'dag'){
+      }else if (this.ad.durationType === 'dag'){
         return duration*this.ad.price
-      }else if (this.ad.durationType == 'time'){
+      }else if (this.ad.durationType === 'time'){
         return duration*this.ad.price*24
-      }else if (this.ad.durationType == 'uke'){
+      }else if (this.ad.durationType === 'uke'){
         return duration/7 * this.ad.price
       }
+<<<<<<< HEAD
       this.showRequestDetails = !this.showRequestDetails;
+=======
+
+>>>>>>> 5123624083864fa565d469c36ef81c45bbaa90df
     },
     async sendRequest(){
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
