@@ -112,6 +112,9 @@ export default {
       }
       else {
         this.changePassword()
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 60000)
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
         this.disableBtn = true

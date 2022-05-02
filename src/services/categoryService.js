@@ -33,4 +33,9 @@ export default {
         };
         return axios.request(options);
     },
+
+    getAllParentCategories(){
+        const options = {method: 'GET', url: `${url}${port}/api/categories/parent`};
+        return axios.request(options);
+    },
 }

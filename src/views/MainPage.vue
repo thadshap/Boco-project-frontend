@@ -108,7 +108,7 @@ import CategoryComponent from "@/components/CategoryComponent";
 import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
-import lendingService from "@/services/lendingService";
+import adsService from "@/services/adsService";
 
 export default {
   name: "MainPage",
@@ -203,7 +203,7 @@ export default {
       console.log(this.sorting);
     },
     getRandomAds(){
-      lendingService.getPageWithRandomAds(5)
+      adsService.getPageWithRandomAds(5)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               //få poststed
@@ -256,7 +256,7 @@ export default {
         return
       }
 
-      lendingService
+      adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
           this.ads = []

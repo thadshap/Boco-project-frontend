@@ -16,35 +16,36 @@
             {{ v$.title.$errors[0].$message }}
           </span>
         </div>
-<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
         <div class="d-flex flex-column">
           <label class="form-label">
-            Hoved kategori
+            Hovedkategori
           </label>
-          <select v-model="state.category" class="form-select">
-            <option v-for="category in categories" :key="category.name" v-bind:id="category.name" v-on:click="clickedCategory($event)">{{ category.name }}</option>
+          <select class="form-select" id="category" v-on:change="clickedCategory($event)">
+            <option value="">--Velg kategori--</option>
+            <option v-for="category in categories" :key="category" value="category.name">{{ category.name }} </option>
           </select>
           <span class="text-danger" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
           </span>
         </div>
-        <div class="d-flex flex-column">
+        <div class="d-flex flex-column" v-if="this.isSubCategory">
           <label class="form-label">
-            Under kategori
+            Underkategori
           </label>
-          <select v-model="state.subCategory" class="form-select">
-            <option v-for="subCategory in subCategories" :key="subCategory.name" v-bind:id="subCategory.name" v-on:click="clickedSubCategory($event)">{{ subCategory.name }}</option>
+          <select class="form-select" id="subCategory" v-on:change="clickedSubCategories($event)">
+            <option value="">--Velg kategori--</option>
+            <option v-for="subCategory in subCategories" :key="subCategory" value="subCategory.name">{{ subCategory.name }}</option>
           </select>
         </div>
-        <div class="d-flex flex-column" v-if="isSubSubCategori">
+        <div class="d-flex flex-column" v-if="this.isSubSubCategory">
           <label class="form-label">
             ... kategori
           </label>
-          <select v-model="state.subSubCategory" class="form-select">
-            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory.name" v-bind:id="subSubcategory.name" v-on:click="clickedSubSubCategory($event)">{{ subSubCategory.name }}</option>
+          <select class="form-select" id="subSubCategory" >
+            <option value="">--Velg kategori--</option>
+            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory" value="subSubCategory.name" v-on:change="clickedSubSubCategories(subSubCategory.id)">{{ subSubCategory.name }}</option>
           </select>
         </div>
-<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
         <div class="d-flex flex-column">
           <label class="form-label">
             Beskrivelse
@@ -139,7 +140,9 @@ import useValidate from "@vuelidate/core";
 import { helpers, required, integer, minLength, maxLength } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import axios from "axios"
-import lendingService from "../services/lendingService";
+import MainPage from "./MainPage";
+import categoryService from "@/services/categoryService";
+import adService from "@/services/adService";
 
 export default {
   inject: ["GStore"],
@@ -147,12 +150,12 @@ export default {
   setup() {
     const state = reactive({
       title: "",
-      category: "",
       description: "",
       price: "",
       streetAddress: "",
       postalCode: "",
-      phoneNumber: ""
+      phoneNumber: "",
+      category: ""
     });
 
     const rules = computed(() => {
@@ -196,11 +199,10 @@ export default {
     return {
       imgUrl: [],
       imgError: "",
-
-      //TODO: Hente kategori data fra backend og legge inn i array listene
       categories: [],
       subCategories:[],
       subSubCategories:[],
+      isSubCategory: false,
       isSubSubCategory: false,
       categoriesId :"",
       subCategoriesId :"",
@@ -210,7 +212,7 @@ export default {
     }
   },
   created: async function() {
-    // await this.getCategories()
+    await this.getCategories()
   },
   methods: {
     chooseImages() {
@@ -227,48 +229,131 @@ export default {
     },
     submit:async function() {
       this.v$.$validate()
-      this.validateImages()
+      //this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
-        this.GStore.flashMessage = "Annonsen ble opprettet!"
-        this.GStore.variant = "Success"
+
+        await adService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("userId"), this.idToCategory)
+          .then(response => {
+            this.GStore.flashMessage = "Annonsen ble opprettet!"
+            this.GStore.variant = "Success"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(response)
+            this.$router.push({
+              name: "MainPage",
+              component: MainPage,
+            });
+          }).catch(error => {
+            this.GStore.flashMessage = "Anonsen ble ikke opprettet!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
+      }
+    },
+    getCategories:async function(){
+      await categoryService.getAllParentCategories()
+      .then(response => {
+        this.categories = response.data
+      }).catch(error => {
+          this.GStore.flashMessage = "Fikk ikke hentet kategoriene!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
+    },
+    resetClickedCategory(){
+      this.isSubCategory = false
+      this.isSubSubCategory = false
+      this.subCategoriesId = ""
+      this.subSubCategoriesId = ""
+      this.idToCategory = ""
+    },
+    searchClickedCategory(name){
+      for (let i = 0; i<this.categories.length; i++){
+        if (this.categories[i].name == name){
+          this.categoriesId = this.categories[i].id
+        }
+      }
+    },
+    clickedCategory:async function(e){
+      this.resetClickedCategory()
+
+      let name = e.target.options[e.target.options.selectedIndex].text
+      this.state.category = name
+      console.log(this.state.category)
+      this.searchClickedCategory(name)
+
+      if (name == '--Velg kategori--') this.isSubCategory = false
+      else {
+        await categoryService.getAllSubCategoriesForCategory(name).then(response => {
+          this.subCategories = response.data
+          this.isSubCategory = true
+          this.idToCategory = this.categoriesId
+        }).catch(error => {
+          this.isSubCategory = false
+          this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
+      }
+    },
+    resetClickedSubCategories(){
+      this.isSubSubCategory = false
+      this.subSubCategoriesId = ""
+      this.idToCategory = ""
+    },
+    clickedSubCategories:async function(e){
+
+      this.resetClickedSubCategories()
+
+      let name = e.target.options[e.target.options.selectedIndex].text
+      let isChild = false
+      Boolean(isChild)
+
+      let isParent = false
+      Boolean(isParent)
+      for (let i = 0; i<this.subCategories.length; i++){
+        if (this.subCategories[i].name == name){
+          isChild = this.subCategories[i].child
+          isParent = this.subCategories[i].parent
+          this.subCategoriesId = this.subCategories[i].id
+        }
+      }
+
+      if (name == '--Velg kategori--') return
+      else if (isChild == false && isParent == false) this.idToCategory = this.subCategoriesId
+      else if (isChild == true && isParent == true) {
+        await categoryService.getAllSubCategoriesForCategory(name).then(response => {
+          this.isSubSubCategory = true
+          this.subSubCategories = response.data
+        }).catch(error => {
+          this.isSubSubCategory = false
+          console.log(error)
+        })
+      }
+      else {
+        this.GStore.flashMessage = "Noe gikk galt!!!"
+        this.GStore.variant = "Error"
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
-        await lendingService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("account").userId, this.idToCategory)
       }
+
     },
-    /**
-    getCategories:async function(){
-      //TODO: hente alle hoved kategoriene fra databasen og legge inn i  categories arrayen over
-    }
-     */
-    /**
-     clickedCategory:async function(id){
-      //TODO: lagre categories id og sette subCategories id lik ingenting
-      //TODO: hente alle sub kategoriene til den tilhørende hovedkategorien fra databasen og legge inn i subCategories arrayen over
-    }
-     */
-    /**
-    clickedSubCategories:async function(id){
-      //TODO: lagre subCategories id og sette subSubCategories id lik ingenting
-      //TODO: hente alle sub sub kategoriene til den tilhørende sub kategorien fra databasen hvis de finnes og legge inn i subSubCategories arrayen over
-      //TODO: hvis det eksisterer så skal booleanen bli satt til true
-      //TODO: hvis ikke så skal booleanen bli satt til false
-    }
-     */
-    /**
-    clickedSubSubCategories:async function(id){
-      //TODO: lagre id til subSubCategories
-    }
-     */
-    /**
-     getSubSubCategories(){
-      //TODO: sjekke om subSubCategories id er lik null, hvis ikke så skal den lagres i idToCategory
-      //TODO: hvis subSubCategories id er lik null så skal subCategories id sjekkes mot om det står en id der, hvis ja så skal den lagres i idToCategory
-      //TODO: hvis det har kun blitt trukket på en hoved kategori så skal id-en dens lagres i idToCategory
-    }
-     */
+    clickedSubSubCategories(id){
+      this.subSubCategoriesId = id
+      this.idToCategory = this.subSubCategoriesId
+    },
     validateImages() {
       if(this.imgUrl.length === 0) {
         this.imgError = "Annonsen må ha minst ett bilde!"
