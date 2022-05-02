@@ -137,7 +137,8 @@ export default {
         })
     },
     changeUserInfo:async function(){
-      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.passwordChange,localStorage.getItem("userId"))
+      console.log(parseInt(localStorage.getItem("userId")))
+      await lendingService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,localStorage.getItem("userId"))
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
