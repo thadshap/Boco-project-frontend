@@ -254,9 +254,14 @@ export default {
     },
     async startChat() {
       if (this.$store.getters.loggedIn) {
-        if (localStorage.getItem("userId") !== this.lender.id) {
-          var chatName = this.lender.firstName
-          await chatService.createGroupChatWithTwoUsers(chatName, localStorage.getItem("userId"), this.lender.id)
+        var userId = localStorage.getItem("userId")
+        if (userId != this.lender.id) {
+          var userName
+          await userService.getUserById(userId)
+          .then(response => {
+            userName = response.data
+          })
+          await chatService.createGroupChatWithTwoUsers(`${userName.firstName} og ${this.lender.firstName}`, userId, this.lender.id)
           this.$router.push("/messages")
         }else{
           alert('Cannot create chat with self')
