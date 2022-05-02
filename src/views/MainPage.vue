@@ -214,7 +214,6 @@ export default {
       lendingService.getPageWithRandomAds(24)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
-              console.log(i)
               //få poststed
               let ad = {
                 id: response.data[i].adId,

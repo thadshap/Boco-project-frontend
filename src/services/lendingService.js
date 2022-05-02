@@ -596,6 +596,18 @@ export default {
     return axios.request(options);
 
   },
+  getAllUnavailableDatesForAd(adId){
+    const options = {
+      method: 'POST',
+      url: `${url}${port}/api/calender/get`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer'
+      },
+      data: { adId : adId}
+    };
+    return axios.request(options);
+  },
   /**
    *
    * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
