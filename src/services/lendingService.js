@@ -29,8 +29,9 @@ export default {
         price: price,
         owner: lenderId,
         borrower: userId,
-        ad: adId
-      }
+        adId: adId,
+        id: 0
+      },
     };
 
     return axios.request(options)
