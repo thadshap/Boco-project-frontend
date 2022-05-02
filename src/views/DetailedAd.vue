@@ -3,17 +3,15 @@
     <div
       id="adPictureDiv"
       class="text-center"
-      v-for="picture in ad.pictures"
-      :key="picture"
     >
-      <img>
+      <img src={{picture}}>
     </div>
     <div class="text-center">
-      <label id="adHeader" class="form-label">{{ ad.headerText }}</label>
+      <label id="adHeader" class="form-label">{{ ad.title }}</label>
     </div>
     <div class="text-center">
       <label class="form-label">
-        Leiepris : {{ ad.rentalPrice }} kr pr/{{ ad.unitPeriod }}
+        Leiepris : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
     </div>
     <div id="description" class="text-center">
@@ -58,22 +56,13 @@
       </div>
       <div id="lenderDetails">
         <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
-          {{ lender.name }}<br />
+          {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
         <i
           class="fas fa-check-circle"
-          v-if="lender.trustedUser"
+          v-if="lender.verified"
           style="color: var(--bs-blue); padding: 0.5vw"
         ></i>
-      </div>
-      <div id="lenderNumber">
-        <label
-          id="lenderNumberLabel"
-          class="form-label"
-          v-on:click="seeLenderDetails"
-        >
-          tlf : {{ lender.number }}<br />
-        </label>
       </div>
       <div class="text-center">
         <label> Vis tidligere anmeldelser for gjenstanden </label>
@@ -85,9 +74,8 @@
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{ review.name }}<br />
-          {{ review.rating }}
-          {{ review.message }}
+          {{ review.rating }} / 10 <br>
+          {{ review.description}}
         </div>
       </div>
     </div>
@@ -97,7 +85,7 @@
       </label>
     </div>
     <div id="address" class="text-center">
-      <label class="form-label"> Adresse : {{ ad.address }}&nbsp; </label>
+      <label class="form-label"> Adresse : {{ ad.streetAddress }}&nbsp; </label>
     </div>
     <div class="text-center" style="padding: 0px">
       <ol-map
@@ -107,7 +95,7 @@
       >
         <ol-view
           ref="view"
-          :center="[ad.latitudeForItem, ad.longitudeForItem]"
+          :center="[ad.lat, ad.lng]"
           :rotation="rotation"
           :zoom="zoom"
           :projection="projection"
@@ -121,7 +109,7 @@
           <ol-source-vector>
             <ol-feature>
               <ol-geom-point
-                :coordinates="[ad.latitudeForItem, ad.longitudeForItem]"
+                :coordinates="[ad.lat, ad.lng]"
               ></ol-geom-point>
               <ol-style>
                 <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
@@ -139,9 +127,11 @@
 import { ref } from "vue";
 import mapIcon from "@/assets/img/mapIcon.png";
 import Datepicker from "@vuepic/vue-datepicker";
-
+import lendingService from "@/services/lendingService";
+import moment from 'moment';
 
 export default {
+  inject : ["GStore"],
   components: { Datepicker },
   name: "DetailedAd",
   data() {
@@ -151,31 +141,18 @@ export default {
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
-      reviews: [
-        {
-          name: "per persen",
-          rating: "5/10",
-          message:
-            "Veldig fin, litt upraktisk, men ellers kjempe fin jeg liker veldig veldig godt",
-        },
-      ],
+      reviews: [],
       ad: {
-        distance: null,
-        address: "Nordre hallsetveg",
-        pictures: [],
-        latitudeForItem: 10,
-        longitudeForItem: 64,
-        headerText: "Stekeovn",
-        rentalPrice: 10,
-        unitPeriod: "dag",
-        description: "veldig flott å bruke",
+
       },
       lender: {
-        name: "Arne Bjarne",
-        number: 333333333,
-        trustedUser: true,
       },
     };
+  },
+  async created() {
+    await this.getCurrentAd();
+    await this.setLender();
+    await this.getReviews();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -191,18 +168,65 @@ export default {
     };
   },
   methods: {
+    async getCurrentAd(){
+      await lendingService.getAdById(this.$store.getters.currentAd.id).then(response => {
+        this.ad = response.data[0];
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
+    async getReviews(){
+      await lendingService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
+        this.reviews = response.data;
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
+    async setLender(){
+      await lendingService.getUserById(this.ad.userId).then(response => {
+        this.lender = response.data
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
     startChat() {},
     makeRequest() {
-      if (this.showRequestDetails) {
-        this.showRequestDetails = false;
-      } else {
-        this.showRequestDetails = true;
-      }
+      this.showRequestDetails = !this.showRequestDetails;
     },
-    sendRequest : async function() {
-      const startDate = this.date[0].toISOString().substring(0,10);
-      const endDate = this.date[1].toISOString().substring(0,10);
-      console.log(startDate + " " + endDate);
+    async sendRequest(){
+      //TODO fix this correct with other pricetypes than days
+      const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
+      const dateto = moment(this.date[1]).format('YYYY-MM-DD')
+      console.log(localStorage.getItem("userId"));
+      const diffTime = Math.abs(this.date[1] - this.date[0]);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      await lendingService.createRental(
+          new Date().toLocaleDateString('en-CA'),
+          datefrom,
+          dateto,
+          datefrom,
+          (diffDays*this.ad.price),
+          this.lender.id,
+          localStorage.getItem("userId"),
+          this.$store.getters.currentAd.id
+      ).catch(error => {
+        console.log(error);
+      })
     },
     dropDown() {
       if (this.showRightArrow) {
@@ -212,7 +236,7 @@ export default {
       }
     },
     seeLenderDetails() {
-      localStorage.setItem("lenderId", this.ad.userId) //TODO: fix this.ad.userId to actually be userId
+      localStorage.setItem("lenderId", this.ad.userId);
       this.$router.push({
         name: "UserProfile",
       });
@@ -226,7 +250,6 @@ export default {
   height: 400px;
   width: 100%;
 }
-<<<<<<< src/views/DetailedAd.vue
   #adPictureDiv{
     padding: 10vw 10vw 0 10vw;
   }

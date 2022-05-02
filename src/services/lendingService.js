@@ -1,6 +1,6 @@
 import axios from "axios";
-let url = 'http://localhost:'
-let port = "8080"
+let url = 'https://localhost:'
+let port = "8443"
 export default {
   /**
    *Methods for rental
@@ -17,7 +17,7 @@ export default {
       url: `${url}${port}/rental/create`,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
       data: {
         dateOfRental: dateOfRental,
@@ -29,8 +29,9 @@ export default {
         price: price,
         owner: lenderId,
         borrower: userId,
-        ad: adId
-      }
+        adId: adId,
+        id: 0
+      },
     };
 
     return axios.request(options)
@@ -44,7 +45,7 @@ export default {
       url: `${url}${port}/rental/` + rentalId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       }
     };
 
@@ -56,7 +57,7 @@ export default {
       url: `${url}${port}/rental/delete/` + rentalId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       }
     };
 
@@ -69,7 +70,7 @@ export default {
       url: `${url}${port}/rental/update/` + rentalId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
       data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
     };
@@ -83,7 +84,7 @@ export default {
       url: `${url}${port}/rental/` + rentalId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       }
     };
     return axios.request(options);
@@ -98,7 +99,7 @@ export default {
       url: `${url}${port}/rental/s/` + userId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       }
     };
     return axios.request(options);},
@@ -136,7 +137,7 @@ export default {
       url: `${url}${port}/user/` + userId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
       data: {
         firstName: firstName,
@@ -155,7 +156,7 @@ export default {
       url: `${url}${port}/user/` + userId,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
     };
 
@@ -234,7 +235,6 @@ export default {
       url: `${url}${port}/auth/register`,
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer",
       },
       data: {
         firstName: firstName,
@@ -292,8 +292,16 @@ export default {
     const options = {
       method: "DELETE",
       url: `${url}${port}/api/delete/review`,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
-      data: { rating: "", description: "", userId: userId, adId: adId },
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
+      data: {
+        rating: "",
+        description: "",
+        userId: userId,
+        adId: adId
+      },
     };
 
     return axios.request(options);
@@ -307,7 +315,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/reviews/` + adId,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer "
+      },
     };
 
     return axios.request(options);
@@ -494,7 +505,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/ads/page/` + pageSize,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
@@ -531,7 +545,9 @@ export default {
     const options = {
       method: "DELETE",
       url: `${url}${port}/api/ads/` + adId,
-      headers: {Authorization: 'Bearer'}
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      }
     };
 
     return axios.request(options);
@@ -552,7 +568,9 @@ export default {
     const options = {
       method: "PUT",
       url: `${url}${port}/api/ads/` + adId,
-      headers: {'Content-Type': 'application/json', Authorization: 'Bearer'},
+      headers: {'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
       data: {
         title: newTitle,
         price: newPrice,
@@ -613,7 +631,10 @@ export default {
     const options = {
       method: "POST",
       url: `${url}${port}/api/ads/newAd`,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
       data: {
         title: title,
         description: description,

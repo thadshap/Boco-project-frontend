@@ -4,11 +4,15 @@ export default createStore({
   state: {
     isLoggedIn: false,
     // chosenMainCategory: "",
-    lastClickedMainCat: null
+    lastClickedMainCat: null,
+    currentAd : {},
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
-      state.isLoggedIn = isLoggedIn;
+      state.isLoggedIn = isLoggedIn
+    },
+    SET_CURRENT_AD(state, currentAd) {
+      state.currentAd = currentAd
     },
     // SET_CHOSEN_MAIN_CATEGORY(state, chosenMainCategory) {
     //   state.chosenMainCategory = chosenMainCategory;
@@ -19,7 +23,10 @@ export default createStore({
   },
   actions: {
     setLoggedIn({ commit }, isLoggedIn) {
-      commit("SET_LOGGED_IN", isLoggedIn);
+      commit("SET_LOGGED_IN", isLoggedIn)
+    },
+    setCurrentAd({ commit }, currentAd) {
+      commit("SET_CURRENT_AD", currentAd)
     },
     // setChosenMainCategory({ commit }, chosenMainCategory) {
     //   commit("SET_CHOSEN_MAIN_CATEGORY", chosenMainCategory);
@@ -37,6 +44,9 @@ export default createStore({
     // },
     lastClickedMainCat(state) {
       return state.lastClickedMainCat;
+    },
+    currentAd(state) {
+      return state.currentAd
     }
   },
 });
