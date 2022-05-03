@@ -28,7 +28,7 @@
             :timestamp="message.timeStamp"
             :content="message.content"
             :profilePicture="message.picture"
-            :userId="message.user_id"/>
+            :userId="message.userId"/>
         </div>
         <div class="d-flex align-items-end bottom-toolbar">
             <!--<button class="btn btn-primary plus-button" type="button">
