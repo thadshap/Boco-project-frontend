@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div class="w-100">
+    <div class="d-flex justify-content-center">
+      <div>
+  <div class="main-container">
     <div class="d-flex justify-content-center search-box-container-style">
       <div class="d-flex search-container">
         <input type="search" placeholder="Søk" class="w-100" v-model="searchWord"/>
@@ -10,7 +13,8 @@
     </div>
 
     <div>
-      <h3>Categories</h3>
+      <h2 class="category-header">Kategorier</h2>
+      <hr>
       <div
         class="d-flex flex-row justify-content-center align-items-center flex-wrap categories-card-container-style"
       >
@@ -42,34 +46,38 @@
         />
       </div>
     </div>
-    <div class="d-inline-flex d-sm-flex justify-content-sm-start">
-      <div>
-        <div>
+
+<hr>
+
+    <div class="w-100">
+      <div class="filter-and-sort-btn-container">
+      <div class="sort-container">
           <button
-              class="btn btn-primary"
+              class="btn sort-btn"
               type="button"
               v-on:click="showSorting"
           >
+            <img height="30" width="30" src="@/assets/img/list.svg" alt="sort icon">
             Sorter
           </button>
-          <div style="text-align: left" v-if="showMenuBarSorting">
+          <div class="dropdown-item-container" v-if="showMenuBarSorting">
             <a id="lav-hoy" class="dropdown-item" v-on:click="sortingPicked($event)">laveste - høyeste pris</a
             ><a id="hoy-lav" class="dropdown-item" v-on:click="sortingPicked($event)">høyeste - laveste pris</a
           ><a id="ny-eld" class="dropdown-item" v-on:click="sortingPicked($event)">nyeste - eldste</a
           ><a id="eld-ny" class="dropdown-item" v-on:click="sortingPicked($event)">eldste- nyeste</a>
           </div>
-        </div>
       </div>
       <div>
-        <div class="dropdown">
+        <div class="dropdown filter-container">
           <button
-              class="btn btn-primary"
+              class="btn filter-btn"
               type="button"
               v-on:click="showFiltering"
           >
+            <img height="20" width="20" src="@/assets/img/filter.svg" alt="filter icon">
             Filtrer
           </button>
-          <div style="text-align: left" v-if="showMenuBarFiltering">
+          <div class="dropdown-item-container" v-if="showMenuBarFiltering">
             <a class="dropdown-item" href="#">Pris 0-{{priceRangeValue}}kr<br>
               <input
                 class="form-range"
@@ -93,12 +101,17 @@
           </div>
         </div>
         </div>
+        </div>
       </div>
-  <div>
-    <h3>Newest items</h3>
 
+
+  <div>
+    <hr>
     <AdListComponent :ads="this.ads"/>
   </div>
+  </div>
+  </div>
+    </div>
   </div>
 </template>
 
@@ -311,6 +324,37 @@ export default {
   padding: 10px;
 }
 
+.filter-and-sort-btn-container{
+  display: flex;
+  justify-content: right;
+  margin-right: 12px;
+}
+.sort-container, .filter-container{
+  display: table-row;
+  text-align: left;
+}
+.main-container{
+  display: table-row;
+}
+.category-header, .newest-items-header{
+  color: #015d9a;
+  font-weight: initial;
+  margin-block-end: 0px;
+}
+.sort-btn, .filter-btn{
+  margin-left: 0px;
+  padding-left: 0px;
+  color: #0495F3FF;
+  font-weight: inherit;
+  font-size: 19px;
+}
+.dropdown-item-container{
+  border-radius: 7px;
+  background-color: rgba(230, 247, 255, 0.6);
+}
+hr{
+  margin: 5px;
+}
 @media (min-width: 992px) {
   .search-container {
     width: 50%;
@@ -323,14 +367,10 @@ export default {
   }
 }
 a{
-  border: #0b5ed7 solid 1px;
   cursor: pointer;
 }
 .filtering{
   background-color: #0b5ed7;
   color: white;
-}
-button{
-  margin: 5px;
 }
 </style>
