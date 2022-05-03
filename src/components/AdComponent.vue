@@ -51,6 +51,9 @@ export default {
     image: {
       type: String,
     },
+    distance: {
+      type: Number
+    }
   },
   methods: {
     getImgUrl(img) {

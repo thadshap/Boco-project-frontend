@@ -166,14 +166,14 @@ export default {
           filterType, this.currentCategoryName, rangeValue, true,
           this.currPos.lat, this.currPos.lng)
           .then(response => {
-            console.log(response.data)
-            for (let i = 0; i < response.data.length; i++) {
+            for (let i = 0; i < response.data.body.length; i++) {
               let ad = {
-                id: response.data[i].adId,
-                title: response.data[i].title,
+                id: response.data.body[i].adId,
+                title: response.data.body[i].title,
                 img: "ski.jpg",
-                place: response.data[i].postalCode.toString(),
-                price: response.data[i].price
+                place: response.data.body[i].postalCode.toString(),
+                price: response.data.body[i].price,
+                distance: response.data.body[i].distance
               }
               this.ads.push(ad)
             }
@@ -198,7 +198,8 @@ export default {
                 title: response.data[i].title,
                 img: "ski.jpg",
                 place: response.data[i].postalCode.toString(),
-                price: response.data[i].price
+                price: response.data[i].price,
+                distance: response.data[i].distance
               }
               this.ads.push(ad)
             }

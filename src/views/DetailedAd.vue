@@ -184,6 +184,8 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
+      this.ad.distance = this.$store.getters.currentAd.distance
+      console.log(this.$store.getters.currentAd.distance)
     },
     getDurationTypeToNorwegian(){
       if (this.ad.durationType == 'MONTH'){
