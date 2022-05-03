@@ -22,7 +22,7 @@
           @last-clicked-main-cat="chosenMainCat"
         />
       </div>
-      <div v-if="chosenMainCategory !== ''" class="my-5">
+      <div v-if="subCategories.length !== 0 && ads.length !== 0" class="my-5">
         <h5>Underkategori</h5>
         <SubCategoryComponent
           v-for="cat in subCategories"
@@ -32,7 +32,7 @@
           @chosen-sub-cat="chosenSubCat"
         />
       </div>
-      <div v-if="chosenSubCategory !== ''" class="my-5">
+      <div v-if="subSubCategories.length !== 0 && ads.length !== 0" class="my-5">
         <h6>Underkategori</h6>
         <SubCategoryComponent
           v-for="cat in subSubCategories"
@@ -186,12 +186,16 @@ export default {
       await categoryService
         .getAllParentCategories()
         .then(response => {
-          for(let i = 0; i < response.data.length; i++) {
-            let cat = {
-              title: response.data[i].name,
-              icon: response.data[i].icon
+          if(response.status !== 204) {
+            for(let i = 0; i < response.data.length; i++) {
+              let cat = {
+                title: response.data[i].name,
+                icon: response.data[i].icon
+              }
+              this.categories.push(cat)
             }
-            this.categories.push(cat)
+          } else {
+            console.log("Fikk ingen kategorier fra server...")
           }
         })
         .catch(error => {
@@ -203,22 +207,37 @@ export default {
       this.subCategories = []
       this.subSubCategories = []
 
+      categoryService
+        .getAllAdsForCategoryAndSubCategories(title)
+        .then(response => {
+          if(response.status === 200) {
+            this.ads = []
+            for(let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                img: "ski.jpg",
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
       await categoryService
         .getAllSubCategoriesForCategory(title)
         .then(response => {
-          for(let i = 0; i < response.data.length; i++) {
-            this.subCategories.push(response.data[i].name)
+          if(response.status === 200) {
+            for(let i = 0; i < response.data.length; i++) {
+              this.subCategories.push(response.data[i].name)
+            }
+          } else {
+            console.log("Fikk ingen underkategorier fra server...")
           }
-
-          categoryService
-            .getAllAdsForCategoryAndSubCategories(title)
-            .then(response => {
-              console.log(response)
-            })
-            .catch(error => {
-              console.log(error)
-            })
-
         })
         .catch(error => {
           console.log(error)
@@ -229,35 +248,58 @@ export default {
       this.subSubCategories = []
 
       await categoryService
+        .getAllAdsForCategoryAndSubCategories(subCat)
+        .then(response => {
+          if(response.status === 200) {
+            this.ads = []
+            for(let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                img: "ski.jpg",
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      await categoryService
         .getAllSubCategoriesForCategory(subCat)
         .then(response => {
-          if(response.status !== 204) {
+          if(response.status === 200) {
             for(let i = 0; i < response.data.length; i++) {
               this.subSubCategories.push(response.data[i].name)
             }
           }
-
-          categoryService
-            .getAllAdsForCategoryAndSubCategories(subCat)
-            .then(response => {
-              console.log(response)
-            })
-            .catch(error => {
-              console.log(error)
-            })
-
         })
         .catch(error => {
           console.log(error)
         })
     },
-    chosenSubSubCat(subSubCat) {
+    async chosenSubSubCat(subSubCat) {
       this.chosenSubSubCategory = subSubCat
 
-      categoryService
+      await categoryService
         .getAllAdsForCategoryAndSubCategories(subSubCat)
         .then(response => {
-          console.log(response)
+          if(response.status === 200) {
+            this.ads = []
+            for(let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                img: "ski.jpg",
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }
         })
         .catch(error => {
           console.log(error)
@@ -302,9 +344,6 @@ export default {
     this.currPos.value.lng;
 
      */
-  },
-  updated() {
-    console.log("Main page updated");
   }
 };
 </script>
