@@ -60,10 +60,10 @@
           <button class="btn btn-primary" type="button" v-on:click="showFilteringOptions">Filtrer</button>
           <div style="text-align: left" v-if="showMenuBarFiltering">
             <a class="dropdown-item" href="#">max-pris:<br>
-              <input type="number" v-model="rangeValue"/>
+              <input type="number" v-model="rangeValuePrice"/>
               <input type="button" v-on:click="filter('price')" value="filtrer"/></a>
             <a class="dropdown-item" href="#">max-avstand:<br>
-              <input type="number" v-model="rangeValue"/>
+              <input type="number" v-model="rangeValueDistance"/>
               <input type="button" v-on:click="filter('distance')" value="filtrer"/>
             </a>
           </div>
@@ -105,7 +105,8 @@ export default {
   data() {
     return {
       searchWord: "",
-      rangeValue : 0,
+      rangeValueDistance : 0,
+      rangeValuePrice : 0,
       showUnderCategories : 0,
       sorting : '',
       showMenuBarSorting : false,
@@ -130,7 +131,6 @@ export default {
       this.showMenuBarFiltering = !this.showMenuBarFiltering
     },
     async sortingPicked(e){
-      console.log(this.ads)
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
       if(this.sorting == "lav-hoy"){
@@ -155,10 +155,18 @@ export default {
       }
     },
     async filterWithCategory(filterType){
+      let rangeValue = ""
+      if(filterType === "price"){
+        rangeValue = this.rangeValuePrice
+      } if(filterType === "distance"){
+        rangeValue = this.rangeValueDistance
+      }
+
       await adsService.filterAdsInCategoryByDistanceOrPrice(
-          filterType, this.currentCategoryName, this.rangeValue, true,
-          localStorage.getItem("latForUser"), localStorage.getItem("lngForUser"))
+          filterType, this.currentCategoryName, rangeValue, true,
+          this.currPos.lat, this.currPos.lng)
           .then(response => {
+            console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,
@@ -174,9 +182,16 @@ export default {
           })
     },
     async filterWithoutCategory(filterType){
-      await adsService.filterAdsForPriceOrDistance(filterType, this.rangeValue, true,
-          localStorage.getItem("latForUser"), localStorage.getItem("lngForUser"))
+      let rangeValue = ""
+      if(filterType === "price"){
+        rangeValue = this.rangeValuePrice
+      } if(filterType === "distance"){
+        rangeValue = this.rangeValueDistance
+      }
+      await adsService.filterAdsForPriceOrDistance(filterType, rangeValue, true,
+          this.currPos.lat, this.currPos.lng)
           .then(response => {
+            console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,
@@ -241,7 +256,6 @@ export default {
           for(let i = 0; i < response.data.length; i++) {
             this.subCategories.push(response.data[i].name)
           }
-
           categoryService
             .getAllAdsForCategoryAndSubCategories(title)
             .then(response => {
@@ -250,7 +264,6 @@ export default {
             .catch(error => {
               console.log(error)
             })
-
         })
         .catch(error => {
           console.log(error)
