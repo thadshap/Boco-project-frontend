@@ -1,15 +1,20 @@
 <template>
     <div class="">
-        <form action="submit">
+        <div class="d-flex flex-column popup" v-if="!popup">
+            <button v-on:click="showPopup" class="leave"><i class="fa fa-times-circle "></i></button>
+            Do you really want to leave {{groupName}}?
+            <button v-on:click="leaveChat" class="confirm">Confirm</button>
+        </div>
+        <div>
             <div class="d-flex flex-row middle">
                 <div class="flex-column temp">
-                    <button v-on:click="leaveChat" class="leave"><i class="fa fa-times-circle "></i></button>
-                <button class="flex-row groupButton" type="submit" v-on:click="goToChat">
+                    <button v-on:click="showPopup" class="leave"><i class="fa fa-times-circle "></i></button>
+                <button class="flex-row groupButton" v-on:click="goToChat">
                     <div class="groupName">{{groupName}}</div>  
                 </button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </template>
 
@@ -17,6 +22,11 @@
 import chatService from "@/services/chatService";
 export default {
   name: "GroupComponent",
+  data(){
+      return{
+          popup: true
+      }
+  },
   props:{
       groupId:{
           type: Number,
@@ -43,6 +53,9 @@ export default {
           this.$router.push("/")
           await chatService.leaveChat(this.$props.groupId, localStorage.getItem("userId"))
           alert(`Left group: ${this.$props.groupName}`)
+      },
+      showPopup(){
+          this.popup = !this.popup
       }
   }
 };
@@ -90,6 +103,16 @@ export default {
 }
 button{
     border:none;
-    background-color: none;
+    background-color: transparent;
+}
+.popup{
+    position: absolute;
+    top: 40%;
+    right: 30%;
+    left: 30%;
+    background-color:rgba(85, 171, 200, 1);
+}
+.confirm:hover{
+    background-color: rgba(70, 156, 175, 1);
 }
 </style>
