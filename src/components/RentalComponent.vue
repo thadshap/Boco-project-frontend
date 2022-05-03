@@ -1,9 +1,6 @@
 <template>
   <div class="project-card-container">
     <div class="project-card d-flex justify-content-center">
-      <div class="ad-img-container-style d-flex align-items-center justify-content-center">
-<!--        <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>-->
-      </div>
       <div class="d-flex flex-column ad-details-container-style">
         <div class="d-flex flex-column align-items-start">
           <h3 class="ad-heading-style" style="margin-bottom: 10px;">
@@ -14,10 +11,9 @@
           <h4>Leie fra: {{ rentFrom }}</h4>
           <h4>Leie til: {{ rentTo }}</h4>
           <h4>Total pris: {{ price }} kr</h4>
-          <h4>Aktiv: {{ active }} </h4>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="'align-items-end, h-100'">
-          <a v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
+          <a v-if="active" v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Rediger lån
           </a>
@@ -82,9 +78,6 @@ export default {
       },
 },
 methods: {
-  getImgUrl(img) {
-    return require("../assets/img/" + img);
-  },
   goToDetailedView(){
     console.log(this.$props.adId);
     this.$router.push({
