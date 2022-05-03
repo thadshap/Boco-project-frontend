@@ -130,6 +130,7 @@ import adService from "@/services/adService";
 import reviewService from "@/services/reviewService";
 import userService from "@/services/userService";
 import rentalService from "@/services/rentalService";
+import chatService from "@/services/chatService";
 import moment from 'moment';
 
 export default {
@@ -157,6 +158,7 @@ export default {
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
+    this.setLenderId();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -250,7 +252,29 @@ export default {
         }, 4000)
       })
     },
-    startChat() {},
+    async startChat() {
+      if (this.$store.getters.loggedIn) {
+        var userId = localStorage.getItem("userId")
+        if (userId != this.lender.id) {
+          var groupId
+          var users = [userId,this.lender.id]
+          await chatService.createGroupChat(this.ad.title, users)
+          .then(response => {
+            groupId = response.data // TODO: add .groupId when backend is fixed
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+          this.$store.dispatch("setGroupId", groupId)
+          this.$store.dispatch("setGroupName", this.ad.title)
+          this.$router.push(`/chat/${groupId}`)
+        }else{
+          alert('Cannot create chat with self')
+        }
+      } else {
+        this.$router.push("/login")
+      }      
+    },
     makeRequest() {
       this.showRequestDetails = !this.showRequestDetails
     },
@@ -267,7 +291,7 @@ export default {
       }else if (this.ad.durationType === 'uke'){
         return duration/7 * this.ad.price
       }
-
+      this.showRequestDetails = !this.showRequestDetails;
     },
     async sendRequest(){
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
@@ -308,8 +332,10 @@ export default {
         this.showRightArrow = true;
       }
     },
-    seeLenderDetails() {
+    setLenderId(){
       localStorage.setItem("lenderId", this.ad.userId);
+    },
+    seeLenderDetails() {
       this.$router.push({
         name: "UserProfile",
       });
