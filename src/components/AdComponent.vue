@@ -103,6 +103,10 @@ export default {
   font-size: 2.5em;
 }
 
+b{
+  font-weight: inherit;
+  font-size: 35px;
+}
 @media screen and (min-width: 992px) {
   .project-card-container {
     width: 50%;
