@@ -63,12 +63,15 @@ export default {
 .text{
     text-align: left;
     padding-bottom: 10px;
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 .timestamp{
     font-size: 10px;
 }
 .padding{
     padding: 10px;
+    max-width: 90vw;
 }
 .name{
     text-decoration: underline;

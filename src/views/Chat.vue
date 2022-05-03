@@ -108,6 +108,10 @@ export default {
         await this.sleep(1000)
         this.subscribe()    
   },
+  disconnect(){
+      console.log("disconnected")
+      this.stompClient.disconnect()
+  },
   subscribe(){
         console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
         this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
@@ -125,14 +129,13 @@ export default {
    },
 
 },
+beforeUnmount() {
+      this.disconnect()
+  },
   mounted(){
       this.getMessages()
       this.connect()
   },
-  directives: {
-    // this will install v-autoscroll directive and can be used only on the current component or tag
-
-  }
 };
 </script>
 <style scoped>
