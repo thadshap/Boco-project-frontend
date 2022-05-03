@@ -49,7 +49,7 @@
       <div class="cardDiv">
         <div class="card cardBodyStyle">
           <div class="card-body">
-            <h4 class="card-title">Følger</h4>
+            <h4 class="card-title">Følger (Kommer snart)</h4>
             <p class="card-text">Se brukerne du følger og deres annonser</p>
           </div>
         </div>
@@ -57,7 +57,7 @@
       <div class="cardDiv">
         <div class="card">
           <div class="card-body cardBodyStyle">
-            <h4 class="card-title">Varslingsinnstillinger</h4>
+            <h4 class="card-title">Varslingsinnstillinger (Kommer snart)</h4>
             <p class="card-text">Bestem hvordan du vil motta varslinger</p>
           </div>
         </div>
