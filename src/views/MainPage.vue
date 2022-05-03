@@ -172,6 +172,9 @@ export default {
                 place: response.data[i].postalCode.toString(),
                 price: response.data[i].price
               }
+
+
+
               this.ads.push(ad)
             }
           })

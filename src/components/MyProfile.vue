@@ -7,7 +7,8 @@
             <div>
               <h3>Min Profil</h3>
             </div>
-            <div class="d-flex infoDiv"><img class="profilePic" src="@/assets/img/profilePicPlaceholder.png">
+            <div class="d-flex infoDiv">
+              <img class="profilePic" :src="profilePicture">
               <div class="d-sm-flex flex-column justify-content-end">
                 <h1>Brage Minge</h1>
                 <h6 style="opacity: 0.70;"><br>bragemi@stud.ntnu.no<br><br></h6>
@@ -75,9 +76,25 @@
 
 <script>
   import { accountService } from "@/services/account.service";
+  import userService from "@/services/userService";
 
   export default {
     name: "MyProfile",
+    data() {
+      return {
+        profilePicture: null
+      }
+    },
+    async created() {
+      await userService
+        .getProfilePicture(localStorage.getItem("userId"))
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     methods: {
       myAds() {
         this.$router.push({
@@ -115,8 +132,6 @@
           this.$router.push("/")
           localStorage.clear()
         }
-
-
       }
     }
   }
