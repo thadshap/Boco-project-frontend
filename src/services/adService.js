@@ -58,7 +58,7 @@ export default {
             url: `${url}${port}/api/ads/` + adId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
+                'Authorization': 'Bearer '
             },
         };
 
@@ -91,6 +91,7 @@ export default {
             url: `${url}${port}/api/calender/get`,
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
             },
             data: { adId : adId}
         };
