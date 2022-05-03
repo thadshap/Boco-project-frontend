@@ -26,8 +26,9 @@
           @last-clicked-main-cat="chosenMainCat"
         />
       </div>
-      <div v-if="chosenMainCategory !== ''" class="my-5">
-        <h5>Underkategori</h5>
+      <div v-if="chosenMainCategory !== ''" class="my-3">
+        <h4 class="sub-category-header">Underkategori</h4>
+        <hr>
         <SubCategoryComponent
           v-for="cat in subCategories"
           :key="cat"
@@ -36,7 +37,7 @@
           @chosen-sub-cat="chosenSubCat"
         />
       </div>
-      <div v-if="chosenSubCategory !== ''" class="my-5">
+      <div v-if="chosenSubCategory !== ''" class="my-3">
         <h6>Underkategori</h6>
         <SubCategoryComponent
           v-for="cat in subSubCategories"
@@ -336,7 +337,7 @@ export default {
 .main-container{
   display: table-row;
 }
-.category-header, .newest-items-header{
+.category-header,.sub-category-header{
   color: #015d9a;
   font-weight: initial;
   margin-block-end: 0px;
