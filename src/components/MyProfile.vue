@@ -79,7 +79,6 @@
 </template>
 
 <script>
-  import { accountService } from "@/services/account.service";
   import userService from "@/services/userService";
 
   export default {
@@ -128,9 +127,9 @@
         let provider = localStorage.getItem("provider")
 
         if(provider === "facebook") {
-          accountService.logoutFacebook()
+          console.log("Facebook")
         } else if(provider === "google") {
-          accountService.logoutGoogle(this.$gAuth)
+          console.log("Google")
         } else if(provider === "none") {
           this.$store.dispatch("setLoggedIn", false)
           this.$router.push("/")

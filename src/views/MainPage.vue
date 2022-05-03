@@ -124,6 +124,7 @@ import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import adsService from "@/services/adsService";
 import categoryService from "@/services/categoryService";
+import adService from "@/services/adService";
 
 export default {
   name: "MainPage",
@@ -155,7 +156,8 @@ export default {
       subSubCategories: [],
       chosenMainCategory: "",
       chosenSubCategory: "",
-      chosenSubSubCategory: ""
+      chosenSubSubCategory: "",
+      adImg: ""
     };
   },
   methods: {
@@ -173,20 +175,19 @@ export default {
       this.showMenuBarSorting = false;
       console.log(this.sorting);
     },
-    getRandomAds(){
-      adsService.getPageWithRandomAds(5)
+    async getRandomAds(){
+      await adsService
+        .getPageWithRandomAds(5)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               //få poststed
+
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                img: "ski.jpg",
                 place: response.data[i].postalCode.toString(),
                 price: response.data[i].price
               }
-
-
 
               this.ads.push(ad)
             }
@@ -194,6 +195,18 @@ export default {
           .catch(error => {
             console.error(error)
           })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
     },
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
@@ -223,7 +236,7 @@ export default {
       this.subCategories = []
       this.subSubCategories = []
 
-      categoryService
+      await categoryService
         .getAllAdsForCategoryAndSubCategories(title)
         .then(response => {
           if(response.status === 200) {
@@ -232,7 +245,6 @@ export default {
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                img: "ski.jpg",
                 place: response.data[i].city,
                 price: response.data[i].price
               }
@@ -243,6 +255,18 @@ export default {
         .catch(error => {
           console.log(error)
         })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
 
       await categoryService
         .getAllSubCategoriesForCategory(title)
@@ -272,7 +296,6 @@ export default {
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                img: "ski.jpg",
                 place: response.data[i].city,
                 price: response.data[i].price
               }
@@ -283,6 +306,18 @@ export default {
         .catch(error => {
           console.log(error)
         })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
 
       await categoryService
         .getAllSubCategoriesForCategory(subCat)
@@ -309,7 +344,6 @@ export default {
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                img: "ski.jpg",
                 place: response.data[i].city,
                 price: response.data[i].price
               }
@@ -320,6 +354,18 @@ export default {
         .catch(error => {
           console.log(error)
         })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
     },
     async search() {
       if(this.searchWord === "") {
@@ -346,6 +392,18 @@ export default {
         .catch(err => {
           console.log(err)
         })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
     }
   },
   watch:{

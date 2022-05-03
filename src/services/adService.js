@@ -83,7 +83,17 @@ export default {
             data: '[form]'
         };
         return axios.request(options);
-
+    },
+    getPicturesForAd(adId) {
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/ads/pictures/${adId}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
+            }
+        };
+        return axios.request(options);
     },
     getAllUnavailableDatesForAd(adId){
         const options = {
