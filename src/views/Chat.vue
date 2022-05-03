@@ -11,6 +11,8 @@
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
                 <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
                 <button v-if="changeGroupName" v-on:click="editGroupName">Change group name</button>
+                <input type="text" v-if="this.changeGroupName" v-model="addUser">
+                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail">Add user by email</button>
                 <button v-on:click="changeGroupNameState">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
@@ -61,6 +63,7 @@ export default {
       return{
           changeGroupName: false,
           newGroupName: null,
+          addUser:'',
           input:'',
           temp:''
       }
@@ -74,8 +77,16 @@ export default {
       },
         async editGroupName(){
           await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
+          .then(response => {
+              alert(response.data)
+          })
           this.$store.dispatch("setGroupName", this.newGroupName)
-          alert(`Changed group name to: ${this.newGroupName}`)
+      },
+      async addUserToGroupByEmail(){
+          await chatService.addUserToGroupByEmail(this.$store.getters.getGroupId, this.addUser)
+          .then(response => {
+              alert(response.data)
+          })
       },
       toGroups(){
           this.$router.push("/groups")

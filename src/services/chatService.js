@@ -55,10 +55,10 @@ export default{
           };
           return axios.request(options)
     },
-    addUserToGroup(groupId, newUser){
+    addUserToGroupByEmail(groupId, newUser){
         const options = {
             method: 'PUT',
-            url: `${url}${port}/api/group/add/user/${groupId}/${newUser}`,
+            url: `${url}${port}/api/group/add/user/email/${groupId}/${newUser}`,
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
