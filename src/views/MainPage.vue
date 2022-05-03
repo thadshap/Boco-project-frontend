@@ -99,6 +99,12 @@
     <h3>Newest items</h3>
 
     <AdListComponent :ads="this.ads"/>
+    <Pagination
+        :total-pages="10"
+        :perPage="24"
+        :current-page="currentPage"
+        @pageChanged="onPageChange"
+    />
   </div>
   </div>
 </template>
@@ -107,6 +113,7 @@
 import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
 import SubCategoryComponent from "@/components/SubCategoryComponent";
+import Pagination from "@/components/Pagination";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import adsService from "@/services/adsService";
@@ -117,7 +124,8 @@ export default {
   components: {
     AdListComponent,
     CategoryComponent,
-    SubCategoryComponent
+    SubCategoryComponent,
+    Pagination
   },
   setup() {
     const { coords } = geolocationForUser();
@@ -142,7 +150,8 @@ export default {
       subSubCategories: [],
       chosenMainCategory: "",
       chosenSubCategory: "",
-      chosenSubSubCategory: ""
+      chosenSubSubCategory: "",
+      currentPage:1,
     };
   },
   methods: {
@@ -158,7 +167,6 @@ export default {
     sortingPicked(e){
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
-      console.log(this.sorting);
     },
     getRandomAds(){
       adsService.getPageWithRandomAds(5)
@@ -195,7 +203,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     async chosenMainCat(title) {
@@ -216,12 +224,12 @@ export default {
               console.log(response)
             })
             .catch(error => {
-              console.log(error)
+              console.error(error)
             })
 
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     async chosenSubCat(subCat) {
@@ -272,8 +280,6 @@ export default {
         .getAdsBySearch(this.searchWord)
         .then(res => {
           this.ads = []
-          console.log("Received from server")
-          console.log(res.data)
           for(let i = 0; i < res.data.length; i++) {
             let ad = {
               id: res.data[i].adId,
@@ -286,8 +292,11 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err)
+          console.error(err)
         })
+    },
+    onPageChange(page) {
+      this.currentPage = page;
     }
   },
   watch:{
@@ -303,9 +312,6 @@ export default {
 
      */
   },
-  updated() {
-    console.log("Main page updated");
-  }
 };
 </script>
 
