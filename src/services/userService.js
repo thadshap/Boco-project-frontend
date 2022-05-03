@@ -14,24 +14,21 @@ export default {
             data: {
                 firstName: firstName,
                 lastName: lastName,
-                email: email,
                 password: password
             }
         };
         return axios.request(options);
     },
-
-
+    //TODO picture handling
     getUserById(userId){
         const options = {
             method: 'GET',
             url: `${url}${port}/user/` + userId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
+                'Authorization': 'Bearer '
             },
         };
-
         return axios.request(options);
     },
     deleteUser(userId){
