@@ -37,6 +37,7 @@ export default {
             url: `${url}${port}/api/reviews/` + adId,
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
             },
         };
 

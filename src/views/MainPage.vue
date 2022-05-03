@@ -39,6 +39,7 @@
           :key="cat"
           :label="cat"
           category-type="subSubCategories"
+          @chosen-sub-cat="chosenSubSubCat"
         />
       </div>
     </div>
@@ -106,6 +107,7 @@ import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import adsService from "@/services/adsService";
+import categoryService from "@/services/categoryService";
 
 export default {
   name: "MainPage",
@@ -133,56 +135,12 @@ export default {
       showMenuBarFiltering : false,
       ads:[],
       adsRightFormat:[],
-      categories: [
-        {
-          title: "Verktøy",
-          icon: "fa-hammer",
-          subCategories: [
-            "Sag",
-            "Hammer",
-            "Vater"
-          ]
-        },
-        {
-          title: "Kjøretøy",
-          icon: "fa-car",
-          subCategories: [
-            "Bil",
-            "Båt",
-            "Sykkel",
-            "Sparkesykkel"
-          ]
-        },
-        {
-          title: "Lyd",
-          icon: "fa-headphones",
-          subCategories: [
-            "Høyttaler",
-            "CD-Spiller",
-            "Platespiller",
-            "Hodetelefoner"
-          ]
-        },
-        {
-          title: "Sport",
-          icon: "fa-dumbbell",
-          subCategories: [
-            {
-              title: "Ballsport",
-              subCategories: [
-                "Håndball",
-                "Fotball",
-                "Basketball",
-                "Annet"
-              ]
-            }
-          ]
-        }
-      ],
+      categories: [],
       subCategories: [],
       subSubCategories: [],
       chosenMainCategory: "",
-      chosenSubCategory: ""
+      chosenSubCategory: "",
+      chosenSubSubCategory: ""
     };
   },
   methods: {
@@ -278,39 +236,93 @@ export default {
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
     },
-    chosenMainCat(title) {
-      this.chosenMainCategory = title
-
-      for(let i = 0; i < this.categories.length; i++) {
-        if(this.categories[i].title === title) {
-          if(this.categories[i].subCategories.some(x => x.title !== null && x.title !== undefined)) {
-            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-              this.subCategories = this.categories[i].subCategories[j].title
+    async getMainCategories() {
+      await categoryService
+        .getAllParentCategories()
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            let cat = {
+              title: response.data[i].name,
+              icon: response.data[i].icon
             }
-          } else {
-            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-              this.subCategories = this.categories[i].subCategories[j]
+            this.categories.push(cat)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async chosenMainCat(title) {
+      this.chosenMainCategory = title
+      this.subCategories = []
+      this.subSubCategories = []
+
+      await categoryService
+        .getAllSubCategoriesForCategory(title)
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            this.subCategories.push(response.data[i].name)
+          }
+
+          categoryService
+            .getAllAdsForCategoryAndSubCategories(title)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async chosenSubCat(subCat) {
+      this.chosenSubCategory = subCat
+      this.subSubCategories = []
+
+      await categoryService
+        .getAllSubCategoriesForCategory(subCat)
+        .then(response => {
+          if(response.status !== 204) {
+            for(let i = 0; i < response.data.length; i++) {
+              this.subSubCategories.push(response.data[i].name)
             }
           }
-        }
-      }
-    },
-    chosenSubCat(subCat) {
-      this.chosenSubCat = subCat
 
-      for(let i = 0; i < this.categories.length; i++) {
-        this.subSubCategories = this.categories[3].subCategories
-        // for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-        //
-        // }
-      }
+          categoryService
+            .getAllAdsForCategoryAndSubCategories(subCat)
+            .then(response => {
+              console.log(response)
+            })
+            .catch(error => {
+              console.log(error)
+            })
+
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
-    search() {
+    chosenSubSubCat(subSubCat) {
+      this.chosenSubSubCategory = subSubCat
+
+      categoryService
+        .getAllAdsForCategoryAndSubCategories(subSubCat)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async search() {
       if(this.searchWord === "") {
         return
       }
 
-      adsService
+      await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
           this.ads = []
@@ -336,7 +348,8 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   created() {
-    this.getRandomAds()
+    this.getRandomAds();
+    this.getMainCategories();
     //TODO send disse koordinatene til backend
     /*
     this.currPos.value.lat;
