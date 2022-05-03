@@ -382,7 +382,6 @@ export default {
             let ad = {
               id: res.data[i].adId,
               title: res.data[i].title,
-              img: "ski.jpg",
               place: res.data[i].city,
               price: res.data[i].price
             }
