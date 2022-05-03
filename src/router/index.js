@@ -3,7 +3,7 @@ import MainPage from "@/views/MainPage";
 import DetailedAd from "@/views/DetailedAd";
 import LendingPage from "@/views/LendingPage";
 import UserSettings from "@/views/UserSettings";
-import MyProfile from "@/components/MyProfile";
+import MyProfile from "@/views/MyProfile";
 import MyAds from "@/views/MyAds";
 import Profile from "@/views/Profile";
 import Login from "@/views/Login";
