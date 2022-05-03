@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'https://localhost:'
+let url = 'http://localhost:'
 let port = "8443"
 export default {
   /**
@@ -118,6 +118,14 @@ export default {
   },
 
   /**
+   *get parent categories
+   */
+  getAllParentCategories(){
+    const options = {method: 'GET', url: `${url}${port}/api/categories/parent`};
+    return axios.request(options);
+  },
+
+  /**
    *get all categories
    * @param categoryName is the name of the parent category
    */
@@ -146,6 +154,7 @@ export default {
         password: password
       }
     };
+    console.log("Kom meg her")
     return axios.request(options);
   },
 
@@ -174,56 +183,6 @@ export default {
     };
 
     return axios.request(options);
-  },
-  /**
-   * Methods for login and registration for user
-   */
-
-  /**
-   * Method to log in a user
-   * @param emailEntered is the email the user entered
-   * @param passwordEntered is the password the user entered
-   */
-  logIn(emailEntered, passwordEntered) {
-    const options = {
-      method: "POST",
-      url: `${url}${port}/auth/login`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: { email: emailEntered, password: passwordEntered },
-    };
-    return axios.request(options);
-  },
-
-  /**
-   * Method to log in a user
-   * @param emailEntered is the email the user entered
-   * @param passwordEntered is the password the user entered
-   */
-  logInSocial(name, imgUrl, email, provider) {
-    const options = {
-      method: "POST",
-      url: `${url}${port}/auth/login/outside`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        name: name,
-        imgUrl: imgUrl,
-        email: email,
-        provider: provider
-      },
-    };
-    axios
-        .request(options)
-        .then(function (response) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("userId", response.data.id);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
   },
 
   /**
@@ -330,6 +289,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/users/ads/reviews/` + userId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
@@ -440,15 +403,19 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/users/ads/` + userId,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      },
     };
 
     return axios.request(options);
   },
   //Available
-  getAdsByUserId() {
+  getAllAvailableAdsByUserId(userId) {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/ads/available/1`,
+      url: `${url}${port}/api/ads/available/` + userId,
     };
 
     return axios.request(options);
@@ -507,7 +474,6 @@ export default {
       url: `${url}${port}/api/ads/page/` + pageSize,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer '
       },
     };
 
@@ -521,8 +487,10 @@ export default {
   getAdsBySearch(searchString) {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/search/` + searchString,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+      url: `${url}${port}/api/search/${searchString}`,
+      headers: {
+        "Content-Type": "application/json"
+      },
     };
 
     return axios.request(options);
@@ -568,7 +536,8 @@ export default {
     const options = {
       method: "PUT",
       url: `${url}${port}/api/ads/` + adId,
-      headers: {'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
       data: {
@@ -588,6 +557,10 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/ads/` + adId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("token")
+      }
     };
 
     return axios.request(options);
@@ -630,7 +603,7 @@ export default {
    * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
    * @param categoryId is the id of the subcategory
    */
-  postNewAdd(
+  postNewAd(
       title,
       description,
       durationType,

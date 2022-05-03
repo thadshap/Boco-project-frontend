@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'https://localhost:'
+let url = 'http://localhost:'
 let port = "8443"
 
 export default {
@@ -9,29 +9,26 @@ export default {
             url: `${url}${port}/user/` + userId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: {
                 firstName: firstName,
                 lastName: lastName,
-                email: email,
                 password: password
             }
         };
         return axios.request(options);
     },
-
-
+    //TODO picture handling
     getUserById(userId){
         const options = {
             method: 'GET',
             url: `${url}${port}/user/` + userId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
+                'Authorization': 'Bearer '
             },
         };
-
         return axios.request(options);
     },
     deleteUser(userId){
@@ -40,7 +37,7 @@ export default {
             url: `${url}${port}/user/` + userId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: {}
         };
