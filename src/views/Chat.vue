@@ -61,7 +61,8 @@ export default {
       return{
           changeGroupName: false,
           newGroupName: null,
-          input:''
+          input:'',
+          temp:''
       }
   },
   components:{
@@ -99,12 +100,14 @@ export default {
             console.log("connected to socket " + frame);            
         })
         await this.sleep(2000)
-            console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
-            this.stompClient.subscribe(`/app/chat/${this.$store.getters.getGroupId}`, function(messageOutput){
-            console.log("message sent from websocket" + JSON.parse(messageOutput.body))
-            this.$store.dispatch("addMessage", messageOutput)
+        this.subscribe()    
+  },
+  subscribe(){
+        console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
+        this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
+            console.log("message sent from websocket" + messageOutput.body)
+            this.$store.dispatch("addMessage", JSON.parse(messageOutput.body))
         })
-    
   },
   sendMessage() {
         this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
@@ -112,6 +115,7 @@ export default {
   sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
    },
+
 },
   mounted(){
       this.getMessages()
