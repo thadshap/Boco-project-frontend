@@ -12,12 +12,13 @@
               </div>
               </div>
               <div class="d-sm-flex flex-column justify-content-end">
-                <h1>Brage Minge</h1>
-                <div style="opacity: 0.80;">bragemi@stud.ntnu.no<br><br></div>
+                <h1> {{ firstname + " " + lastname }} </h1>
+                <h6 style="opacity: 0.70;"><br> {{ email }} <br><br></h6>
                 <div class="d-flex justify-content-between">
-                  <p><strong>10.0</strong></p>
-                  <p>3 vurderinger</p>
+                  <p><strong> {{ rating }}/10 </strong></p>
+                  <p> {{ nrOfReviews }} vurderinger</p>
                 </div>
+                  <p v-if="verified">Denne brukeren er verifisert</p>
               </div>
             </div>
           </div>
@@ -54,7 +55,7 @@
       <div class="cardDiv">
         <div class="card cardBodyStyle">
           <div class="card-body">
-            <h4 class="card-title">Følger</h4>
+            <h4 class="card-title">Følger (Kommer snart)</h4>
             <p class="card-text">Se brukerne du følger og deres annonser</p>
           </div>
         </div>
@@ -62,7 +63,7 @@
       <div class="cardDiv">
         <div class="card">
           <div class="card-body cardBodyStyle">
-            <h4 class="card-title">Varslingsinnstillinger</h4>
+            <h4 class="card-title">Varslingsinnstillinger (Kommer snart)</h4>
             <p class="card-text">Bestem hvordan du vil motta varslinger</p>
           </div>
         </div>
@@ -85,7 +86,13 @@
     name: "MyProfile",
     data() {
       return {
-        profilePicture: null
+        profilePicture: null,
+        firstname:"",
+        lastname:"",
+        email:"",
+        rating:"",
+        nrOfReviews:"",
+        verified: false,
       }
     },
     async created() {
@@ -98,7 +105,22 @@
           console.log(error)
         })
     },
+    mounted() {
+      this.fetchDetails()
+    },
     methods: {
+      fetchDetails(){
+        const userId = localStorage.getItem("userId")
+        userService.getUserById(userId)
+        .then(response => {
+          this.firstname = response.data.firstName
+          this.lastname = response.data.lastName
+          this.email = response.data.email
+          this.rating = response.data.rating
+          this.nrOfReviews = response.data.nrOfReviews
+          this.verified = response.data.verified
+        })
+      },
       myAds() {
         this.$router.push({
           name: "Profile ads",
