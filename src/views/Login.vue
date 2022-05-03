@@ -148,7 +148,7 @@ export default {
             alert("Nå skjedde det noe galt, prøv på nytt")
           });
 
-      await this.$router.push("/")
+
     }
   }
 };
