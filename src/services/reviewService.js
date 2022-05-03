@@ -11,9 +11,17 @@ export default {
     deleteReview(userId, adId) {
         const options = {
             method: "DELETE",
-            url: `${url}${port}/api/delete/review`,
-            headers: { "Content-Type": "application/json", Authorization: "Bearer " },
-            data: { rating: "", description: "", userId: userId, adId: adId },
+            url: `${url}${port}/api/auth/delete/review`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            },
+            data: {
+                rating: "",
+                description: "",
+                userId: userId,
+                adId: adId
+            },
         };
 
         return axios.request(options);
@@ -29,7 +37,6 @@ export default {
             url: `${url}${port}/api/reviews/` + adId,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
         };
 

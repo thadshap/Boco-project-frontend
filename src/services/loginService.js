@@ -14,16 +14,22 @@ let port = "8443"
  */
 export function logIn(emailEntered, passwordEntered) {
   const options = {
-    method: "POST",
-    url: `${url}${port}/auth/login`,
+    method: 'POST',
+    url: `${url}:${port}/auth/login`,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json'
     },
-    data: { email: emailEntered, password: passwordEntered },
+    data: {email: emailEntered, password: passwordEntered}
   };
-  return axios.request(options);
-}
 
+  return axios.request(options)
+  //     .then(function (response) {
+  //   console.log(response.data);
+  // }).catch(function (error) {
+  //   console.error(error);
+  }
+  // );
+// }
 /**
  * Method to sign in a user through the users facebook account
  * @param facebookLoginRequest
@@ -61,4 +67,3 @@ export function googleLogin(googleLoginRequest) {
 
   return axios.request(options)
 }
-

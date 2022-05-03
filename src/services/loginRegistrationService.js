@@ -59,7 +59,6 @@ export default {
             url: `${url}${port}/auth/register`,
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer",
             },
             data: {
                 firstName: firstName,

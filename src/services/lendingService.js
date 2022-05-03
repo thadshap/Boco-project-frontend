@@ -118,6 +118,14 @@ export default {
   },
 
   /**
+   *get parent categories
+   */
+  getAllParentCategories(){
+    const options = {method: 'GET', url: `${url}${port}/api/categories/parent`};
+    return axios.request(options);
+  },
+
+  /**
    *get all categories
    * @param categoryName is the name of the parent category
    */
@@ -146,6 +154,7 @@ export default {
         password: password
       }
     };
+    console.log("Kom meg her")
     return axios.request(options);
   },
 
@@ -403,10 +412,10 @@ export default {
     return axios.request(options);
   },
   //Available
-  getAdsByUserId() {
+  getAllAvailableAdsByUserId(userId) {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/ads/available/1`,
+      url: `${url}${port}/api/ads/available/` + userId,
     };
 
     return axios.request(options);
@@ -465,7 +474,6 @@ export default {
       url: `${url}${port}/api/ads/page/` + pageSize,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
       },
     };
 
@@ -480,7 +488,9 @@ export default {
     const options = {
       method: "GET",
       url: `${url}${port}/api/search/${searchString}`,
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
+      headers: {
+        "Content-Type": "application/json"
+      },
     };
 
     return axios.request(options);
@@ -593,7 +603,7 @@ export default {
    * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
    * @param categoryId is the id of the subcategory
    */
-  postNewAdd(
+  postNewAd(
       title,
       description,
       durationType,
