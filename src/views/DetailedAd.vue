@@ -25,6 +25,7 @@
         class="btn btn-primary"
         type="button"
         v-on:click="startChat"
+        :disabled="!this.userLoggedIn"
       >
         Send melding
       </button>
@@ -33,6 +34,7 @@
         class="btn btn-primary"
         type="button"
         v-on:click="makeRequest"
+        :disabled="!this.userLoggedIn"
       >
         Forespør lån
       </button><br>
@@ -138,11 +140,13 @@ export default {
   name: "DetailedAd",
   data() {
     return {
+      userLoggedIn: false,
       date: null,
       showRightArrow: true,
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
+      userEmail: "",
       reviews: [],
       disable: [new Date()],
       ad: {
@@ -153,16 +157,17 @@ export default {
     };
   },
   async created() {
-    await this.getCurrentAd();
-    await this.setLender();
-    await this.getReviews();
-    await this.getUnavailableDates();
+    await this.checkLoggedIn()
+    await this.getCurrentAd()
+    await this.setLender()
+    await this.getReviews()
+    await this.getUnavailableDates()
   },
   setup() {
-    const projection = ref("EPSG:4326");
-    const zoom = ref(8);
-    const rotation = ref(0);
-    const strokeWidth = ref(10);
+    const projection = ref("EPSG:4326")
+    const zoom = ref(8)
+    const rotation = ref(0)
+    const strokeWidth = ref(10)
     return {
       projection,
       zoom,
@@ -174,9 +179,9 @@ export default {
   methods: {
     async getCurrentAd(){
       await adService.getAdById(this.$store.getters.currentAd.id).then(response => {
-        this.ad = response.data;
+        this.ad = response.data
       }).catch(error => {
-        console.log(error);
+        console.log(error)
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -188,6 +193,13 @@ export default {
       console.log(this.$store.getters.currentAd.lat)
       //this.ad.lat = this.$store.getters.currentAd.lat
       //this.ad.lng = this.$store.getters.currentAd.lng
+    },
+    checkLoggedIn() {
+      if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
+        this.userLoggedIn = true
+      } else {
+        this.userLoggedIn = false
+      }
     },
     getDurationTypeToNorwegian(){
       if (this.ad.durationType == 'MONTH'){
@@ -245,6 +257,7 @@ export default {
     async setLender(){
       await userService.getUserById(this.ad.userId).then(response => {
         this.lender = response.data
+        console.log(response.data)
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
@@ -272,7 +285,20 @@ export default {
         return duration/7 * this.ad.price
       }
     },
+    async getUserEmail(){
+          await userService.getUserById(localStorage.getItem("userId"),).then(response => {
+            this.userEmail = response.data.email
+          }).catch(error => {
+            console.log(error);
+            this.GStore.flashMessage = "Fikk ikke hentet emailen din"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+          })
+    },
     async sendRequest(){
+      await this.getUserEmail()
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
       const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
@@ -284,8 +310,8 @@ export default {
           dateto,
           datefrom,
           price,
-          this.lender.id,
-          localStorage.getItem("userId"),
+          this.lender.email,
+          this.userEmail,
           this.$store.getters.currentAd.id
       ).then(response => {
         console.log(response)
