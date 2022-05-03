@@ -591,27 +591,35 @@ export default {
    * @param adId API call for adding picture have adId in the return, which is what you sends to add picture afterwards
    * @param picture
    */
-  uploadPictureForAd(adId, picture) {
+  uploadPictureForAd(adId, pictures) {
     const form = new FormData();
 
-    form.append("id", adId);
-
-    for(let i = 0; i < picture.length; i++) {
-      form.append(`file${i}`, picture[i]);
+    for (let i = 0; i < pictures.length; i++) {
+      form.append(`files`, pictures[i]);
     }
 
-
     const options = {
-      method: "POST",
-      url: `${url}${port}/api/auth/ads/newPicture`,
+      method: "PUT",
+      url: `${url}${port}/api/auth/ads/newPicture/${localStorage.getItem(
+        "userId"
+      )}/${adId}`,
       headers: {
-        "Content-Type":
-          "multipart/form-data; boundary=---011000010111000001101001",
+        "Content-Type": "multipart/form-data",
         Authorization: "Bearer " + localStorage.getItem("token"),
+        "content-type":
+          "multipart/form-data; boundary=---011000010111000001101001",
       },
       data: "[form]",
     };
-    return axios.request(options);
+
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   },
   getAllUnavailableDatesForAd(adId) {
     const options = {

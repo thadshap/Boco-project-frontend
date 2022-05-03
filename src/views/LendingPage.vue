@@ -232,7 +232,7 @@ export default {
     },
     async submit() {
       this.v$.$validate()
-      // this.validateImages()
+      this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
 
