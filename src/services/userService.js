@@ -47,10 +47,10 @@ export default {
             method: 'PUT',
             url: `${url}${port}/user/profilePicture/${userId}`,
             headers: {
-                'Content-Type': 'multipart/form-data',
+                "Content-Type": "multipart/form-data; boundary=---011000010111000001101001",
                 Authorization: 'Bearer ' + localStorage.getItem("token")
             },
-            data: [formData]
+            data: formData
         };
         return axios.request(options);
     },
