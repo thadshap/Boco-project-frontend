@@ -25,7 +25,7 @@
             :key="message"
             :firstName="message.firstName"
             :lastName="message.lastName"
-            :timestamp="message.timestamp"
+            :timestamp="message.timeStamp"
             :content="message.content"
             :profilePicture="message.picture"
             :userId="message.user_id"/>
@@ -105,7 +105,6 @@ export default {
   subscribe(){
         console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
         this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
-            console.log("message sent from websocket" + messageOutput.body)
             this.$store.dispatch("addMessage", JSON.parse(messageOutput.body))
         })
   },
