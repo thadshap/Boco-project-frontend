@@ -73,9 +73,6 @@
 </template>
 
 <script>
-  // import { accountService } from "@/services/account.service";
-
-
 
   export default {
     name: "MyProfile",
@@ -108,19 +105,9 @@
         })
       },
       logout() {
-        // let provider = localStorage.getItem("provider")
-
-        // if(provider === "facebook") {
-        //   accountService.logoutFacebook()
-        // } else if(provider === "google") {
-        //   accountService.logoutGoogle(this.$gAuth)
-        // } else if(provider === "none") {
           this.$store.dispatch("setLoggedIn", false)
           this.$router.push("/")
           localStorage.clear()
-        // }
-
-
       }
     }
   }
