@@ -46,52 +46,30 @@
     <div class="d-inline-flex d-sm-flex justify-content-sm-start">
       <div>
         <div>
-          <button
-              class="btn btn-primary"
-              type="button"
-              v-on:click="showSorting"
-          >
-            Sorter
-          </button>
+          <button class="btn btn-primary" type="button" v-on:click="showSortingOptions">Sorter</button>
           <div style="text-align: left" v-if="showMenuBarSorting">
-            <a id="lav-hoy" class="dropdown-item" v-on:click="sortingPicked($event)">laveste - høyeste pris</a
-            ><a id="hoy-lav" class="dropdown-item" v-on:click="sortingPicked($event)">høyeste - laveste pris</a
-          ><a id="ny-eld" class="dropdown-item" v-on:click="sortingPicked($event)">nyeste - eldste</a
-          ><a id="eld-ny" class="dropdown-item" v-on:click="sortingPicked($event)">eldste- nyeste</a>
+            <a id="lav-hoy" class="dropdown-item" v-on:click="sortingPicked($event)">laveste - høyeste pris</a>
+            <a id="hoy-lav" class="dropdown-item" v-on:click="sortingPicked($event)">høyeste - laveste pris</a>
+            <a id="ny-eld" class="dropdown-item" v-on:click="sortingPicked($event)">nyeste - eldste</a>
+            <a id="eld-ny" class="dropdown-item" v-on:click="sortingPicked($event)">eldste- nyeste</a>
           </div>
         </div>
       </div>
       <div>
         <div class="dropdown">
-          <button
-              class="btn btn-primary"
-              type="button"
-              v-on:click="showFiltering"
-          >
-            Filtrer
-          </button>
+          <button class="btn btn-primary" type="button" v-on:click="showFilteringOptions">Filtrer</button>
           <div style="text-align: left" v-if="showMenuBarFiltering">
             <a class="dropdown-item" href="#">max-pris:<br>
-              <input
-                type="number"
-                v-model="priceRangeValue"
-            />
-              <input
-                  type="button"
-                  v-on:click="filterByPriceRange"
-                  value="filtrer"
-              /></a
-            ><a class="dropdown-item" href="#">max-avstand:<br>
-            <input
-                type="number"
-                v-model="distanceRangeValue"
-            />
-          </a
-          >
+              <input type="number" v-model="rangeValue"/>
+              <input type="button" v-on:click="filter('price')" value="filtrer"/></a>
+            <a class="dropdown-item" href="#">max-avstand:<br>
+              <input type="number" v-model="rangeValue"/>
+              <input type="button" v-on:click="filter('distance')" value="filtrer"/>
+            </a>
           </div>
         </div>
-        </div>
       </div>
+    </div>
   <div>
     <h3>Newest items</h3>
 
@@ -127,96 +105,95 @@ export default {
   data() {
     return {
       searchWord: "",
-      priceRangeValue : 0,
-      distanceRangeValue : 0,
+      rangeValue : 0,
       showUnderCategories : 0,
       sorting : '',
       showMenuBarSorting : false,
       showMenuBarFiltering : false,
       ads:[],
-      adsRightFormat:[],
       categories: [],
       subCategories: [],
       subSubCategories: [],
       chosenMainCategory: "",
       chosenSubCategory: "",
-      chosenSubSubCategory: ""
+      chosenSubSubCategory: "",
+      currentCategoryName:"",
     };
   },
   methods: {
-    showSorting() {
-      console.log(new URL(location.href).searchParams.get('page'));
+    showSortingOptions() {
       this.showMenuBarFiltering = false;
       this.showMenuBarSorting = !this.showMenuBarSorting;
     },
-    showFiltering() {
+    showFilteringOptions() {
       this.showMenuBarSorting = false;
       this.showMenuBarFiltering = !this.showMenuBarFiltering
     },
     async sortingPicked(e){
-      this.ads = [];
+      console.log(this.ads)
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
-      console.log(this.sorting);
       if(this.sorting == "lav-hoy"){
-        await this.sortByIncreasingPrice()
+        this.ads.sort((a, b) => { return a.price - b.price;})
       } else if(this.sorting == "hoy-lav"){
-        await this.sortByDecreasingPrice()
+        this.ads.sort((a, b) => { return b.price - a.price;})
       } else if (this.sorting == "ny-eld"){
-        //TODO
+        this.ads.sort((a, b) => { return b.id - a.id;})
       } else if (this.sorting == "eld-ny"){
-        //TODO
+        this.ads.sort((a, b) => { return a.id - b.id;})
       }
     },
-    async filterByPriceRange(){
+    sortByDecreasingPrice(){
+    },
+    async filter(filterType){
       this.showMenuBarFiltering = false;
-      console.log("hei")
+      this.ads = []
+      if (this.currentCategoryName != ""){
+        await this.filterWithCategory(filterType)
+      } else {
+        await this.filterWithoutCategory(filterType)
+      }
     },
-    async filterByDistanceRange(){
-
-    },
-    async sortByIncreasingPrice(){
-      await adsService.sortListOfAdsByIncreasingPrice(this.adsRightFormat).then(response => {
-        this.adsRightFormat = response.data;
-        for (let i = 0; i < response.data.length; i++) {
-          //få poststed
-          let ad = {
-            id: response.data[i].adId,
-            title: response.data[i].title,
-            img: "ski.jpg",
-            place: response.data[i].postalCode.toString(),
-            price: response.data[i].price
-          }
-          this.ads.push(ad)
-        }
-      })
-          .catch(error => {
+    async filterWithCategory(filterType){
+      await adsService.filterAdsInCategoryByDistanceOrPrice(
+          filterType, this.currentCategoryName, this.rangeValue, true,
+          localStorage.getItem("latForUser"), localStorage.getItem("lngForUser"))
+          .then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                img: "ski.jpg",
+                place: response.data[i].postalCode.toString(),
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }).catch(error => {
             console.error(error)
           })
     },
-    async sortByDecreasingPrice(){
-      await adsService.sortListByDescendingPrice(this.adsRightFormat).then(response => {
-        this.adsRightFormat = response.data;
-        for (let i = 0; i < response.data.length; i++) {
-          //få poststed
-          let ad = {
-            id: response.data[i].adId,
-            title: response.data[i].title,
-            img: "ski.jpg",
-            place: response.data[i].postalCode.toString(),
-            price: response.data[i].price
-          }
-          this.ads.push(ad)
-        }
-      })
-          .catch(error => {
+    async filterWithoutCategory(filterType){
+      await adsService.filterAdsForPriceOrDistance(filterType, this.rangeValue, true,
+          localStorage.getItem("latForUser"), localStorage.getItem("lngForUser"))
+          .then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                img: "ski.jpg",
+                place: response.data[i].postalCode.toString(),
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }).catch(error => {
             console.error(error)
           })
     },
     getRandomAds(){
       adsService.getPageWithRandomAds(5)
           .then(response => {
-            this.adsRightFormat = response.data
             for (let i = 0; i < response.data.length; i++) {
               //få poststed
               let ad = {
@@ -253,6 +230,7 @@ export default {
         })
     },
     async chosenMainCat(title) {
+      this.currentCategoryName = title
       this.chosenMainCategory = title
       this.subCategories = []
       this.subSubCategories = []
@@ -279,6 +257,7 @@ export default {
         })
     },
     async chosenSubCat(subCat) {
+      this.currentCategoryName = subCat
       this.chosenSubCategory = subCat
       this.subSubCategories = []
 
@@ -306,6 +285,7 @@ export default {
         })
     },
     chosenSubSubCat(subSubCat) {
+      this.currentCategoryName = subSubCat
       this.chosenSubSubCategory = subSubCat
 
       categoryService
@@ -321,7 +301,6 @@ export default {
       if(this.searchWord === "") {
         return
       }
-
       await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
@@ -348,17 +327,10 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   created() {
+    localStorage.setItem("latForUser", this.currPos.lat)
+    localStorage.setItem("lngForUser", this.currPos.lng)
     this.getRandomAds();
     this.getMainCategories();
-    //TODO send disse koordinatene til backend
-    /*
-    this.currPos.value.lat;
-    this.currPos.value.lng;
-
-     */
-  },
-  updated() {
-    console.log("Main page updated");
   }
 };
 </script>

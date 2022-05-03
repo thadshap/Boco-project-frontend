@@ -91,7 +91,7 @@ export default {
             url: `${url}${port}/api/calender/get`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: { adId : adId}
         };
