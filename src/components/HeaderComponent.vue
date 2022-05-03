@@ -83,7 +83,7 @@ import $ from "jquery";
 </script>
 <style scoped>
 .navbar-bg {
-  background-color: #9cb6bb;
+  background-color: rgba(1, 89, 145, 0.6);
 }
 
 #navbarToggler {
