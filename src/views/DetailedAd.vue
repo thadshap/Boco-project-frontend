@@ -14,10 +14,12 @@
         <label class="defined-label">Leiepris</label> : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
     </div>
+    <div class="d-flex justify-content-center w-100">
     <div id="description" class="text-center">
       <label id="descriptionLabel" class="form-label">
         {{ ad.description }}
       </label>
+    </div>
     </div>
     <div class="text-center mb-4">
       <button
@@ -64,7 +66,7 @@
           style="color: var(--bs-blue); padding: 0.5vw"
         ></i>
       </div>
-      <div class="text-center">
+      <div class="text-center mt-3 mb-3">
         <label> Vis tidligere anmeldelser for gjenstanden </label>
         <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown"
           >keyboard_arrow_left</i
@@ -322,40 +324,47 @@ export default {
 <style scoped>
 .main-container{
   font-size: 2.3vh;
+  overflow: auto;
+  object-fit: cover;
 }
 .map {
   height: 400px;
   width: 100%;
 }
-  #adPictureDiv{
-    padding: 5vw 10vw 0 10vw;
-  }
-  #adPicture{
-    width: 250px;
-    height: auto;
-  }
-  #adHeader{
-    font-weight: bold;
-    font-size: 4vh;
-    color: #015d9a;
-  }
-  button{
-    padding: 4px;
-    font-size: 1.8vh;
-  }
-  #description{
-    padding: 0px 10px 0px 10px;
-  }
+#adPictureDiv{
+  padding: 5vw 10vw 0 10vw;
+}
+#adPicture{
+  width: 250px;
+  height: auto;
+}
+#adHeader{
+  font-weight: bold;
+  font-size: 4vh;
+  color: #015d9a;
+}
+button{
+  padding: 4px;
+  font-size: 1.8vh;
+}
+#description{
+  padding: 20px;
+  background-color: rgb(230,247,255);
+  margin: 10px 0 20px 0;
+  font-size: 1.7vh;
+  font-style: italic;
+  border-radius: 5px;
+  width: 700px;
+}
   #descriptionLabel{
     font-size: 1.5vh;
     font-style: italic;
   }
   i{
     color: #0EA0FF;
-    padding: 0.5vw;
-  }
-  #lenderDetails{
-    height: 4vh;
+    padding: 0.2vw 0.5vw 0 0.5vw;
+    position: absolute;
+    font-size: 30px;
   }
   #lenderName, #lenderNumberLabel{
     font-size: 1.8vh;
@@ -365,9 +374,6 @@ export default {
   }
   #lenderNumber{
     height: 5vh;
-  }
-  #lenderHeader{
-    height: 2vh;
   }
   #distance{
     padding: 0px 10px 0px 10px;
@@ -395,7 +401,6 @@ export default {
   }
   .material-icons{
     cursor: pointer;
-    font-size: 30px;
     float: bottom;
   }
   #time{
