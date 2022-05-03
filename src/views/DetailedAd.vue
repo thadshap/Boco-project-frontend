@@ -132,6 +132,7 @@ import adService from "@/services/adService";
 import reviewService from "@/services/reviewService";
 import userService from "@/services/userService";
 import rentalService from "@/services/rentalService";
+import chatService from "@/services/chatService";
 import moment from 'moment';
 
 export default {
@@ -158,10 +159,11 @@ export default {
   },
   async created() {
     await this.checkLoggedIn()
-    await this.getCurrentAd()
-    await this.setLender()
-    await this.getReviews()
-    await this.getUnavailableDates()
+    await this.getCurrentAd();
+    await this.setLender();
+    await this.getReviews();
+    await this.getUnavailableDates();
+    this.setLenderId();
   },
   setup() {
     const projection = ref("EPSG:4326")
@@ -191,8 +193,6 @@ export default {
       this.getDurationTypeToNorwegian()
       this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
       console.log(this.$store.getters.currentAd.lat)
-      //this.ad.lat = this.$store.getters.currentAd.lat
-      //this.ad.lng = this.$store.getters.currentAd.lng
     },
     checkLoggedIn() {
       if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
@@ -257,7 +257,6 @@ export default {
     async setLender(){
       await userService.getUserById(this.ad.userId).then(response => {
         this.lender = response.data
-        console.log(response.data)
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
@@ -267,7 +266,29 @@ export default {
         }, 4000)
       })
     },
-    startChat() {},
+    async startChat() {
+      if (this.$store.getters.loggedIn) {
+        var userId = localStorage.getItem("userId")
+        if (userId != this.lender.id) {
+          var groupId
+          var users = [userId,this.lender.id]
+          await chatService.createGroupChat(this.ad.title, users)
+          .then(response => {
+            groupId = response.data // TODO: add .groupId when backend is fixed
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+          this.$store.dispatch("setGroupId", groupId)
+          this.$store.dispatch("setGroupName", this.ad.title)
+          this.$router.push(`/chat/${groupId}`)
+        }else{
+          alert('Cannot create chat with self')
+        }
+      } else {
+        this.$router.push("/login")
+      }
+    },
     makeRequest() {
       this.showRequestDetails = !this.showRequestDetails
     },
@@ -284,18 +305,19 @@ export default {
       }else if (this.ad.durationType === 'uke'){
         return duration/7 * this.ad.price
       }
+      this.showRequestDetails = !this.showRequestDetails;
     },
     async getUserEmail(){
-          await userService.getUserById(localStorage.getItem("userId"),).then(response => {
-            this.userEmail = response.data.email
-          }).catch(error => {
-            console.log(error);
-            this.GStore.flashMessage = "Fikk ikke hentet emailen din"
-            this.GStore.variant = "Error"
-            setTimeout(() => {
-              this.GStore.flashMessage = ""
-            }, 4000)
-          })
+      await userService.getUserById(localStorage.getItem("userId"),).then(response => {
+        this.userEmail = response.data.email
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet emailen din"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
     },
     async sendRequest(){
       await this.getUserEmail()
@@ -337,8 +359,10 @@ export default {
         this.showRightArrow = true;
       }
     },
-    seeLenderDetails() {
+    setLenderId(){
       localStorage.setItem("lenderId", this.ad.userId);
+    },
+    seeLenderDetails() {
       this.$router.push({
         name: "UserProfile",
       });
