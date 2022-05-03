@@ -100,7 +100,7 @@
 
     <AdListComponent :ads="this.ads"/>
     <Pagination
-        :total-pages="3"
+        :total-pages="totalPages"
         :current-page="currentPage"
         @pageChanged="onPageChange"
     />
@@ -192,11 +192,17 @@ export default {
     displayAds(page){
       this.ads=[]
       for (let i=this.adsPerPage*(page-1);i<this.adsPerPage*page;i++){
+        if(this.storedAds[i] === undefined) break
         this.ads.push(this.storedAds[i])
       }
     },
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.displayAds(this.currentPage)
+    },
+    setNrOfPages(){
+      this.totalPages = Math.ceil(this.storedAds.length/this.adsPerPage)
+      console.log(this.storedAds.length)
+      console.log(this.totalPages)
     },
     async getMainCategories() {
       await categoryService
@@ -323,6 +329,7 @@ export default {
   },
   async mounted() {
     await this.getRandomAds();
+    await this.setNrOfPages()
     await this.displayAds(this.currentPage)
   }
 };
