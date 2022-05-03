@@ -1,27 +1,23 @@
 <template>
 <div class="d-flex flex-column screen">
     <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
-            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-        </svg>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
     </button>
   <div class="d-flex flex-column chat">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+            <div class="d-flex flex-grow-1 flex-column justify-content-center align-items-center">
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
-                <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
-                <button v-if="changeGroupName" v-on:click="editGroupName">Change group name</button>
-                <input type="text" v-if="this.changeGroupName" v-model="addUser">
-                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail">Add user by email</button>
                 <button v-on:click="changeGroupNameState">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
-                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-                    </svg>
+                    <i class="fa fa-cog"></i>
                 </button>
+                <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
+                <button v-if="changeGroupName" v-on:click="editGroupName" class="editButtons">Change group name</button>
+                <input type="text" v-if="this.changeGroupName" v-model="addUser">
+                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons">Add user by email</button>
             </div>
             <img class="profile-picture">
         </div>
-        <div class="flex-grow-1 chat-container">
+        <div class="flex-grow-1 chat-container" >
             <MessageComponent
             v-for="message in this.$store.getters.getMessages"
             :key="message"
@@ -39,7 +35,7 @@
                 </svg>
             </button>
             <div class="d-flex flex-grow-1 align-self-center">
-                <input class="d-flex input" type="text" placeholder="Send message" v-model="input">
+                <input class="d-flex input" type="text" placeholder="Send message" v-model="input" v-on:keyup.enter="sendMessage"   >
             </div>
             <button class="btn btn-primary send-button" type="button" v-on:click="sendMessage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-right-circle">
@@ -65,7 +61,6 @@ export default {
           newGroupName: null,
           addUser:'',
           input:'',
-          temp:''
       }
   },
   components:{
@@ -120,7 +115,10 @@ export default {
         })
   },
   sendMessage() {
-        this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
+    this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
+    this.input = ''
+    const container = document.getElementsByClassName("flex-grow-1 chat-container")
+    container.scrollTop = container.scrollHeight;
   },
   sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -130,6 +128,10 @@ export default {
   mounted(){
       this.getMessages()
       this.connect()
+  },
+  directives: {
+    // this will install v-autoscroll directive and can be used only on the current component or tag
+
   }
 };
 </script>
@@ -163,9 +165,7 @@ export default {
 .groups{
     width: 100vw;
 }
-.screen{
-    
-}
+
 /* Buttons */
 .menu-button{
     background: transparent;
@@ -194,8 +194,39 @@ export default {
     border-color: transparent;
     min-width: 50px;
 }
+.editButtons {
+  margin: 5px;
+  padding: 5px;
+  word-wrap: break-word;
+  background-color: #fff;
+  border: 3px solid rgb(0, 128, 255);
+  border-radius: 0.25rem;
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
 
-
+.editButtons:hover {
+  background-color: rgb(0, 128, 255);
+  color: white;
+  cursor: pointer;
+}
+.fa-arrow-left{
+    color: black;
+    border: solid;
+    border-color: #004AAD;
+    padding: 0px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    border-radius: 4px;
+}
+button{
+    background-color: #fff;
+    border: none;
+}
 /* Icons */
 .bi-arrow-right-circle{
     width: 1em;
@@ -203,13 +234,6 @@ export default {
     fill: currentColor;
     color: black;
     font-size: 40px;
-}
-.bi-list{
-    width: 1em;
-    height: 1em;
-    fill: currentColor;
-    color: black;
-    font-size: 32px;
 }
 .bi-plus{
     width: 1em;
