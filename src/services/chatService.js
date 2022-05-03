@@ -1,6 +1,7 @@
 import axios from "axios";
 let url = 'http://localhost:'
 let port = "8443"
+
 export default{
     getMessagesByGroupId(groupId){
         const options = {
@@ -75,5 +76,5 @@ export default{
             data: {groupName: chatName, userIds: listOfUsers}
           };
           return axios.request(options)
-    }
+    },
 }

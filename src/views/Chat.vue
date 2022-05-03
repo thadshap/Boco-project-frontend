@@ -37,9 +37,9 @@
                 </svg>
             </button>
             <div class="d-flex flex-grow-1 align-self-center">
-                <input class="d-flex input" type="text" placeholder="Send message">
+                <input class="d-flex input" type="text" placeholder="Send message" v-model="input">
             </div>
-            <button class="btn btn-primary send-button" type="button" v-on:click="send">
+            <button class="btn btn-primary send-button" type="button" v-on:click="sendMessage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-right-circle">
                     <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"></path>
                 </svg>
@@ -54,13 +54,14 @@ import MessageComponent from "@/components/MessageComponent";
 import chatService from "@/services/chatService";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+
 export default {  
   name: "Chat",
   data(){
       return{
-          stompClient:null,
           changeGroupName: false,
-          newGroupName: null
+          newGroupName: null,
+          input:''
       }
   },
   components:{
@@ -70,23 +71,6 @@ export default {
       changeGroupNameState(){
           this.changeGroupName = !this.changeGroupName
       },
-      connect() {
-            var socket = new SockJS(`http://localhost:8443/ws/`);
-            var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
-            console.log("creating socket")
-            this.stompClient = Stomp.over(socket, options);
-        
-            console.log("connecting...")
-            this.stompClient.connect({
-                Authorization: 'Bearer '+localStorage.getItem("token")},function(frame){
-                    console.log("connected to socket " + frame);
-                
-                    this.stompClient.subscribe(`/topic/messages`, function(messageOutput){
-                    console.log("message sent from websocket" + JSON.parse(messageOutput.body))
-                    this.$store.dispatch("addMessage", messageOutput)
-                })
-            })
-        },
         async editGroupName(){
           await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
           this.$store.dispatch("setGroupName", this.newGroupName)
@@ -104,9 +88,34 @@ export default {
               console.log(error)
           })
       },
+  
+  async connect(){
+        var socket = new SockJS(`http://localhost:8443/ws/`);
+        var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
+        console.log("creating socket")
+        this.stompClient = Stomp.over(socket, options);
+        console.log("connecting...")
+        await this.stompClient.connect({Authorization: 'Bearer '+localStorage.getItem("token")}, function(frame){
+            console.log("connected to socket " + frame);            
+        })
+        await this.sleep(2000)
+            console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
+            this.stompClient.subscribe(`/app/chat/${this.$store.getters.getGroupId}`, function(messageOutput){
+            console.log("message sent from websocket" + JSON.parse(messageOutput.body))
+            this.$store.dispatch("addMessage", messageOutput)
+        })
+    
   },
+  sendMessage() {
+        this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
+  },
+  sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   },
+},
   mounted(){
       this.getMessages()
+      this.connect()
   }
 };
 </script>
