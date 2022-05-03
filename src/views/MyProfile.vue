@@ -5,7 +5,6 @@
         <div class="card infoCard">
           <div class="card-body">
             <div>
-              <h3>Min Profil</h3>
             </div>
             <div class="d-flex infoDiv"><img class="profilePic" src="@/assets/img/profilePicPlaceholder.png">
               <div class="d-sm-flex flex-column justify-content-end">
@@ -74,10 +73,15 @@
 </template>
 
 <script>
-  import { accountService } from "@/services/account.service";
+  // import { accountService } from "@/services/account.service";
+
+
 
   export default {
     name: "MyProfile",
+    data(){
+
+    },
     methods: {
       myAds() {
         this.$router.push({
@@ -104,17 +108,17 @@
         })
       },
       logout() {
-        let provider = localStorage.getItem("provider")
+        // let provider = localStorage.getItem("provider")
 
-        if(provider === "facebook") {
-          accountService.logoutFacebook()
-        } else if(provider === "google") {
-          accountService.logoutGoogle(this.$gAuth)
-        } else if(provider === "none") {
+        // if(provider === "facebook") {
+        //   accountService.logoutFacebook()
+        // } else if(provider === "google") {
+        //   accountService.logoutGoogle(this.$gAuth)
+        // } else if(provider === "none") {
           this.$store.dispatch("setLoggedIn", false)
           this.$router.push("/")
           localStorage.clear()
-        }
+        // }
 
 
       }
