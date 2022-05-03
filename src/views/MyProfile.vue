@@ -8,12 +8,13 @@
             </div>
             <div class="d-flex infoDiv"><img class="profilePic" src="@/assets/img/profilePicPlaceholder.png">
               <div class="d-sm-flex flex-column justify-content-end">
-                <h1>Brage Minge</h1>
-                <h6 style="opacity: 0.70;"><br>bragemi@stud.ntnu.no<br><br></h6>
+                <h1> {{ firstname + " " + lastname }} </h1>
+                <h6 style="opacity: 0.70;"><br> {{ email }} <br><br></h6>
                 <div class="d-flex justify-content-between">
-                  <p><strong>10.0</strong></p>
-                  <p>3 vurderinger</p>
+                  <p><strong> {{ rating }}/10 </strong></p>
+                  <p> {{ nrOfReviews }} vurderinger</p>
                 </div>
+                  <p v-if="verified">Denne brukeren er verifisert</p>
               </div>
             </div>
           </div>
@@ -74,12 +75,36 @@
 
 <script>
 
+  import userService from "@/services/userService";
+
   export default {
     name: "MyProfile",
     data(){
-
+      return{
+        firstname:"",
+        lastname:"",
+        email:"",
+        rating:"",
+        nrOfReviews:"",
+        verified: false,
+      }
+    },
+    mounted() {
+      this.fetchDetails()
     },
     methods: {
+      fetchDetails(){
+        const userId = localStorage.getItem("userId")
+        userService.getUserById(userId)
+        .then(response => {
+          this.firstname = response.data.firstName
+          this.lastname = response.data.lastName
+          this.email = response.data.email
+          this.rating = response.data.rating
+          this.nrOfReviews = response.data.nrOfReviews
+          this.verified = response.data.verified
+        })
+      },
       myAds() {
         this.$router.push({
           name: "Profile ads",
