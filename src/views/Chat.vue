@@ -1,21 +1,23 @@
 <template>
 <div class="d-flex flex-column screen">
-    <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
-        <i class="fa fa-arrow-left" aria-hidden="true"></i>
-    </button>
   <div class="d-flex flex-column chat">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex flex-grow-1 flex-column justify-content-center align-items-center">
+        <div class="d-flex flex-column justify-content-between align-items-center">
+            <div class="d-flex flex-grow-1 flex-row width">
+                <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </button>
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
                 <button v-on:click="changeGroupNameState">
                     <i class="fa fa-cog"></i>
                 </button>
+                
+            </div>
+            <div class="d-flex flex-column">
                 <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
                 <button v-if="changeGroupName" v-on:click="editGroupName" class="editButtons">Change group name</button>
                 <input type="text" v-if="this.changeGroupName" v-model="addUser">
                 <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons">Add user by email</button>
             </div>
-            <img class="profile-picture">
         </div>
         <div class="flex-grow-1 chat-container" >
             <MessageComponent
@@ -29,11 +31,11 @@
             :userId="message.user_id"/>
         </div>
         <div class="d-flex align-items-end bottom-toolbar">
-            <button class="btn btn-primary plus-button" type="button">
+            <!--<button class="btn btn-primary plus-button" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-plus">
                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
                 </svg>
-            </button>
+            </button>-->
             <div class="d-flex flex-grow-1 align-self-center">
                 <input class="d-flex input" type="text" placeholder="Send message" v-model="input" v-on:keyup.enter="sendMessage"   >
             </div>
@@ -145,6 +147,11 @@ beforeUnmount() {
 }
 .name{
     font-size: 24px;
+    text-align: center;
+}
+.width{
+    width: 100vw;
+    justify-content: space-evenly;
 }
 .profile-picture{
     font-size: 24px;
@@ -170,16 +177,6 @@ beforeUnmount() {
 }
 
 /* Buttons */
-.menu-button{
-    background: transparent;
-    width: 50px;
-    border-radius: 5px;
-    padding: 0px;
-    height: 50px;
-    border-width: 1px;
-    border-color: #004AAD;
-    margin-left: 10px;
-}
 .plus-button{
     background: transparent;
     border-color: #004AAD;
@@ -218,13 +215,6 @@ beforeUnmount() {
 }
 .fa-arrow-left{
     color: black;
-    border: solid;
-    border-color: #004AAD;
-    padding: 0px;
-    width: 50px;
-    height: 50px;
-    min-width: 50px;
-    border-radius: 4px;
 }
 button{
     background-color: #fff;
