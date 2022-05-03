@@ -38,9 +38,10 @@
       >
         Forespør lån
       </button><br>
-      <div id="time" class="text-center" v-if="showRequestDetails">
+      <div id="time" class="text-center mt-3" v-if="showRequestDetails">
         <label class="defined-label">Tidsperiode </label>>
-        <Datepicker v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
+        <div class="date-container">
+        <Datepicker class="date-input" v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button
           id="sendRequest"
           class="btn btn-primary"
@@ -48,8 +49,9 @@
           v-on:click="sendRequest"
           :disabled="!date"
         >
-          Send forespørselen
+          Forespør
         </button>
+        </div>
       </div>
     </div>
     <div class="text-center">
@@ -404,9 +406,6 @@ button{
     float: bottom;
   }
   #time{
-    width: 30%;
-  }
-  #time{
     width: 100%;
     display: grid;
     justify-items: center;
@@ -418,5 +417,11 @@ button{
   .defined-label{
     font-weight: bold;
     color: #015d9a;
+  }
+  .date-container{
+    display: inline-flex;
+  }
+.date-input{
+    width: 345px;
   }
 </style>
