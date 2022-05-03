@@ -12,6 +12,8 @@
             :place="ad.place"
             :price="ad.price"
             :distance="ad.distance"
+            :lat="ad.lat"
+            :lng="ad.lng"
           />
         </div>
       </div>

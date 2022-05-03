@@ -53,6 +53,12 @@ export default {
     },
     distance: {
       type: Number
+    },
+    lat: {
+      type: Number
+    },
+    lng: {
+      type: Number
     }
   },
   methods: {

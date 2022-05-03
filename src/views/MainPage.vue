@@ -46,7 +46,7 @@
     <div class="d-inline-flex d-sm-flex justify-content-sm-start">
       <div>
         <div>
-          <button class="btn btn-primary" type="button" v-on:click="showSortingOptions">Sorter</button>
+          <button class="btn btn-primary" type="button" v-on:click="showSortingOptions" :disabled="disableSortingAndFiltering">Sorter</button>
           <div style="text-align: left" v-if="showMenuBarSorting">
             <a id="lav-hoy" class="dropdown-item" v-on:click="sortingPicked($event)">laveste - høyeste pris</a>
             <a id="hoy-lav" class="dropdown-item" v-on:click="sortingPicked($event)">høyeste - laveste pris</a>
@@ -57,7 +57,7 @@
       </div>
       <div>
         <div class="dropdown">
-          <button class="btn btn-primary" type="button" v-on:click="showFilteringOptions">Filtrer</button>
+          <button class="btn btn-primary" type="button" v-on:click="showFilteringOptions" :disabled="disableSortingAndFiltering">Filtrer</button>
           <div style="text-align: left" v-if="showMenuBarFiltering">
             <a class="dropdown-item" href="#">max-pris:<br>
               <input type="number" v-model="rangeValuePrice"/>
@@ -104,6 +104,7 @@ export default {
   },
   data() {
     return {
+      disableSortingAndFiltering: false,
       searchWord: "",
       rangeValueDistance : 0,
       rangeValuePrice : 0,
@@ -173,7 +174,9 @@ export default {
                 img: "ski.jpg",
                 place: response.data.body[i].postalCode.toString(),
                 price: response.data.body[i].price,
-                distance: response.data.body[i].distance
+                distance: response.data.body[i].distance,
+                lat: response.data.body[i].lat,
+                lng: response.data.body[i].lng
               }
               this.ads.push(ad)
             }
@@ -199,7 +202,9 @@ export default {
                 img: "ski.jpg",
                 place: response.data[i].postalCode.toString(),
                 price: response.data[i].price,
-                distance: response.data[i].distance
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng
               }
               this.ads.push(ad)
             }
@@ -246,6 +251,7 @@ export default {
         })
     },
     async chosenMainCat(title) {
+      this.disableSortingAndFiltering = true
       this.currentCategoryName = title
       this.chosenMainCategory = title
       this.subCategories = []
@@ -271,6 +277,7 @@ export default {
         })
     },
     async chosenSubCat(subCat) {
+      this.disableSortingAndFiltering = false
       this.currentCategoryName = subCat
       this.chosenSubCategory = subCat
       this.subSubCategories = []

@@ -184,8 +184,10 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      this.ad.distance = this.$store.getters.currentAd.distance
-      console.log(this.$store.getters.currentAd.distance)
+      this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+      console.log(this.$store.getters.currentAd.lat)
+      //this.ad.lat = this.$store.getters.currentAd.lat
+      //this.ad.lng = this.$store.getters.currentAd.lng
     },
     getDurationTypeToNorwegian(){
       if (this.ad.durationType == 'MONTH'){
