@@ -100,8 +100,7 @@
 
     <AdListComponent :ads="this.ads"/>
     <Pagination
-        :total-pages="10"
-        :perPage="24"
+        :total-pages="3"
         :current-page="currentPage"
         @pageChanged="onPageChange"
     />
@@ -145,6 +144,9 @@ export default {
       showMenuBarSorting : false,
       showMenuBarFiltering : false,
       ads:[],
+      storedAds:[],
+      totalPages:0,
+      adsPerPage:3,
       categories: [],
       subCategories: [],
       subSubCategories: [],
@@ -168,8 +170,8 @@ export default {
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
     },
-    getRandomAds(){
-      adsService.getPageWithRandomAds(5)
+    async getRandomAds(){
+      await adsService.getPageWithRandomAds(20)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               //få poststed
@@ -180,15 +182,21 @@ export default {
                 place: response.data[i].postalCode.toString(),
                 price: response.data[i].price
               }
-              this.ads.push(ad)
+              this.storedAds.push(ad)
             }
           })
           .catch(error => {
             console.error(error)
           })
     },
+    displayAds(page){
+      this.ads=[]
+      for (let i=this.adsPerPage*(page-1);i<this.adsPerPage*page;i++){
+        this.ads.push(this.storedAds[i])
+      }
+    },
     getAdsWhenOnMainpage(){
-      if(this.$route.name === "/") this.getRandomAds()
+      if(this.$route.name === "/") this.displayAds(this.currentPage)
     },
     async getMainCategories() {
       await categoryService
@@ -259,10 +267,10 @@ export default {
           console.log(error)
         })
     },
-    chosenSubSubCat(subSubCat) {
+    async chosenSubSubCat(subSubCat) {
       this.chosenSubSubCategory = subSubCat
 
-      categoryService
+      await categoryService
         .getAllAdsForCategoryAndSubCategories(subSubCat)
         .then(response => {
           console.log(response)
@@ -279,6 +287,7 @@ export default {
       await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
+          this.storedAds = this.ads.slice()
           this.ads = []
           for(let i = 0; i < res.data.length; i++) {
             let ad = {
@@ -297,13 +306,13 @@ export default {
     },
     onPageChange(page) {
       this.currentPage = page;
+      this.displayAds(this.currentPage)
     }
   },
   watch:{
     $route: "getAdsWhenOnMainpage",
   },
   created() {
-    this.getRandomAds();
     this.getMainCategories();
     //TODO send disse koordinatene til backend
     /*
@@ -312,6 +321,10 @@ export default {
 
      */
   },
+  async mounted() {
+    await this.getRandomAds();
+    await this.displayAds(this.currentPage)
+  }
 };
 </script>
 
