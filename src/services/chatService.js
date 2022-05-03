@@ -23,15 +23,15 @@ export default{
           };
           return axios.request(options)
     },
-    createGroupChatWithTwoUsers(chatName, userOneId, userTwoId){
+    createGroupChat(chatName, users){
         const options = {
             method: 'POST',
-            url: `${url}${port}/api/create/group`,
+            url: `${url}${port}/api/create/group/list`,
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${localStorage.getItem("token")}`
             },
-            data: {groupName: chatName, userOneId: userOneId, userTwoId: userTwoId}
+            data: {groupName: chatName, userIds: users}
           };
           return axios.request(options)
     },

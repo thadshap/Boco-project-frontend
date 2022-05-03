@@ -99,7 +99,7 @@ export default {
         await this.stompClient.connect({Authorization: 'Bearer '+localStorage.getItem("token")}, function(frame){
             console.log("connected to socket " + frame);            
         })
-        await this.sleep(2000)
+        await this.sleep(1000)
         this.subscribe()    
   },
   subscribe(){

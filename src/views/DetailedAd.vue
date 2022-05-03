@@ -257,7 +257,8 @@ export default {
         var userId = localStorage.getItem("userId")
         if (userId != this.lender.id) {
           var groupId
-          await chatService.createGroupChatWithTwoUsers(this.ad.title, userId, this.lender.id)
+          var users = [userId,this.lender.id]
+          await chatService.createGroupChat(this.ad.title, users)
           .then(response => {
             groupId = response.data // TODO: add .groupId when backend is fixed
           })
