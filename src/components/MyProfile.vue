@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column container p-5 main-container">
-    <div class="d-flex flex-row justify-content-center w-100 p-3 user-info-wrapper">
+    <div class="d-flex flex-row justify-content-center w-100 user-info-wrapper">
       <div class="infoContainerDiv">
         <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
         <div class="infoCard">
@@ -186,6 +186,7 @@
 .user-info-wrapper{
   border: solid rgba(1, 87, 103, 0.4);
   background-color: rgba(70, 156, 175, 0.2);
+  padding: 10px;
 }
 .sign-out-container{
   background-color: rgba(255, 0, 0, 0.9);
