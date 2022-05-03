@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container main-container">
     <div
       id="adPictureDiv"
       class="text-center"
@@ -11,7 +11,7 @@
     </div>
     <div class="text-center">
       <label class="form-label">
-        Leiepris : {{ ad.price }} kr pr/{{ ad.durationType }}
+        <label class="defined-label">Leiepris</label> : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
     </div>
     <div id="description" class="text-center">
@@ -19,7 +19,7 @@
         {{ ad.description }}
       </label>
     </div>
-    <div class="text-center">
+    <div class="text-center mb-4">
       <button
         id="startChatButton"
         class="btn btn-primary"
@@ -37,7 +37,7 @@
         Forespør lån
       </button><br>
       <div id="time" class="text-center" v-if="showRequestDetails">
-        Tidsperiode:
+        <label class="defined-label">Tidsperiode </label>>
         <Datepicker v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button
           id="sendRequest"
@@ -52,11 +52,11 @@
     </div>
     <div class="text-center">
       <div id="lenderHeader">
-        <label class="form-label"> Utlåner: </label>
+        <label class="form-label defined-label"> Utlåner </label>
       </div>
       <div id="lenderDetails">
         <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
-          {{ lender.firstName }} {{ lender.lastName }}<br />
+           {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
         <i
           class="fas fa-check-circle"
@@ -77,16 +77,17 @@
           {{ review.rating }} / 10 <i class="fas fa-star" style="color: rgb(255,214,70);"></i><br>
           {{review.firstName }} {{review.lastName}}<br>
           {{ review.description}}
+          <hr>
         </div>
       </div>
     </div>
-    <div id="distance" class="text-center">
+    <div id="distance" class="text-center mt-4">
       <label class="form-label">
-        Avstand : {{ ad.distance }} km fra din posisjon&nbsp;
+        <label class="defined-label">Avstand</label>  : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
     </div>
     <div id="address" class="text-center">
-      <label class="form-label"> Adresse : {{ ad.streetAddress }}&nbsp; </label>
+      <label class="form-label"> <label class="defined-label">Adresse</label> : {{ ad.streetAddress }}&nbsp; </label>
     </div>
       <ol-map
         :loadTilesWhileAnimating="true"
@@ -319,12 +320,15 @@ export default {
 </script>
 
 <style scoped>
+.main-container{
+  font-size: 2.3vh;
+}
 .map {
   height: 400px;
   width: 100%;
 }
   #adPictureDiv{
-    padding: 10vw 10vw 0 10vw;
+    padding: 5vw 10vw 0 10vw;
   }
   #adPicture{
     width: 250px;
@@ -332,28 +336,29 @@ export default {
   }
   #adHeader{
     font-weight: bold;
-    font-size: 22px;
+    font-size: 4vh;
+    color: #015d9a;
   }
   button{
     padding: 4px;
-    font-size: 14px;
+    font-size: 1.8vh;
   }
   #description{
     padding: 0px 10px 0px 10px;
   }
   #descriptionLabel{
-    font-size: 12px;
+    font-size: 1.5vh;
     font-style: italic;
   }
   i{
-    color: blue;
+    color: #0EA0FF;
     padding: 0.5vw;
   }
   #lenderDetails{
     height: 4vh;
   }
   #lenderName, #lenderNumberLabel{
-    font-size: 12px;
+    font-size: 1.8vh;
     color: blue;
     text-decoration: underline;
     cursor: pointer;
@@ -371,26 +376,27 @@ export default {
     padding: 0px 5vw 0px 5vw;
   }
   img{
-    width : 30vw;
+    height : 300px;
   }
   button{
-    margin: 5px;
+    margin: 0 10px 0 10px;
+    padding: 5px 9px 5px 9px;
   }
   #makeRequest{
     background-color: green;
   }
   .earlierReviews{
-    border-style: solid;
-    border-color: grey;
     width: 50%;
   }
   #review{
     display: grid;
     justify-items: center;
-    font-size: 10px;
+    font-size: 1.4vh;
   }
   .material-icons{
     cursor: pointer;
+    font-size: 30px;
+    float: bottom;
   }
   #time{
     width: 30%;
@@ -400,5 +406,12 @@ export default {
     display: grid;
     justify-items: center;
   }
-
+  hr{
+    margin: 5px;
+    background-color: #0EA0FF;
+  }
+  .defined-label{
+    font-weight: bold;
+    color: #015d9a;
+  }
 </style>
