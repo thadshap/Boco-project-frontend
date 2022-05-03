@@ -89,7 +89,7 @@
       await userService
         .getProfilePicture(localStorage.getItem("userId"))
         .then(response => {
-          console.log(response)
+          this.profilePicture = `data:${response.data.type};base64,${response.data.base64}`
         })
         .catch(error => {
           console.log(error)
