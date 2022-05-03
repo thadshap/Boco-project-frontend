@@ -4,7 +4,7 @@
       id="adPictureDiv"
       class="text-center"
     >
-      <img src={{picture}}>
+      <img v-for="picture in pictures" :src="picture" :key="picture">
     </div>
     <div class="text-center">
       <label id="adHeader" class="form-label">{{ ad.title }}</label>
@@ -145,11 +145,9 @@ export default {
       showRequestDetails: false,
       reviews: [],
       disable: [new Date()],
-      ad: {
-
-      },
-      lender: {
-      },
+      pictures: [],
+      ad: {},
+      lender: {},
     };
   },
   async created() {
@@ -157,6 +155,7 @@ export default {
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
+    await this.getAdPictures();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -314,6 +313,18 @@ export default {
         name: "UserProfile",
       });
     },
+    getAdPictures() {
+      adService
+        .getPicturesForAd(this.$store.getters.currentAd.id)
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            this.pictures.push(`data:${response.data[i].type};base64,${response.data[i].base64}`)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   },
 };
 </script>
