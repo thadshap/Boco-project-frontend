@@ -98,7 +98,13 @@ export default {
     },
     /**
      *
+     * @param title
+     * @param description
      * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
+     * @param price
+     * @param streetaddress
+     * @param postalCode
+     * @param userId
      * @param categoryId is the id of the subcategory
      */
     postNewAd(
@@ -108,7 +114,6 @@ export default {
         price,
         streetaddress,
         postalCode,
-        userId,
         categoryId
     ) {
         const options = {
@@ -127,7 +132,7 @@ export default {
                 price: price,
                 streetAddress: streetaddress,
                 postalCode: postalCode,
-                userId: userId,
+                userId: localStorage.getItem("userId"),
                 categoryId: categoryId,
             },
         };
