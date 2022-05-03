@@ -71,7 +71,7 @@
       </div>
     </div>
   <div>
-    <h3>Newest items</h3>
+    <h3>{{ titleHeader }}</h3>
 
     <AdListComponent :ads="this.ads"/>
   </div>
@@ -104,6 +104,7 @@ export default {
   },
   data() {
     return {
+      titleHeader: "Nyeste gjenstander for utlån",
       disableSortingAndFiltering: false,
       searchWord: "",
       rangeValueDistance : 0,
@@ -187,14 +188,15 @@ export default {
     async filterWithoutCategory(filterType){
       let rangeValue = ""
       if(filterType === "price"){
+        this.titleHeader = "Gjenstander for utlån filtrert etter pris"
         rangeValue = this.rangeValuePrice
       } if(filterType === "distance"){
+        this.titleHeader = "Gjenstander for utlån filtrert etter avstander"
         rangeValue = this.rangeValueDistance
       }
       await adsService.filterAdsForPriceOrDistance(filterType, rangeValue, true,
           this.currPos.lat, this.currPos.lng)
           .then(response => {
-            console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,
@@ -251,6 +253,7 @@ export default {
         })
     },
     async chosenMainCat(title) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + title
       this.disableSortingAndFiltering = true
       this.currentCategoryName = title
       this.chosenMainCategory = title
@@ -277,6 +280,7 @@ export default {
         })
     },
     async chosenSubCat(subCat) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + subCat
       this.disableSortingAndFiltering = false
       this.currentCategoryName = subCat
       this.chosenSubCategory = subCat
@@ -306,6 +310,7 @@ export default {
         })
     },
     chosenSubSubCat(subSubCat) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + subSubCat
       this.currentCategoryName = subSubCat
       this.chosenSubSubCategory = subSubCat
 
