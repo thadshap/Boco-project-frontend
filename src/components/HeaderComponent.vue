@@ -1,5 +1,4 @@
 <template>
-  <div>
   <div class="navbar-bg">
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light justify-content-between">
@@ -44,22 +43,12 @@
       </nav>
     </div>
   </div>
-    <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
-      <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
-        {{ GStore.flashMessage }}
-      </div>
-      <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
-        {{ GStore.flashMessage }}
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
 import $ from "jquery";
 
   export default {
-    inject: ["GStore"],
     name:"HeaderComponent",
     watch: {
       $route: "checkLoggedIn"
