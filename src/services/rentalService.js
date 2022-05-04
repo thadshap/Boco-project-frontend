@@ -21,9 +21,9 @@ export default {
                 rentFrom: rentFrom,
                 rentTo: rentTo,
                 deadline: deadline,
-                //change to false when chat works TODO
-                active: 'true',
+                active: false,
                 price: price,
+                isReviewed: false,
                 owner: lenderEmail,
                 borrower: userEmail,
                 adId: adId,
@@ -48,7 +48,7 @@ export default {
 
         return axios.request(options);
     },
-    deleteRental(rentalId) {
+    deleteRental(rentalId, description, rating) {
         const options = {
             method: 'DELETE',
             url: `${url}${port}/rental/delete/` + rentalId,
@@ -56,6 +56,10 @@ export default {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
+            data: {
+                rating: rating,
+                description: description
+            }
         };
 
         return axios.request(options);
