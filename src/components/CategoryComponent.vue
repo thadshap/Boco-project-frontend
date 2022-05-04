@@ -66,7 +66,7 @@ export default {
 h4{
   font-weight: inherit;
   color: #0495F3FF;
-  font-size: 20px;
+  font-size: 2.1vh;
 }
 .title-style {
   margin-top: 5px;
