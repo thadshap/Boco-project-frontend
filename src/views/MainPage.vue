@@ -194,6 +194,26 @@ export default {
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
     },
+    async getMainCategories() {
+      await categoryService
+        .getAllParentCategories()
+        .then(response => {
+          if(response.status !== 204) {
+            for(let i = 0; i < response.data.length; i++) {
+              let cat = {
+                title: response.data[i].name,
+                icon: response.data[i].icon
+              }
+              this.categories.push(cat)
+            }
+          } else {
+            console.log("Fikk ingen kategorier fra server...")
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     async chosenMainCat(title) {
       this.chosenMainCategory = title
 
@@ -267,6 +287,42 @@ export default {
         })
 
     },
+    async chosenSubSubCat(subSubCat) {
+      this.chosenSubSubCategory = subSubCat
+
+      await categoryService
+        .getAllAdsForCategoryAndSubCategories(subSubCat, this.currPos)
+        .then(response => {
+          if(response.status === 200) {
+            this.ads = []
+            for(let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    },
+
     search() {
       if(this.searchWord === "") {
         return
@@ -299,6 +355,7 @@ export default {
   },
   created() {
     this.getRandomAds();
+    this.getMainCategories();
     //TODO send disse koordinatene til backend
     /*
     this.currPos.value.lat;
