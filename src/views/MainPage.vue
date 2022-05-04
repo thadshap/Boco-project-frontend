@@ -144,9 +144,10 @@ export default {
       showMenuBarSorting : false,
       showMenuBarFiltering : false,
       ads:[],
-      storedAds:[],
+      cachedAds:[],
+      sortedAds:[],
       totalPages:0,
-      adsPerPage:3,
+      adsPerPage:4,
       categories: [],
       subCategories: [],
       subSubCategories: [],
@@ -157,6 +158,7 @@ export default {
     };
   },
   methods: {
+    //TODO oppdater antall sider når man filtrerer
     showSorting() {
       console.log(new URL(location.href).searchParams.get('page'));
       this.showMenuBarFiltering = false;
@@ -182,27 +184,25 @@ export default {
                 place: response.data[i].postalCode.toString(),
                 price: response.data[i].price
               }
-              this.storedAds.push(ad)
+              this.cachedAds.push(ad)
             }
           })
           .catch(error => {
             console.error(error)
           })
     },
-    displayAds(page){
+    displayAds(page, adArray){
       this.ads=[]
       for (let i=this.adsPerPage*(page-1);i<this.adsPerPage*page;i++){
-        if(this.storedAds[i] === undefined) break
-        this.ads.push(this.storedAds[i])
+        if(adArray[i] === undefined) break
+        this.ads.push(adArray[i])
       }
     },
     getAdsWhenOnMainpage(){
-      if(this.$route.name === "/") this.displayAds(this.currentPage)
+      if(this.$route.name === "/") this.displayAds(this.currentPage, this.cachedAds)
     },
-    setNrOfPages(){
-      this.totalPages = Math.ceil(this.storedAds.length/this.adsPerPage)
-      console.log(this.storedAds.length)
-      console.log(this.totalPages)
+    setNrOfPages(adArray){
+      this.totalPages = Math.ceil(adArray.length/this.adsPerPage)
     },
     async getMainCategories() {
       await categoryService
@@ -293,7 +293,7 @@ export default {
       await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
-          this.storedAds = this.ads.slice()
+          this.cachedAds = this.ads.slice()
           this.ads = []
           for(let i = 0; i < res.data.length; i++) {
             let ad = {
@@ -312,7 +312,8 @@ export default {
     },
     onPageChange(page) {
       this.currentPage = page;
-      this.displayAds(this.currentPage)
+      if(this.sortedAds.length === 0) this.displayAds(this.currentPage, this.cachedAds)
+      else this.displayAds(this.currentPage, this.sortedAds)
     }
   },
   watch:{
@@ -329,7 +330,7 @@ export default {
   },
   async mounted() {
     await this.getRandomAds();
-    await this.setNrOfPages()
+    await this.setNrOfPages(this.cachedAds)
     await this.displayAds(this.currentPage)
   }
 };
