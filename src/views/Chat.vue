@@ -27,7 +27,8 @@
             :lastName="message.lastName"
             :timestamp="message.timeStamp"
             :content="message.content"
-            :profilePicture="message.picture"
+            :type="message.type"
+            :base64="message.base64"
             :userId="message.userId"/>
         </div>
         <div class="d-flex align-items-end bottom-toolbar">
@@ -52,6 +53,7 @@
 <script>
 import MessageComponent from "@/components/MessageComponent";
 import chatService from "@/services/chatService";
+/* import userService from "@/services/userService"; */
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 
@@ -63,6 +65,8 @@ export default {
           newGroupName: null,
           addUser:'',
           input:'',
+          /* users: [],
+          pictures: [] */
       }
   },
   components:{
@@ -97,7 +101,22 @@ export default {
               console.log(error)
           })
       },
-  
+      /* async getUsers(){
+          await chatService.getUsersByGroupId(this.$store.getters.getGroupId)
+          .then(response => {
+              this.users = response.data
+          })
+          for (let i = 0; i < this.users.length; i++) {
+                await this.getPicture(1) //ERROR IF ANYONE IN CHAT IS MISSING PICTURE
+          }
+      },
+      async getPicture(user){
+            await userService.getProfilePicture(user)
+            .then(response => {
+                let img = `data:${response.data.type};base64,${response.data.base64}`;
+                this.pictures.push(img)
+          });
+      }, */
   async connect(){
         var socket = new SockJS(`http://localhost:8443/ws/`);
         var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
@@ -117,14 +136,21 @@ export default {
   subscribe(){
         console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
         this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
-            this.$store.dispatch("addMessage", JSON.parse(messageOutput.body))
+            let messageObject = JSON.parse(messageOutput.body)
+            /* for (let i = 0; i < this.users.length; i++) {
+                if (!this.users[i]===messageOutput.body.userId) {
+                    this.getUsers()
+                }
+                if (this.users[i]===messageOutput.body.userId) {
+                    messageObject.picture = this.pictures[i]
+                }
+            } */
+            this.$store.dispatch("addMessage", messageObject)
         })
   },
   sendMessage() {
     this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
     this.input = ''
-    const container = document.getElementsByClassName("flex-grow-1 chat-container")
-    container.scrollTop = container.scrollHeight;
   },
   sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -138,6 +164,7 @@ export default {
       this.disconnect()
   },
   mounted(){
+      /* this.getUsers() */
       this.getMessages()
       this.connect()
   },

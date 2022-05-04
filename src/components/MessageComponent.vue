@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex message">
-        <img class="profile-picture" src="{{profilePicture}}">
+        <img class="profile-picture" v-bind:src="`data:${this.$props.type};base64,${this.$props.base64}`"/>
         <div class="flex-grow-1 padding">
             <div class="text">
                 <span v-on:click="routeToProfile" class="name">{{firstName}}&nbsp;</span>
@@ -32,12 +32,16 @@ export default {
             type: null,
             required: true,
         },
-        profilePicture:{
-            type: Image,
-            required: true,
-        },
         userId:{
             type: Number,
+            required: true,
+        },
+        type:{
+            type: String,
+            required: true,
+        },
+        base64:{
+            type: String,
             required: true,
         }
     },
