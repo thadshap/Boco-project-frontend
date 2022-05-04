@@ -26,6 +26,7 @@ window.jQuery = $;
 require("bootstrap/dist/js/bootstrap.min");
 
 export default {
+  inject: ['GStore'],
   name: "App",
   components: {
     HeaderComponent,
