@@ -6,8 +6,8 @@
           <h3 class="ad-heading-style" style="margin-bottom: 10px;">
             <b> {{ title }}</b>
           </h3>
-          <h4>Eier: {{ ownerName }}</h4>
-          <h4>Låner: {{ borrowerName }}</h4>
+          <h4>Eier: {{ owner }}</h4>
+          <h4>Låner: {{ borrower }}</h4>
           <h4>Leie fra: {{ rentFrom }}</h4>
           <h4>Leie til: {{ rentTo }}</h4>
           <h4>Total pris: {{ price }} kr</h4>
@@ -28,104 +28,74 @@
 </template>
 
 <script>
-import lendingService from "@/services/lendingService";
 
 export default {
   name: "Rental",
-  data(){
-    return {
-      ownerName: "",
-      borrowerName: "",
-      title:"",
-    }
+  props: {
+    id: {
+      type: Number,
+      required: true,
+    },
+    adId: {
+      type: Number,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    borrower: {
+      type: String,
+      required: true,
+    },
+    owner: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    active: {
+      type: Boolean,
+      required: true,
+    },
+    deadline: {
+      type: String,
+    },
+    rentTo: {
+      type: String,
+    },
+    rentFrom: {
+      type: String,
+    },
+    dateOfRental: {
+      type: String,
+    },
   },
-    props: {
-      id: {
-        type: Number,
-        required: true,
-      },
-      adId: {
-        type: Number,
-        required: true,
-      },
-      borrower: {
-        type: Number,
-        required: true,
-      },
-      owner: {
-        type: Number,
-        required: true,
-      },
-      price: {
-        type: Number,
-        required: true,
-      },
-      active: {
-        type: Boolean,
-        required: true,
-      },
-      deadline: {
-        type: String,
-      },
-      rentTo: {
-        type: String,
-      },
-      rentFrom: {
-        type: String,
-      },
-      dateOfRental: {
-        type: String,
-      },
-},
-methods: {
-  goToDetailedView(){
-    console.log(this.$props.adId);
-    this.$router.push({
-      path: "/ad/:id",
-      name : "Ad",
-      params : {
-        id : this.$props.adId
-      }
-    })
-  },
-  goToDetailedRentalView(){
-    console.log(this.$props.id);
-    this.$router.push({
-      path: "/rental/:id",
-      name : "Rental",
-      params : {
-        id : this.$props.id
-      }
-    })
-  },
-},
-  created() {
-    lendingService.getUserById(this.borrower)
-        .then(response => {
-          this.borrowerName = response.data.firstName + " " + response.data.lastName
-          if(response.status!==200){
-            alert("Fikk ikke kontakt med serveren")
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    lendingService.getUserById(this.owner)
-        .then(response => {
-          this.ownerName = response.data.firstName + " " + response.data.lastName
-          if(response.status!==200){
-            alert("Fikk ikke kontakt med serveren")
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    lendingService.getAdById(this.adId)
-      .then(response => {
-        this.title = response.data.title
+  methods: {
+    goToDetailedView() {
+      console.log(this.$props.adId);
+      this.$router.push({
+        path: "/ad/:id",
+        name: "Ad",
+        params: {
+          id: this.$props.adId
+        }
       })
-  }
-};
+    },
+    goToDetailedRentalView() {
+      console.log(this.$props.id);
+      this.$router.push({
+        path: "/rental/:id",
+        name: "Rental",
+        params: {
+          id: this.$props.id
+        }
+      })
+    },
+  },
+}
 </script>
 
 <style scoped>
