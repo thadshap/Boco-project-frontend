@@ -3,7 +3,7 @@
   <div class="d-flex flex-column chat">
         <div class="d-flex flex-column justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 flex-row width">
-                <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
+                <button class="btn menu-button" type="button" v-on:click="toGroups">
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 </button>
                 <span class="name">{{this.$store.getters.getGroupName}}</span>
