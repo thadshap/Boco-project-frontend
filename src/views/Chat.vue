@@ -13,9 +13,9 @@
                 
             </div>
             <div class="d-flex flex-column">
-                <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
+                <input type="text" v-if="this.changeGroupName" v-model="v$.newGroupName.$model">
                 <button v-if="changeGroupName" v-on:click="editGroupName" class="editButtons">Change group name</button>
-                <input type="text" v-if="this.changeGroupName" v-model="addUser">
+                <input type="text" v-if="this.changeGroupName" v-model.trim="v$.addUser.$model">
                 <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons">Add user by email</button>
             </div>
         </div>
@@ -38,7 +38,7 @@
                 </svg>
             </button>-->
             <div class="d-flex flex-grow-1 align-self-center">
-                <input class="d-flex input" type="text" placeholder="Send message" v-model="input" v-on:keyup.enter="sendMessage"   >
+                <input class="d-flex input" type="text" placeholder="Send message" v-model.trim="v$.input.$model" v-on:keyup.enter="sendMessage"   >
             </div>
             <button class="btn btn-primary send-button" type="button" v-on:click="sendMessage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-right-circle">
@@ -53,21 +53,38 @@
 <script>
 import MessageComponent from "@/components/MessageComponent";
 import chatService from "@/services/chatService";
-/* import userService from "@/services/userService"; */
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import {required} from "@vuelidate/validators";
+import useVuelidate from '@vuelidate/core';
 
 export default {  
   name: "Chat",
   data(){
       return{
           changeGroupName: false,
-          newGroupName: null,
+          newGroupName: '',
           addUser:'',
           input:'',
-          /* users: [],
-          pictures: [] */
       }
+  },
+  setup(){
+      return{
+          v$: useVuelidate()
+      }
+  },
+  validations() {
+      return{
+      newGroupName: {
+          required
+      },
+      addUser: {
+          required
+      },
+      input: {
+          required
+      }
+    }
   },
   components:{
       MessageComponent
@@ -77,6 +94,10 @@ export default {
           this.changeGroupName = !this.changeGroupName
       },
         async editGroupName(){
+            const valid = await this.v$.newGroupName.$validate()
+            if (!valid) {
+                return
+            }
           await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
           .then(response => {
               alert(response.data)
@@ -84,6 +105,10 @@ export default {
           this.$store.dispatch("setGroupName", this.newGroupName)
       },
       async addUserToGroupByEmail(){
+          const valid = await this.v$.addUser.$validate()
+            if (!valid) {
+                return
+            }
           await chatService.addUserToGroupByEmail(this.$store.getters.getGroupId, this.addUser)
           .then(response => {
               alert(response.data)
@@ -101,22 +126,6 @@ export default {
               console.log(error)
           })
       },
-      /* async getUsers(){
-          await chatService.getUsersByGroupId(this.$store.getters.getGroupId)
-          .then(response => {
-              this.users = response.data
-          })
-          for (let i = 0; i < this.users.length; i++) {
-                await this.getPicture(1) //ERROR IF ANYONE IN CHAT IS MISSING PICTURE
-          }
-      },
-      async getPicture(user){
-            await userService.getProfilePicture(user)
-            .then(response => {
-                let img = `data:${response.data.type};base64,${response.data.base64}`;
-                this.pictures.push(img)
-          });
-      }, */
   async connect(){
         var socket = new SockJS(`http://localhost:8443/ws/`);
         var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
@@ -137,18 +146,14 @@ export default {
         console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
         this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
             let messageObject = JSON.parse(messageOutput.body)
-            /* for (let i = 0; i < this.users.length; i++) {
-                if (!this.users[i]===messageOutput.body.userId) {
-                    this.getUsers()
-                }
-                if (this.users[i]===messageOutput.body.userId) {
-                    messageObject.picture = this.pictures[i]
-                }
-            } */
             this.$store.dispatch("addMessage", messageObject)
         })
   },
-  sendMessage() {
+  async sendMessage() {
+      const valid = await this.v$.input.$validate()
+      if (!valid) {
+          return
+      }
     this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
     this.input = ''
   },
@@ -164,7 +169,6 @@ export default {
       this.disconnect()
   },
   mounted(){
-      /* this.getUsers() */
       this.getMessages()
       this.connect()
   },
