@@ -19,7 +19,7 @@
                 <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons">Add user by email</button>
             </div>
         </div>
-        <div class="flex-grow-1 chat-container" >
+        <div class="flex-grow-1 chat-container" ref="chat">
             <MessageComponent
             v-for="message in this.$store.getters.getMessages"
             :key="message"
@@ -129,15 +129,21 @@ export default {
   sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
    },
-
+    scroll(){
+        var content = this.$refs.chat
+        content.scrollTop = content.scrollHeight
+    }
 },
-beforeUnmount() {
+    beforeUnmount() {
       this.disconnect()
   },
   mounted(){
       this.getMessages()
       this.connect()
   },
+  updated(){
+      this.$nextTick(() => this.scroll());
+  }
 };
 </script>
 <style scoped>

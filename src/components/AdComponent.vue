@@ -74,11 +74,9 @@ export default {
     async startChat() {
       if (this.$store.getters.loggedIn) {
         var userId = localStorage.getItem("userId")
-        console.log(this.$props)
         if (userId != this.$props.userId) {
           var groupId
           var users = [userId, this.$props.userId]
-          console.log(this.$props)
           await chatService.createGroupChat(this.$props.title, users)
           .then(response => {
             groupId = response.data.groupId
