@@ -75,7 +75,7 @@ export default {
 }
 .padding{
     padding: 10px;
-    max-width: 90vw;
+    max-width: 80vw;
 }
 .name{
     text-decoration: underline;
