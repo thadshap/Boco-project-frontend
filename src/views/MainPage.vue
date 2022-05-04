@@ -111,8 +111,8 @@
 import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
 import SubCategoryComponent from "@/components/SubCategoryComponent";
-import { geolocationForUser } from '@/geolocationForUser'
-import { computed } from 'vue'
+import { geolocationForUser } from "@/geolocationForUser";
+import { computed } from "vue";
 import adsService from "@/services/adsService";
 import categoryService from "../services/categoryService";
 import adService from "../services/adService";
@@ -297,7 +297,6 @@ export default {
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then(response => {
           if (response.status === 200) {
-            console.log(response)
             this.ads = []
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
@@ -335,11 +334,10 @@ export default {
       for(let i = 0; i < this.ads.length; i++) {
         console.log("id til ad: " + this.ads[i].id)
         await adService
-            .getPicturesForAd(this.ads[i].id)
+            .getPictureForAd(this.ads[i].id)
             .then(response => {
               console.log(response.data)
-              let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
-              this.ads[i].img = img
+              this.ads[i].img = `data:${response.data.type};base64,${response.data.base64}`
             })
             .catch(error => {
               console.log(error)
