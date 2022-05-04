@@ -26,7 +26,7 @@
           @last-clicked-main-cat="chosenMainCat"
         />
       </div>
-      <div v-if="subCategories.length !== 0 && ads.length !== 0" class="my-5">
+      <div v-if="subCategories.length !== 0" class="my-5">
         <h5>Underkategori</h5>
         <SubCategoryComponent
           v-for="cat in subCategories"
@@ -36,7 +36,7 @@
           @chosen-sub-cat="chosenSubCat"
         />
       </div>
-      <div v-if="subSubCategories.length !== 0 && ads.length !== 0" class="my-5">
+      <div v-if="subSubCategories.length !== 0" class="my-5">
         <h6>Underkategori</h6>
         <SubCategoryComponent
           v-for="cat in subSubCategories"
@@ -179,13 +179,12 @@ export default {
       await adsService
         .getPageWithRandomAds(5)
           .then(response => {
+            console.log(response)
             for (let i = 0; i < response.data.length; i++) {
-              //få poststed
-
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                place: response.data[i].postalCode.toString(),
+                place: response.data[i].city,
                 price: response.data[i].price
               }
 
@@ -237,9 +236,10 @@ export default {
       this.subSubCategories = []
 
       await categoryService
-        .getAllAdsForCategoryAndSubCategories(title)
+        .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then(response => {
           if(response.status === 200) {
+            console.log(response)
             this.ads = []
             for(let i = 0; i < response.data.length; i++) {
               let ad = {
@@ -288,7 +288,7 @@ export default {
       this.subSubCategories = []
 
       await categoryService
-        .getAllAdsForCategoryAndSubCategories(subCat)
+        .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
         .then(response => {
           if(response.status === 200) {
             this.ads = []

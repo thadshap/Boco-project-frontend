@@ -50,10 +50,16 @@ export default {
      * @param categoryName name of the upmost category
      * @returns {Promise<AxiosResponse<any>>}
      */
-  getAllAdsForCategoryAndSubCategories(categoryName) {
+  getAllAdsForCategoryAndSubCategories(categoryName, geoLoc) {
     const options = {
-      method: "GET",
+      method: "POST",
       url: `${url}${port}/api/categoriesRecursive/${categoryName}`,
+      header: {
+        "Content-Type": "application/json"
+      },
+      data: {
+        geoLoc
+      }
     };
     return axios.request(options);
   },
