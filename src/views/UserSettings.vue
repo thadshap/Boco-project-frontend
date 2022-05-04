@@ -214,6 +214,7 @@ export default {
         this.state.repeatPasswordChange = ""
         this.changedImg = false
         this.disableBtn = true
+        window.location.reload();
       }
     },
     async deleteUser(){
