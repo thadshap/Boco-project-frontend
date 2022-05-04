@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div class="w-100">
+    <div class="d-flex justify-content-center">
+      <div>
+  <div class="main-container">
     <div class="d-flex justify-content-center search-box-container-style">
       <div class="d-flex search-container">
         <input type="search" placeholder="Søk" class="w-100" v-model="searchWord"/>
@@ -10,7 +13,8 @@
     </div>
 
     <div>
-      <h3>Categories</h3>
+      <h3 class="category-header">Kategorier</h3>
+      <hr>
       <div
         class="d-flex flex-row justify-content-center align-items-center flex-wrap categories-card-container-style"
       >
@@ -22,7 +26,7 @@
           @last-clicked-main-cat="chosenMainCat"
         />
       </div>
-      <div v-if="chosenMainCategory !== ''" class="my-5">
+      <div v-if="subCategories.length !== 0" class="my-5">
         <h5>Underkategori</h5>
         <SubCategoryComponent
           v-for="cat in subCategories"
@@ -32,7 +36,7 @@
           @chosen-sub-cat="chosenSubCat"
         />
       </div>
-      <div v-if="chosenSubCategory !== ''" class="my-5">
+      <div v-if="subSubCategories.length !== 0" class="my-5">
         <h6>Underkategori</h6>
         <SubCategoryComponent
           v-for="cat in subSubCategories"
@@ -43,60 +47,57 @@
         />
       </div>
     </div>
-    <div class="d-inline-flex d-sm-flex justify-content-sm-start">
-      <div>
-        <div>
+
+<hr>
+
+    <div class="w-100">
+      <div class="filter-and-sort-btn-container">
+      <div class="sort-container">
           <button
-              class="btn btn-primary"
+              class="btn sort-btn"
               type="button"
-              v-on:click="showSorting"
+              v-on:click="showSortingOptions"
+              :disabled="disableSortingAndFiltering"
           >
+            <img height="30" width="30" src="@/assets/img/list.svg" alt="sort icon">
             Sorter
           </button>
-          <div style="text-align: left" v-if="showMenuBarSorting">
+          <div class="dropdown-item-container" v-if="showMenuBarSorting">
             <a id="lav-hoy" class="dropdown-item" v-on:click="sortingPicked($event)">laveste - høyeste pris</a
             ><a id="hoy-lav" class="dropdown-item" v-on:click="sortingPicked($event)">høyeste - laveste pris</a
           ><a id="ny-eld" class="dropdown-item" v-on:click="sortingPicked($event)">nyeste - eldste</a
           ><a id="eld-ny" class="dropdown-item" v-on:click="sortingPicked($event)">eldste- nyeste</a>
           </div>
-        </div>
       </div>
       <div>
-        <div class="dropdown">
+        <div class="dropdown filter-container">
           <button
-              class="btn btn-primary"
+              class="btn filter-btn"
               type="button"
-              v-on:click="showFiltering"
+              v-on:click="showFilteringOptions"
+              :disabled="disableSortingAndFiltering"
           >
+            <img height="20" width="20" src="@/assets/img/filter.svg" alt="filter icon">
             Filtrer
           </button>
-          <div style="text-align: left" v-if="showMenuBarFiltering">
-            <a class="dropdown-item" href="#">Pris 0-{{priceRangeValue}}kr<br>
-              <input
-                class="form-range"
-                type="range"
-                min="0"
-                max="1000"
-                step="50"
-                v-model="priceRangeValue"
-            /></a
-            ><a class="dropdown-item" href="#">Avstand 0-{{distanceRangeValue}} km<br>
-            <input
-                class="form-range"
-                type="range"
-                min="0"
-                max="60"
-                step="2"
-                v-model="distanceRangeValue"
-            />
-          </a
-          >
+          <div class="dropdown-item-container" v-if="showMenuBarFiltering">
+            <a class="dropdown-item" href="#">max-pris:<br>
+              <input type="number" v-model="rangeValuePrice"/>
+              <input type="button" v-on:click="filter('price')" value="filtrer"/></a>
+            <a class="dropdown-item" href="#">max-avstand:<br>
+              <input type="number" v-model="rangeValueDistance"/>
+              <input type="button" v-on:click="filter('distance')" value="filtrer"/>
+            </a>
           </div>
         </div>
         </div>
+        </div>
       </div>
+
+
   <div>
-    <h3>Newest items</h3>
+    <hr>
+    <h3 class="category-header">{{ titleHeader }}</h3>
 
     <AdListComponent :ads="this.ads"/>
     <Pagination
@@ -105,6 +106,9 @@
         @pageChanged="onPageChange"
     />
   </div>
+  </div>
+  </div>
+    </div>
   </div>
 </template>
 
@@ -116,7 +120,8 @@ import Pagination from "@/components/Pagination";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import adsService from "@/services/adsService";
-import categoryService from "@/services/categoryService";
+import categoryService from "../services/categoryService";
+import adService from "../services/adService";
 
 export default {
   name: "MainPage",
@@ -136,9 +141,11 @@ export default {
   },
   data() {
     return {
+      titleHeader: "Nyeste gjenstander for utlån",
+      disableSortingAndFiltering: false,
       searchWord: "",
-      priceRangeValue : 0,
-      distanceRangeValue : 0,
+      rangeValueDistance : 0,
+      rangeValuePrice : 0,
       showUnderCategories : 0,
       sorting : '',
       showMenuBarSorting : false,
@@ -154,34 +161,122 @@ export default {
       chosenMainCategory: "",
       chosenSubCategory: "",
       chosenSubSubCategory: "",
+      currentCategoryName:"",
       currentPage:1,
-    };
+    }
   },
+  //TODO oppdater antall sider når man filtrerer
   methods: {
-    //TODO oppdater antall sider når man filtrerer
     showSorting() {
       console.log(new URL(location.href).searchParams.get('page'));
+    },
+    showSortingOptions() {
       this.showMenuBarFiltering = false;
       this.showMenuBarSorting = !this.showMenuBarSorting;
     },
-    showFiltering() {
+    showFilteringOptions() {
       this.showMenuBarSorting = false;
-      this.showMenuBarFiltering = !this.showMenuBarFiltering;
+      this.showMenuBarFiltering = !this.showMenuBarFiltering
     },
-    sortingPicked(e){
+    async sortingPicked(e){
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
+      this.sortedAds = this.cachedAds.slice()
+      if(this.sorting === "lav-hoy"){
+        this.sortedAds.sort((a, b) => { return a.price - b.price;})
+      } else if(this.sorting === "hoy-lav"){
+        this.sortedAds.sort((a, b) => { return b.price - a.price;})
+      } else if (this.sorting === "ny-eld"){
+        this.sortedAds.sort((a, b) => { return b.id - a.id;})
+      } else if (this.sorting === "eld-ny"){
+        this.sortedAds.sort((a, b) => { return a.id - b.id;})
+      }
+      await this.displayAds(1,this.sortedAds)
+
     },
-    async getRandomAds(){
-      await adsService.getPageWithRandomAds(20)
+    async filter(filterType){
+      //TODO fiks det her
+      this.showMenuBarFiltering = false;
+      if (this.currentCategoryName !== ""){
+        await this.filterWithCategory(filterType)
+      }
+      else {
+        await this.filterWithoutCategory(filterType)
+      }
+      this.setNrOfPages(this.sortedAds)
+      await this.displayAds(1,this.sortedAds)
+
+    },
+    async filterWithCategory(filterType){
+      let rangeValue = ""
+      if(filterType === "price"){
+        rangeValue = this.rangeValuePrice
+      } if(filterType === "distance"){
+        rangeValue = this.rangeValueDistance
+      }
+
+      await adsService.filterAdsInCategoryByDistanceOrPrice(
+          filterType, this.currentCategoryName, rangeValue, true,
+          this.currPos.lat, this.currPos.lng)
+
+          this.sortedAds =[]
+          .then(response => {
+            for (let i = 0; i < response.data.body.length; i++) {
+              let ad = {
+                id: response.data.body[i].adId,
+                title: response.data.body[i].title,
+                place: response.data.body[i].postalCode.toString(),
+                price: response.data.body[i].price,
+                distance: response.data.body[i].distance,
+                lat: response.data.body[i].lat,
+                lng: response.data.body[i].lng
+              }
+              this.sortedAds.push(ad)
+            }
+          }).catch(error => {
+            console.error(error)
+          })
+    },
+    async filterWithoutCategory(filterType){
+      let rangeValue = ""
+      if(filterType === "price"){
+        this.titleHeader = "Gjenstander for utlån filtrert etter pris"
+        rangeValue = this.rangeValuePrice
+      } if(filterType === "distance"){
+        this.titleHeader = "Gjenstander for utlån filtrert etter avstander"
+        rangeValue = this.rangeValueDistance
+      }
+      this.sortedAds = []
+
+      await adsService.filterAdsForPriceOrDistance(filterType, rangeValue, true,
+          this.currPos.lat, this.currPos.lng)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
-              //få poststed
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                img: "ski.jpg",
                 place: response.data[i].postalCode.toString(),
+                price: response.data[i].price,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng
+              }
+              //TODO noe med bilder
+              this.sortedAds.push(ad)
+            }
+          })
+          .catch(error => {
+            console.error(error)
+          })
+    },
+    async getRandomAds(){
+      await adsService.getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
+          .then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
                 price: response.data[i].price
               }
               this.cachedAds.push(ad)
@@ -191,12 +286,13 @@ export default {
             console.error(error)
           })
     },
-    displayAds(page, adArray){
+    async displayAds(page, adArray){
       this.ads=[]
       for (let i=this.adsPerPage*(page-1);i<this.adsPerPage*page;i++){
         if(adArray[i] === undefined) break
         this.ads.push(adArray[i])
       }
+      await this.getPictureForAd()
     },
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.displayAds(this.currentPage, this.cachedAds)
@@ -208,12 +304,16 @@ export default {
       await categoryService
         .getAllParentCategories()
         .then(response => {
-          for(let i = 0; i < response.data.length; i++) {
-            let cat = {
-              title: response.data[i].name,
-              icon: response.data[i].icon
+          if(response.status !== 204) {
+            for(let i = 0; i < response.data.length; i++) {
+              let cat = {
+                title: response.data[i].name,
+                icon: response.data[i].icon
+              }
+              this.categories.push(cat)
             }
-            this.categories.push(cat)
+          } else {
+            console.log("Fikk ingen kategorier fra server...")
           }
         })
         .catch(error => {
@@ -221,94 +321,157 @@ export default {
         })
     },
     async chosenMainCat(title) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + title
+      this.disableSortingAndFiltering = true
+      this.currentCategoryName = title
       this.chosenMainCategory = title
       this.subCategories = []
       this.subSubCategories = []
 
       await categoryService
+        .getAllAdsForCategoryAndSubCategories(title, this.currPos)
+        .then(response => {
+          console.log(response)
+          if (response.status === 200) {
+            this.sortedAds = []
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.sortedAds.push(ad)
+              console.log(ad)
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      await this.displayAds(1,this.sortedAds)
+
+
+      await categoryService
         .getAllSubCategoriesForCategory(title)
         .then(response => {
-          for(let i = 0; i < response.data.length; i++) {
-            this.subCategories.push(response.data[i].name)
+          if (response.status === 200) {
+            for (let i = 0; i < response.data.length; i++) {
+              this.subCategories.push(response.data[i].name)
+            }
+          } else {
+            console.log("Fikk ingen underkategorier fra server...")
           }
-
-          categoryService
-            .getAllAdsForCategoryAndSubCategories(title)
-            .then(response => {
-              console.log(response)
-            })
-            .catch(error => {
-              console.error(error)
-            })
-
         })
         .catch(error => {
           console.error(error)
         })
     },
-    async chosenSubCat(subCat) {
-      this.chosenSubCategory = subCat
-      this.subSubCategories = []
-
-      await categoryService
-        .getAllSubCategoriesForCategory(subCat)
-        .then(response => {
-          if(response.status !== 204) {
-            for(let i = 0; i < response.data.length; i++) {
-              this.subSubCategories.push(response.data[i].name)
-            }
-          }
-
-          categoryService
-            .getAllAdsForCategoryAndSubCategories(subCat)
+    async getPictureForAd(){
+      for(let i = 0; i < this.ads.length; i++) {
+        await adService
+            .getPictureForAd(this.ads[i].id)
             .then(response => {
-              console.log(response)
+              this.ads[i].img = `data:${response.data.type};base64,${response.data.base64}`
             })
             .catch(error => {
               console.log(error)
             })
+      }
+    },
+    async chosenSubCat(subCat) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + subCat
+      this.disableSortingAndFiltering = false
+      this.currentCategoryName = subCat
+      this.chosenSubCategory = subCat
+      this.subSubCategories = []
 
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      await categoryService
+          .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
+          .then(response => {
+            if(response.status === 200) {
+              this.sortedAds = []
+              for(let i = 0; i < response.data.length; i++) {
+                let ad = {
+                  id: response.data[i].adId,
+                  title: response.data[i].title,
+                  place: response.data[i].city,
+                  price: response.data[i].price
+                }
+                this.sortedAds.push(ad)
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      await this.displayAds(1,this.sortedAds)
+
+
+      await categoryService
+        .getAllSubCategoriesForCategory(subCat)
+          .then(response => {
+            if (response.status === 200) {
+              for (let i = 0; i < response.data.length; i++) {
+                this.subSubCategories.push(response.data[i].name)
+              }
+            } else {
+              console.log("Fikk ingen underkategorier fra server...")
+            }
+          })
+
     },
     async chosenSubSubCat(subSubCat) {
       this.chosenSubSubCategory = subSubCat
+      this.titleHeader = "Gjenstander for utlån i kategorien " + subSubCat
+      this.currentCategoryName = subSubCat
 
       await categoryService
-        .getAllAdsForCategoryAndSubCategories(subSubCat)
+        .getAllAdsForCategoryAndSubCategories(subSubCat, this.currPos)
         .then(response => {
-          console.log(response)
+          if(response.status === 200) {
+            this.sortedAds = []
+            for(let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.sortedAds.push(ad)
+            }
+          }
         })
         .catch(error => {
           console.log(error)
         })
     },
+
     async search() {
       if(this.searchWord === "") {
         return
       }
-
       await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
-          this.cachedAds = this.ads.slice()
-          this.ads = []
+          this.sortedAds = []
           for(let i = 0; i < res.data.length; i++) {
             let ad = {
               id: res.data[i].adId,
               title: res.data[i].title,
-              img: "ski.jpg",
               place: res.data[i].city,
               price: res.data[i].price
             }
-            this.ads.push(ad)
+            this.sortedAds.push(ad)
           }
         })
         .catch(err => {
           console.error(err)
         })
+      this.setNrOfPages(this.sortedAds)
+      await this.displayAds(1,this.sortedAds)
+
     },
     onPageChange(page) {
       this.currentPage = page;
@@ -319,19 +482,12 @@ export default {
   watch:{
     $route: "getAdsWhenOnMainpage",
   },
-  created() {
-    this.getMainCategories();
-    //TODO send disse koordinatene til backend
-    /*
-    this.currPos.value.lat;
-    this.currPos.value.lng;
-
-     */
-  },
   async mounted() {
+    await this.getMainCategories();
     await this.getRandomAds();
+
     await this.setNrOfPages(this.cachedAds)
-    await this.displayAds(this.currentPage)
+    await this.displayAds(1, this.cachedAds)
   }
 };
 </script>
@@ -351,6 +507,37 @@ export default {
   padding: 10px;
 }
 
+.filter-and-sort-btn-container{
+  display: flex;
+  justify-content: right;
+  margin-right: 12px;
+}
+.sort-container, .filter-container{
+  display: table-row;
+  text-align: left;
+}
+.main-container{
+  display: table-row;
+}
+.category-header, .newest-items-header{
+  color: #015d9a;
+  font-weight: initial;
+  margin-block-end: 0px;
+}
+.sort-btn, .filter-btn{
+  margin-left: 0px;
+  padding-left: 0px;
+  color: #0495F3FF;
+  font-weight: inherit;
+  font-size: 19px;
+}
+.dropdown-item-container{
+  border-radius: 7px;
+  background-color: rgba(230, 247, 255, 0.6);
+}
+hr{
+  margin: 5px;
+}
 @media (min-width: 992px) {
   .search-container {
     width: 50%;
@@ -363,14 +550,10 @@ export default {
   }
 }
 a{
-  border: #0b5ed7 solid 1px;
   cursor: pointer;
 }
 .filtering{
   background-color: #0b5ed7;
   color: white;
-}
-button{
-  margin: 5px;
 }
 </style>

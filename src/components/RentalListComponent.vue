@@ -8,6 +8,7 @@
               v-for="rental in rentals"
               :key="rental"
               :id="rental.id"
+              :title="rental.title"
               :adId="rental.adId"
               :borrower="rental.borrower"
               :owner="rental.owner"

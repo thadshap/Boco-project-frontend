@@ -1,6 +1,6 @@
 import axios from "axios";
-let url = 'http://localhost:'
-let port = "8443"
+let url = "http://localhost:";
+let port = "8443";
 export default {
   /**
    *Methods for rental
@@ -11,13 +11,22 @@ export default {
    * @param deadline for cancelling the rental, 24 hours before rent starts
    * @param price
    */
-  createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderId, userId, adId){
+  createRental(
+    dateOfRental,
+    rentFrom,
+    rentTo,
+    deadline,
+    price,
+    lenderId,
+    userId,
+    adId
+  ) {
     const options = {
-      method: 'POST',
+      method: "POST",
       url: `${url}${port}/rental/create`,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: {
         dateOfRental: dateOfRental,
@@ -25,67 +34,72 @@ export default {
         rentTo: rentTo,
         deadline: deadline,
         //change to false when chat works TODO
-        active: 'true',
+        active: "true",
         price: price,
         owner: lenderId,
         borrower: userId,
         adId: adId,
-        id: 0
+        id: 0,
       },
     };
 
-    return axios.request(options)
+    return axios.request(options);
   },
   /**
    * Method to activate a rental when the lender has accepted the request
    */
-  activateRental(rentalId){
+  activateRental(rentalId) {
     const options = {
-      method: 'PUT',
+      method: "PUT",
       url: `${url}${port}/rental/` + rentalId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      }
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     };
 
     return axios.request(options);
   },
-  deleteRental(rentalId){
+  deleteRental(rentalId) {
     const options = {
-      method: 'DELETE',
+      method: "DELETE",
       url: `${url}${port}/rental/delete/` + rentalId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      }
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     };
 
     return axios.request(options);
   },
 
-  updateRental(rentalId, dateRentFrom, dateRentTo, deadline, price){
+  updateRental(rentalId, dateRentFrom, dateRentTo, deadline, price) {
     const options = {
-      method: 'PUT',
+      method: "PUT",
       url: `${url}${port}/rental/update/` + rentalId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
-      data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
+      data: {
+        rentFrom: dateRentFrom,
+        rentTo: dateRentTo,
+        deadline: deadline,
+        price: price,
+      },
     };
 
     return axios.request(options);
   },
 
-  getRentalById(rentalId){
+  getRentalById(rentalId) {
     const options = {
-      method: 'GET',
+      method: "GET",
       url: `${url}${port}/rental/` + rentalId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      }
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     };
     return axios.request(options);
   },
@@ -93,35 +107,42 @@ export default {
   /**
    * Gets all the items a user have lent, and all items it has rented out
    */
-  getHistoryRentalForUser(userId){
+  getHistoryRentalForUser(userId) {
     const options = {
-      method: 'GET',
+      method: "GET",
       url: `${url}${port}/rental/s/` + userId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      }
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     };
-    return axios.request(options);},
+    return axios.request(options);
+  },
 
-  getAllAdsForCategory(categoryId){
-    const options = {method: 'GET', url: `${url}${port}/api/categories/ads/` + categoryId};
+  getAllAdsForCategory(categoryId) {
+    const options = {
+      method: "GET",
+      url: `${url}${port}/api/categories/ads/` + categoryId,
+    };
     return axios.request(options);
   },
 
   /**
    *get all categories
    */
-  getAllCategories(){
-    const options = {method: 'GET', url: `${url}${port}/api/categories`};
+  getAllCategories() {
+    const options = { method: "GET", url: `${url}${port}/api/categories` };
     return axios.request(options);
   },
 
   /**
    *get parent categories
    */
-  getAllParentCategories(){
-    const options = {method: 'GET', url: `${url}${port}/api/categories/parent`};
+  getAllParentCategories() {
+    const options = {
+      method: "GET",
+      url: `${url}${port}/api/categories/parent`,
+    };
     return axios.request(options);
   },
 
@@ -129,8 +150,11 @@ export default {
    *get all categories
    * @param categoryName is the name of the parent category
    */
-  getAllSubCategoriesForCategory(categoryName){
-    const options = {method: 'GET', url: `${url}${port}/api/categories/` + categoryName};
+  getAllSubCategoriesForCategory(categoryName) {
+    const options = {
+      method: "GET",
+      url: `${url}${port}/api/categories/` + categoryName,
+    };
     return axios.request(options);
   },
   /**
@@ -139,47 +163,46 @@ export default {
   /**
    * Method to update a user
    */
-  updateUser(firstName, lastName, email, password, userId){
+  updateUser(firstName, lastName, email, password, userId) {
     const options = {
-      method: 'PUT',
+      method: "PUT",
       url: `${url}${port}/user/` + userId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        password: password
-      }
+        password: password,
+      },
     };
-    console.log("Kom meg her")
+    console.log("Kom meg her");
     return axios.request(options);
   },
 
-
-  getUserById(userId){
+  getUserById(userId) {
     const options = {
-      method: 'GET',
+      method: "GET",
       url: `${url}${port}/user/` + userId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
     };
 
     return axios.request(options);
   },
-  deleteUser(userId){
+  deleteUser(userId) {
     const options = {
-      method: 'DELETE',
+      method: "DELETE",
       url: `${url}${port}/user/` + userId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        "Content-Type": "application/json",
+        Authorization: "Bearer",
       },
-      data: {}
+      data: {},
     };
 
     return axios.request(options);
@@ -208,14 +231,14 @@ export default {
   /**
    * method to send email to user where they can change password
    */
-  forgotPassword(email){
+  forgotPassword(email) {
     const options = {
-      method: 'POST',
+      method: "POST",
       url: `${url}${port}/auth/forgotPassword`,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      data: {email: email}
+      data: { email: email },
     };
 
     return axios.request(options);
@@ -224,18 +247,17 @@ export default {
    * method to renew password
    * @token the token in the url when the user clicked on the link in email
    */
-  renewPassword(password, confPassword, token){
+  renewPassword(password, confPassword, token) {
     const options = {
-      method: 'POST',
-      url: `${url}${port}/auth/renewPassword?token=`+token,
+      method: "POST",
+      url: `${url}${port}/auth/renewPassword?token=` + token,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      data: {password: password, confirmPassword: confPassword}
+      data: { password: password, confirmPassword: confPassword },
     };
 
     return axios.request(options);
-
   },
 
   /**
@@ -253,13 +275,13 @@ export default {
       url: `${url}${port}/api/delete/review`,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: {
         rating: "",
         description: "",
         userId: userId,
-        adId: adId
+        adId: adId,
       },
     };
 
@@ -276,7 +298,7 @@ export default {
       url: `${url}${port}/api/reviews/` + adId,
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer "
+        Authorization: "Bearer ",
       },
     };
 
@@ -290,8 +312,8 @@ export default {
       method: "GET",
       url: `${url}${port}/api/users/ads/reviews/` + userId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
     };
 
@@ -367,16 +389,16 @@ export default {
   /**
    * Method to get a list of ads who in a price range
    */
-  getAdsInPriceRange(listOfAds, upperLimit){
+  getAdsInPriceRange(listOfAds, upperLimit) {
     const options = {
-      method: 'POST',
+      method: "POST",
       url: `${url}${port}/api/getListWithinPriceRange`,
-      headers: {'Content-Type': 'application/json', Authorization: 'Bearer '},
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " },
       data: {
         list: listOfAds,
         upperLimit: upperLimit,
-        lowerLimit: 0
-      }
+        lowerLimit: 0,
+      },
     };
     return axios.request(options);
   },
@@ -405,7 +427,7 @@ export default {
       url: `${url}${port}/api/users/ads/` + userId,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
     };
 
@@ -489,14 +511,14 @@ export default {
       method: "GET",
       url: `${url}${port}/api/search/${searchString}`,
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
     };
 
     return axios.request(options);
   },
-  getAdsByRentalType(){
-    const options = {method: 'GET', url: `${url}${port}/api/ads/rental/true`};
+  getAdsByRentalType() {
+    const options = { method: "GET", url: `${url}${port}/api/ads/rental/true` };
 
     return axios.request(options);
   },
@@ -514,8 +536,8 @@ export default {
       method: "DELETE",
       url: `${url}${port}/api/ads/` + adId,
       headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      }
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     };
 
     return axios.request(options);
@@ -524,21 +546,21 @@ export default {
    * Method to update an ad, can change one to all attributes
    */
   updateAd(
-      adId,
-      newTitle,
-      newPrice,
-      newDescription,
-      newDurationType,
-      newCategoryId,
-      newStreetAdress,
-      newPostalCode
+    adId,
+    newTitle,
+    newPrice,
+    newDescription,
+    newDurationType,
+    newCategoryId,
+    newStreetAdress,
+    newPostalCode
   ) {
     const options = {
       method: "PUT",
       url: `${url}${port}/api/ads/` + adId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: {
         title: newTitle,
@@ -547,7 +569,7 @@ export default {
         durationType: newDurationType,
         categoryId: newCategoryId,
         streetAddress: newStreetAdress,
-        postalCode: newPostalCode
+        postalCode: newPostalCode,
       },
     };
 
@@ -558,43 +580,56 @@ export default {
       method: "GET",
       url: `${url}${port}/api/ads/` + adId,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
-      }
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
     };
 
     return axios.request(options);
   },
   /**
    * @param adId API call for adding picture have adId in the return, which is what you sends to add picture afterwards
-   * @param pictureLink is the link to the picture, example format: 'C:UsersKarolOneDriveDiversePicturesdayEivind_Hellstrom.jpg'
+   * @param picture
    */
-  uploadPictureForAd(adId, pictureLink){
+  uploadPictureForAd(adId, pictures) {
     const form = new FormData();
-    form.append("multipartFile", pictureLink);
-    form.append("id", adId);
+
+    for (let i = 0; i < pictures.length; i++) {
+      form.append(`files`, pictures[i]);
+    }
 
     const options = {
-      method: 'POST',
-      url: `${url}${port}/api/ads/newPicture`,
+      method: "PUT",
+      url: `${url}${port}/api/auth/ads/newPicture/${localStorage.getItem(
+        "userId"
+      )}/${adId}`,
       headers: {
-        'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
-        Authorization: 'Bearer '
+        "Content-Type": "multipart/form-data",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+        "content-type":
+          "multipart/form-data; boundary=---011000010111000001101001",
       },
-      data: '[form]'
+      data: "[form]",
     };
-    return axios.request(options);
 
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   },
-  getAllUnavailableDatesForAd(adId){
+  getAllUnavailableDatesForAd(adId) {
     const options = {
-      method: 'POST',
+      method: "POST",
       url: `${url}${port}/api/calender/get`,
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer'
+        "Content-Type": "application/json",
+        Authorization: "Bearer",
       },
-      data: { adId : adId}
+      data: { adId: adId },
     };
     return axios.request(options);
   },
@@ -604,21 +639,21 @@ export default {
    * @param categoryId is the id of the subcategory
    */
   postNewAd(
-      title,
-      description,
-      durationType,
-      price,
-      streetaddress,
-      postalCode,
-      userId,
-      categoryId
+    title,
+    description,
+    durationType,
+    price,
+    streetaddress,
+    postalCode,
+    userId,
+    categoryId
   ) {
     const options = {
       method: "POST",
       url: `${url}${port}/api/ads/newAd`,
       headers: {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer ' + localStorage.getItem("token")
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       data: {
         title: title,

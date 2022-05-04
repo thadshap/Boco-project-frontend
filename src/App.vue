@@ -1,16 +1,16 @@
 <template>
 <div class="d-flex justify-content-space-between flex-column height">
   <HeaderComponent />
+  <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
+    <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
+      {{ GStore.flashMessage }}
+    </div>
+    <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
+      {{ GStore.flashMessage }}
+    </div>
+  </div>
   <main class="pt-5 pb-5">
     <router-view />
-    <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
-      <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
-        {{ GStore.flashMessage }}
-      </div>
-      <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
-        {{ GStore.flashMessage }}
-      </div>
-    </div>
   </main>
   <FooterComponent />
 </div>
@@ -51,6 +51,12 @@ export default {
 * {
   font-family: system-ui;
 }
+.height{
+  height: 100%;
+}
+main{
+  flex-grow: 1;
+}
 #flashMessageSuccess{
   background-color: rgba(3, 153, 27, 0.50);
   color: #015601;
@@ -58,11 +64,5 @@ export default {
 #flashMessageError{
   background-color: rgba(139, 0, 0, 0.50);
   color: #5e0000;
-}
-.height{
-  height: 100%;
-}
-main{
-  flex-grow: 1;
 }
 </style>

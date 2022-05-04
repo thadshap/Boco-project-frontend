@@ -83,7 +83,28 @@ export default {
             data: '[form]'
         };
         return axios.request(options);
-
+    },
+    getPictureForAd(adId) {
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/ads/picture/${adId}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
+            }
+        };
+        return axios.request(options);
+    },
+    getPicturesForAd(adId) {
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/ads/pictures/${adId}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
+            }
+        };
+        return axios.request(options);
     },
     getAllUnavailableDatesForAd(adId){
         const options = {
@@ -91,7 +112,7 @@ export default {
             url: `${url}${port}/api/calender/get`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: { adId : adId}
         };
@@ -99,7 +120,13 @@ export default {
     },
     /**
      *
+     * @param title
+     * @param description
      * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
+     * @param price
+     * @param streetaddress
+     * @param postalCode
+     * @param userId
      * @param categoryId is the id of the subcategory
      */
     postNewAd(
@@ -109,7 +136,6 @@ export default {
         price,
         streetaddress,
         postalCode,
-        userId,
         categoryId
     ) {
         const options = {
@@ -128,7 +154,7 @@ export default {
                 price: price,
                 streetAddress: streetaddress,
                 postalCode: postalCode,
-                userId: userId,
+                userId: localStorage.getItem("userId"),
                 categoryId: categoryId,
             },
         };
