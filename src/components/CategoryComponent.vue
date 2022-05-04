@@ -1,7 +1,7 @@
 <template>
-  <div class="card card-style" :class="{ 'card-style-clicked': this.$store.getters.lastClickedMainCat === title }" @click="clicked">
+  <div class="card card-style card-container" @click="clicked">
     <div
-      class="card-body d-flex flex-column justify-content-center align-items-center card-body-style"
+      class=" d-flex flex-column justify-content-center align-items-center card-body-style"
     >
       <i :class="['fa', 'icon-style', icon]"></i>
       <h4 class="card-title title-style">{{ title }}</h4>
@@ -35,13 +35,16 @@ export default {
 <style scoped>
 .card-style {
   width: max-content;
-  border-width: 2px;
-  border-color: rgb(0, 128, 255);
   margin: 5px;
+  border: none;
+}
+
+.card-container{
+  padding: 2px 1rem 2px 1rem;
 }
 
 .card-style:hover {
-  background-color: rgb(0, 128, 255);
+  background-color: rgba(2, 118, 194, 0.3);
   /*background-color: rgb(230,247,255);*/
   color: white;
   cursor: pointer;
@@ -57,9 +60,14 @@ export default {
 }
 
 .icon-style {
-  font-size: 40px;
+  font-size: 30px;
+  color: #0276c2;
 }
-
+h4{
+  font-weight: inherit;
+  color: #0495F3FF;
+  font-size: 20px;
+}
 .title-style {
   margin-top: 5px;
 }
