@@ -1,25 +1,27 @@
 <template>
-  <div class="container">
+  <div class="container main-container">
+    <div class="text-center">
+      <label id="adHeader" class="form-label">{{ ad.title }}</label>
+    </div>
     <div
       id="adPictureDiv"
       class="text-center"
     >
-      <img src={{picture}}>
-    </div>
-    <div class="text-center">
-      <label id="adHeader" class="form-label">{{ ad.title }}</label>
+      <img v-for="picture in pictures" :src="picture" :key="picture">
     </div>
     <div class="text-center">
       <label class="form-label">
-        Leiepris : {{ ad.price }} kr pr/{{ ad.durationType }}
+        <label class="defined-label">Leiepris</label> : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
     </div>
+    <div class="d-flex justify-content-center w-100">
     <div id="description" class="text-center">
       <label id="descriptionLabel" class="form-label">
         {{ ad.description }}
       </label>
     </div>
-    <div class="text-center">
+    </div>
+    <div class="text-center mb-4">
       <button
         id="startChatButton"
         class="btn btn-primary"
@@ -36,9 +38,10 @@
       >
         Forespør lån
       </button><br>
-      <div id="time" class="text-center" v-if="showRequestDetails">
-        Tidsperiode:
-        <Datepicker v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
+      <div id="time" class="text-center mt-3" v-if="showRequestDetails">
+        <label class="defined-label">Tidsperiode </label>>
+        <div class="date-container">
+        <Datepicker class="date-input" v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button
           id="sendRequest"
           class="btn btn-primary"
@@ -46,25 +49,26 @@
           v-on:click="sendRequest"
           :disabled="!date"
         >
-          Send forespørselen
+          Forespør
         </button>
+        </div>
       </div>
     </div>
     <div class="text-center">
       <div id="lenderHeader">
-        <label class="form-label"> Utlåner: </label>
+        <label class="form-label defined-label"> Utlåner </label>
       </div>
       <div id="lenderDetails">
         <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
-          {{ lender.firstName }} {{ lender.lastName }}<br />
+           {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
         <i
-          class="fas fa-check-circle"
+          class="fas fa-check-circle float-end pt-1"
           v-if="lender.verified"
-          style="color: var(--bs-blue); padding: 0.5vw"
+          style="color: var(--bs-blue); font-size: 1.8vh;"
         ></i>
       </div>
-      <div class="text-center">
+      <div class="text-center mt-3 mb-3">
         <label> Vis tidligere anmeldelser for gjenstanden </label>
         <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown"
           >keyboard_arrow_left</i
@@ -74,19 +78,20 @@
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{ review.rating }} / 10 <i class="fas fa-star" style="color: rgb(255,214,70);"></i><br>
+          {{ review.rating }} / 10 <i class="fas fa-star" style="color: rgb(255,214,70); font-size:1.6vh;"></i><br>
           {{review.firstName }} {{review.lastName}}<br>
           {{ review.description}}
+          <hr>
         </div>
       </div>
     </div>
-    <div id="distance" class="text-center">
+    <div id="distance" class="text-center mt-4">
       <label class="form-label">
-        Avstand : {{ ad.distance }} km fra din posisjon&nbsp;
+        <label class="defined-label">Avstand</label>  : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
     </div>
     <div id="address" class="text-center">
-      <label class="form-label"> Adresse : {{ ad.streetAddress }}&nbsp; </label>
+      <label class="form-label"> <label class="defined-label">Adresse</label> : {{ ad.streetAddress }}&nbsp; </label>
     </div>
       <ol-map
         :loadTilesWhileAnimating="true"
@@ -146,11 +151,9 @@ export default {
       showRequestDetails: false,
       reviews: [],
       disable: [new Date()],
-      ad: {
-
-      },
-      lender: {
-      },
+      pictures: [],
+      ad: {},
+      lender: {},
     };
   },
   async created() {
@@ -158,6 +161,7 @@ export default {
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
+    await this.getAdPictures();
     this.setLenderId();
   },
   setup() {
@@ -273,7 +277,7 @@ export default {
         }
       } else {
         this.$router.push("/login")
-      }      
+      }
     },
     makeRequest() {
       this.showRequestDetails = !this.showRequestDetails
@@ -340,55 +344,71 @@ export default {
         name: "UserProfile",
       });
     },
+    getAdPictures() {
+      adService
+        .getPicturesForAd(this.$store.getters.currentAd.id)
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            this.pictures.push(`data:${response.data[i].type};base64,${response.data[i].base64}`)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   },
 };
 </script>
 
 <style scoped>
+.main-container{
+  font-size: 2.3vh;
+  overflow: auto;
+  object-fit: cover;
+}
 .map {
   height: 400px;
   width: 100%;
 }
-  #adPictureDiv{
-    padding: 10vw 10vw 0 10vw;
-  }
-  #adPicture{
-    width: 250px;
-    height: auto;
-  }
-  #adHeader{
-    font-weight: bold;
-    font-size: 22px;
-  }
-  button{
-    padding: 4px;
-    font-size: 14px;
-  }
-  #description{
-    padding: 0px 10px 0px 10px;
-  }
+#adPictureDiv{
+  padding: 0 10vw 0 10vw;
+}
+#adPicture{
+  width: 250px;
+  height: auto;
+}
+#adHeader{
+  font-weight: bold;
+  font-size: 4vh;
+  color: #015d9a;
+}
+button{
+  padding: 4px;
+  font-size: 1.8vh;
+}
+#description{
+  padding: 20px;
+  background-color: rgb(230,247,255);
+  margin: 10px 0 20px 0;
+  font-size: 1.7vh;
+  font-style: italic;
+  border-radius: 5px;
+  width: 700px;
+}
   #descriptionLabel{
-    font-size: 12px;
+    font-size: 1.5vh;
     font-style: italic;
   }
-  i{
-    color: blue;
-    padding: 0.5vw;
-  }
-  #lenderDetails{
-    height: 4vh;
-  }
+
   #lenderName, #lenderNumberLabel{
-    font-size: 12px;
+    font-size: 1.8vh;
     color: blue;
     text-decoration: underline;
     cursor: pointer;
+    padding-right: 5px;
   }
   #lenderNumber{
     height: 5vh;
-  }
-  #lenderHeader{
-    height: 2vh;
   }
   #distance{
     padding: 0px 10px 0px 10px;
@@ -397,34 +417,50 @@ export default {
     padding: 0px 5vw 0px 5vw;
   }
   img{
-    width : 30vw;
+    height : 300px;
   }
   button{
-    margin: 5px;
+    margin: 0 10px 0 10px;
+    padding: 5px 9px 5px 9px;
   }
   #makeRequest{
     background-color: green;
   }
   .earlierReviews{
-    border-style: solid;
-    border-color: grey;
     width: 50%;
   }
   #review{
     display: grid;
     justify-items: center;
-    font-size: 10px;
+    font-size: 1.4vh;
   }
   .material-icons{
     cursor: pointer;
-  }
-  #time{
-    width: 30%;
+    color: #0EA0FF;
+    padding: 0.2vw 0.5vw 0 0.5vw;
+    position: absolute;
+    font-size: 30px;
   }
   #time{
     width: 100%;
     display: grid;
     justify-items: center;
   }
-
+  hr{
+    margin: 5px;
+    background-color: #0EA0FF;
+  }
+  .defined-label{
+    font-weight: bold;
+    color: #015d9a;
+  }
+  .date-container{
+    display: inline-flex;
+  }
+.date-input{
+    width: 345px;
+  }
+#lenderDetails{
+  display: inline-flex;
+}
 </style>

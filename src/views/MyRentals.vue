@@ -51,6 +51,7 @@ export default {
             for (let i = 0; i < response.data.rentals.length; i++) {
               this.rentals.push(response.data.rentals[i])
             }
+            console.log(this.rentals)
             if(response.status!==200){
               alert("Fikk ikke kontakt med serveren")
             }

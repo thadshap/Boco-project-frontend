@@ -149,13 +149,13 @@ export default {
           });
 
         await this.$router.push("/")
-        await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId"))) 
+        await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId")))
         .then(response => {
         this.groups = response.data
         })
         .catch(error => {
         console.log(error)
-        })  
+        })
   },
   }
 };
