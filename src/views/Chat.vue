@@ -76,10 +76,12 @@ export default {
   validations() {
       return{
       newGroupName: {
-          required
+          required,
+          maxLength: maxLength(255)
       },
       addUser: {
-          required
+          required,
+          maxLength: maxLength(255)
       },
       input: {
           required,
