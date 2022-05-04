@@ -51,11 +51,9 @@ export default {
     image: {
       type: String,
     },
-<<<<<<< HEAD
     userId: {
       type: Number,
       required: true,
-=======
     distance: {
       type: Number
     },
@@ -64,7 +62,6 @@ export default {
     },
     lng: {
       type: Number
->>>>>>> e8ebcba2f598a6a174f90b66e2512ea06727a4fd
     }
   },
   methods: {
@@ -106,6 +103,7 @@ export default {
       }      
     },
   }
+}
 };
 </script>
 
