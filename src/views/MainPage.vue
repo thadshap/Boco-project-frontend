@@ -215,7 +215,7 @@ export default {
           })
     },
     getRandomAds(){
-      adsService.getPageWithRandomAds(5)
+      adsService.getPageWithRandomAds(5,this.currPos.lat, this.currPos.lng)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               //få poststed

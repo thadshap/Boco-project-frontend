@@ -40,14 +40,16 @@ export default {
      * Method to get a list of random ads
      * @param pageSize how many ads on the page
      */
-    getPageWithRandomAds(pageSize) {
+    getPageWithRandomAds(pageSize, lat,lng) {
         const options = {
-            method: "GET",
-            url: `${url}${port}/api/ads/page/` + pageSize,
+            method: 'POST',
+            url: 'http://localhost:8443/api/ads/page/' + pageSize,
             headers: {
-                "Content-Type": "application/json"
-            },
-        };
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ localStorage.getItem("token")
+    },
+        data: {lat: lat, lng: lng}
+    };
 
         return axios.request(options);
     },
