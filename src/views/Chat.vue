@@ -1,25 +1,36 @@
 <template>
-  <div class="d-flex flex-column screen">
-        <div class="d-flex justify-content-between align-items-center" style="margin: 10px;">
-            <button class="btn btn-primary menu-button" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-                </svg>
-            </button>
+<div class="d-flex flex-column screen">
+    <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+        </svg>
+    </button>
+  <div class="d-flex flex-column chat">
+        <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex flex-grow-1 justify-content-center align-items-center">
-                <span class="name">Username</span>
+                <span class="name">{{this.$store.getters.getGroupName}}</span>
+                <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
+                <button v-if="changeGroupName" v-on:click="editGroupName">Change group name</button>
+                <input type="text" v-if="this.changeGroupName" v-model="addUser">
+                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail">Add user by email</button>
+                <button v-on:click="changeGroupNameState">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+                    </svg>
+                </button>
             </div>
             <img class="profile-picture">
         </div>
         <div class="flex-grow-1 chat-container">
-            <h1>WIP</h1>
             <MessageComponent
-            v-for="message in messages"
+            v-for="message in this.$store.getters.getMessages"
             :key="message"
-            :username="message.username"
-            :timestamp="message.timestamp"
+            :firstName="message.firstName"
+            :lastName="message.lastName"
+            :timestamp="message.timeStamp"
             :content="message.content"
-            :profilePicture="message.profilePicture"/>
+            :profilePicture="message.picture"
+            :userId="message.user_id"/>
         </div>
         <div class="d-flex align-items-end bottom-toolbar">
             <button class="btn btn-primary plus-button" type="button">
@@ -28,37 +39,104 @@
                 </svg>
             </button>
             <div class="d-flex flex-grow-1 align-self-center">
-                <input class="d-flex input" type="text" placeholder="Send message">
+                <input class="d-flex input" type="text" placeholder="Send message" v-model="input">
             </div>
-            <button class="btn btn-primary send-button" type="button" v-on:click="send">
+            <button class="btn btn-primary send-button" type="button" v-on:click="sendMessage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-right-circle">
                     <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"></path>
                 </svg>
             </button>
         </div>
     </div>
+</div>
 </template>
 
 <script>
 import MessageComponent from "@/components/MessageComponent";
+import chatService from "@/services/chatService";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+
 export default {  
   name: "Chat",
-  components:{
-      MessageComponent,
-  },
-  props:{
-      messages:{
-          type: Array,
+  data(){
+      return{
+          changeGroupName: false,
+          newGroupName: null,
+          addUser:'',
+          input:'',
+          temp:''
       }
   },
+  components:{
+      MessageComponent
+  },
   methods:{
-      
+      changeGroupNameState(){
+          this.changeGroupName = !this.changeGroupName
+      },
+        async editGroupName(){
+          await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
+          .then(response => {
+              alert(response.data)
+          })
+          this.$store.dispatch("setGroupName", this.newGroupName)
+      },
+      async addUserToGroupByEmail(){
+          await chatService.addUserToGroupByEmail(this.$store.getters.getGroupId, this.addUser)
+          .then(response => {
+              alert(response.data)
+          })
+      },
+      toGroups(){
+          this.$router.push("/groups")
+      },
+      async getMessages(){
+          await chatService.getMessagesByGroupId(this.$store.getters.getGroupId)
+          .then(response => {
+              this.$store.dispatch("setMessages", response.data)
+          })
+          .catch(error => {
+              console.log(error)
+          })
+      },
+  
+  async connect(){
+        var socket = new SockJS(`http://localhost:8443/ws/`);
+        var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
+        console.log("creating socket")
+        this.stompClient = Stomp.over(socket, options);
+        console.log("connecting...")
+        await this.stompClient.connect({Authorization: 'Bearer '+localStorage.getItem("token")}, function(frame){
+            console.log("connected to socket " + frame);            
+        })
+        await this.sleep(1000)
+        this.subscribe()    
+  },
+  subscribe(){
+        console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
+        this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
+            this.$store.dispatch("addMessage", JSON.parse(messageOutput.body))
+        })
+  },
+  sendMessage() {
+        this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
+  },
+  sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   },
+
+},
+  mounted(){
+      this.getMessages()
+      this.connect()
   }
 };
 </script>
 <style scoped>
-.screen{
-    height: 100vh;
+*{
+    padding: 0px;
+    margin: 0px;
 }
 .name{
     font-size: 24px;
@@ -67,17 +145,27 @@ export default {
     font-size: 24px;
 }
 .chat-container{
-    height: 100%;
-    margin-right: 10px;
-    margin-left: 10px;
+    height: 70vh;
+    max-width: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 .bottom-toolbar{
-    margin: 10px;
+    justify-content: space-between;
 }
 .input{
-    margin-left: 10px;
+    flex-grow: 1;
+    margin: 10px;
 }
-
+.chat{
+    padding: 10px;
+}
+.groups{
+    width: 100vw;
+}
+.screen{
+    
+}
 /* Buttons */
 .menu-button{
     background: transparent;
@@ -87,6 +175,7 @@ export default {
     height: 50px;
     border-width: 1px;
     border-color: #004AAD;
+    margin-left: 10px;
 }
 .plus-button{
     background: transparent;
@@ -105,6 +194,7 @@ export default {
     border-color: transparent;
     min-width: 50px;
 }
+
 
 /* Icons */
 .bi-arrow-right-circle{
@@ -128,4 +218,5 @@ export default {
     color: black;
     font-size: 30px;
 }
+
 </style>

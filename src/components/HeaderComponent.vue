@@ -21,7 +21,7 @@
               </router-link>
             </li>
             <li class="nav-item" v-if="this.$store.getters.loggedIn" @click="closeNavbar">
-              <router-link to="/messages" class="nav-link">
+              <router-link to="/groups" class="nav-link">
                 <i class="fa fa-comments"></i>
                 Meldinger
               </router-link>
