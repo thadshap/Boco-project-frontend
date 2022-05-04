@@ -26,7 +26,7 @@
           @last-clicked-main-cat="chosenMainCat"
         />
       </div>
-      <div v-if="chosenMainCategory !== ''" class="my-5">
+      <div v-if="subCategories.length !== 0" class="my-5">
         <h5>Underkategori</h5>
         <SubCategoryComponent
           v-for="cat in subCategories"
@@ -36,7 +36,7 @@
           @chosen-sub-cat="chosenSubCat"
         />
       </div>
-      <div v-if="chosenSubCategory !== ''" class="my-5">
+      <div v-if="subSubCategories.length !== 0" class="my-5">
         <h6>Underkategori</h6>
         <SubCategoryComponent
           v-for="cat in subSubCategories"
@@ -123,6 +123,8 @@ import SubCategoryComponent from "@/components/SubCategoryComponent";
 import { geolocationForUser } from '@/geolocationForUser'
 import { computed } from 'vue'
 import adsService from "@/services/adsService";
+import categoryService from "../services/categoryService";
+import adService from "../services/adService";
 
 export default {
   name: "MainPage",
@@ -149,52 +151,7 @@ export default {
       showMenuBarSorting : false,
       showMenuBarFiltering : false,
       ads:[],
-      categories: [
-        {
-          title: "Verktøy",
-          icon: "fa-hammer",
-          subCategories: [
-            "Sag",
-            "Hammer",
-            "Vater"
-          ]
-        },
-        {
-          title: "Kjøretøy",
-          icon: "fa-car",
-          subCategories: [
-            "Bil",
-            "Båt",
-            "Sykkel",
-            "Sparkesykkel"
-          ]
-        },
-        {
-          title: "Lyd",
-          icon: "fa-headphones",
-          subCategories: [
-            "Høyttaler",
-            "CD-Spiller",
-            "Platespiller",
-            "Hodetelefoner"
-          ]
-        },
-        {
-          title: "Sport",
-          icon: "fa-dumbbell",
-          subCategories: [
-            {
-              title: "Ballsport",
-              subCategories: [
-                "Håndball",
-                "Fotball",
-                "Basketball",
-                "Annet"
-              ]
-            }
-          ]
-        }
-      ],
+      categories: [],
       subCategories: [],
       subSubCategories: [],
       chosenMainCategory: "",
@@ -219,13 +176,12 @@ export default {
     getRandomAds(){
       adsService.getPageWithRandomAds(5)
           .then(response => {
+            console.log(response)
             for (let i = 0; i < response.data.length; i++) {
-              //få poststed
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                img: "ski.jpg",
-                place: response.data[i].postalCode.toString(),
+                place: response.data[i].city,
                 price: response.data[i].price
               }
               this.ads.push(ad)
@@ -238,32 +194,78 @@ export default {
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
     },
-    chosenMainCat(title) {
+    async chosenMainCat(title) {
       this.chosenMainCategory = title
 
-      for(let i = 0; i < this.categories.length; i++) {
-        if(this.categories[i].title === title) {
-          if(this.categories[i].subCategories.some(x => x.title !== null && x.title !== undefined)) {
-            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-              this.subCategories = this.categories[i].subCategories[j].title
-            }
-          } else {
-            for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-              this.subCategories = this.categories[i].subCategories[j]
+      await categoryService
+        .getAllAdsForCategoryAndSubCategories(title, this.currPos)
+        .then(response => {
+          if (response.status === 200) {
+            console.log(response)
+            this.ads = []
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
             }
           }
-        }
-      }
-    },
-    chosenSubCat(subCat) {
-      this.chosenSubCat = subCat
+        })
+        .catch(error => {
+          console.log(error)
+        })
 
-      for(let i = 0; i < this.categories.length; i++) {
-        this.subSubCategories = this.categories[3].subCategories
-        // for(let j = 0; j < this.categories[i].subCategories.length; j++) {
-        //
-        // }
+      for (let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+            this.ads[i].img = img
+          })
+          .catch(error => {
+            console.log(error)
+          })
       }
+
+      await categoryService
+        .getAllSubCategoriesForCategory(title)
+        .then(response => {
+          if (response.status === 200) {
+            for (let i = 0; i < response.data.length; i++) {
+              this.subCategories.push(response.data[i].name)
+            }
+          } else {
+            console.log("Fikk ingen underkategorier fra server...")
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    async chosenSubCat(subCat) {
+      this.chosenSubCategory = subCat
+      this.subSubCategories = []
+
+      await categoryService
+        .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
+        .then(response => {
+          if(response.status === 200) {
+            this.ads = []
+            for(let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
+                price: response.data[i].price
+              }
+              this.ads.push(ad)
+            }
+          }
+        })
+
     },
     search() {
       if(this.searchWord === "") {
