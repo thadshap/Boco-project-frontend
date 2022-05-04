@@ -143,6 +143,7 @@ import axios from "axios"
 import MainPage from "./MainPage";
 import categoryService from "@/services/categoryService";
 import adService from "@/services/adService";
+import lendingService from "@/services/lendingService";
 
 export default {
   inject: ["GStore"],
@@ -199,6 +200,7 @@ export default {
     return {
       imgUrl: [],
       imgError: "",
+      imgFiles: [],
       categories: [],
       subCategories:[],
       subSubCategories:[],
@@ -223,17 +225,18 @@ export default {
       for(let i = 0; i < e.target.files.length; i++) {
         console.log(e.target.files[i])
         let file = e.target.files[i];
+        this.imgFiles.push(file);
         this.imgUrl.push(URL.createObjectURL(file));
         console.log(this.imgUrl)
       }
     },
-    submit:async function() {
+    async submit() {
       this.v$.$validate()
-      //this.validateImages()
+      this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
 
-        await adService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode,localStorage.getItem("userId"), this.idToCategory)
+        let adId = await adService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode, this.idToCategory)
           .then(response => {
             this.GStore.flashMessage = "Annonsen ble opprettet!"
             this.GStore.variant = "Success"
@@ -251,6 +254,15 @@ export default {
             setTimeout(() => {
               this.GStore.flashMessage = ""
             }, 4000)
+            console.log(error)
+          })
+
+        await lendingService
+          .uploadPictureForAd(adId, this.imgFiles)
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
             console.log(error)
           })
       }

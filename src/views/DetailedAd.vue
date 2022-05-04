@@ -1,13 +1,13 @@
 <template>
   <div class="container main-container">
+    <div class="text-center">
+      <label id="adHeader" class="form-label">{{ ad.title }}</label>
+    </div>
     <div
       id="adPictureDiv"
       class="text-center"
     >
-      <img src={{picture}}>
-    </div>
-    <div class="text-center">
-      <label id="adHeader" class="form-label">{{ ad.title }}</label>
+      <img v-for="picture in pictures" :src="picture" :key="picture">
     </div>
     <div class="text-center">
       <label class="form-label">
@@ -63,22 +63,22 @@
            {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
         <i
-          class="fas fa-check-circle"
+          class="fas fa-check-circle float-end pt-1"
           v-if="lender.verified"
-          style="color: var(--bs-blue); padding: 0.5vw"
+          style="color: var(--bs-blue); font-size: 1.8vh;"
         ></i>
       </div>
       <div class="text-center mt-3 mb-3">
         <label> Vis tidligere anmeldelser for gjenstanden </label>
-        <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown"
+        <i class="material-icons arrow-i" v-if="showRightArrow" v-on:click="dropDown"
           >keyboard_arrow_left</i
-        ><i class="material-icons" v-on:click="dropDown" v-if="!showRightArrow"
+        ><i class="material-icons arrow-i" v-on:click="dropDown" v-if="!showRightArrow"
           >keyboard_arrow_down</i
         >
       </div>
       <div id="review" v-for="review in reviews" :key="review">
         <div class="earlierReviews" v-if="!showRightArrow">
-          {{ review.rating }} / 10 <i class="fas fa-star" style="color: rgb(255,214,70);"></i><br>
+          {{ review.rating }} / 10 <i class="fas fa-star" style="color: rgb(255,214,70); font-size:1.6vh;"></i><br>
           {{review.firstName }} {{review.lastName}}<br>
           {{ review.description}}
           <hr>
@@ -135,6 +135,7 @@ import adService from "@/services/adService";
 import reviewService from "@/services/reviewService";
 import userService from "@/services/userService";
 import rentalService from "@/services/rentalService";
+import chatService from "@/services/chatService";
 import moment from 'moment';
 
 export default {
@@ -150,11 +151,9 @@ export default {
       showRequestDetails: false,
       reviews: [],
       disable: [new Date()],
-      ad: {
-
-      },
-      lender: {
-      },
+      pictures: [],
+      ad: {},
+      lender: {},
     };
   },
   async created() {
@@ -162,6 +161,8 @@ export default {
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
+    await this.getAdPictures();
+    this.setLenderId();
   },
   setup() {
     const projection = ref("EPSG:4326");
@@ -255,7 +256,29 @@ export default {
         }, 4000)
       })
     },
-    startChat() {},
+    async startChat() {
+      if (this.$store.getters.loggedIn) {
+        var userId = localStorage.getItem("userId")
+        if (userId != this.lender.id) {
+          var groupId
+          var users = [userId,this.lender.id]
+          await chatService.createGroupChat(this.ad.title, users)
+          .then(response => {
+            groupId = response.data // TODO: add .groupId when backend is fixed
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+          this.$store.dispatch("setGroupId", groupId)
+          this.$store.dispatch("setGroupName", this.ad.title)
+          this.$router.push(`/chat/${groupId}`)
+        }else{
+          alert('Cannot create chat with self')
+        }
+      } else {
+        this.$router.push("/login")
+      }
+    },
     makeRequest() {
       this.showRequestDetails = !this.showRequestDetails
     },
@@ -272,7 +295,7 @@ export default {
       }else if (this.ad.durationType === 'uke'){
         return duration/7 * this.ad.price
       }
-
+      this.showRequestDetails = !this.showRequestDetails;
     },
     async sendRequest(){
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
@@ -313,12 +336,26 @@ export default {
         this.showRightArrow = true;
       }
     },
-    seeLenderDetails() {
+    setLenderId(){
       localStorage.setItem("lenderId", this.ad.userId);
+    },
+    seeLenderDetails() {
       this.$router.push({
         name: "UserProfile",
       });
     },
+    getAdPictures() {
+      adService
+        .getPicturesForAd(this.$store.getters.currentAd.id)
+        .then(response => {
+          for(let i = 0; i < response.data.length; i++) {
+            this.pictures.push(`data:${response.data[i].type};base64,${response.data[i].base64}`)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
   },
 };
 </script>
@@ -334,7 +371,7 @@ export default {
   width: 100%;
 }
 #adPictureDiv{
-  padding: 5vw 10vw 0 10vw;
+  padding: 0 10vw 0 10vw;
 }
 #adPicture{
   width: 250px;
@@ -362,7 +399,7 @@ button{
     font-size: 1.5vh;
     font-style: italic;
   }
-  i{
+  .arrow-i{
     color: #0EA0FF;
     padding: 0.2vw 0.5vw 0 0.5vw;
     position: absolute;
@@ -373,6 +410,7 @@ button{
     color: blue;
     text-decoration: underline;
     cursor: pointer;
+    padding-right: 5px;
   }
   #lenderNumber{
     height: 5vh;
@@ -424,4 +462,7 @@ button{
 .date-input{
     width: 345px;
   }
+#lenderDetails{
+  display: inline-flex;
+}
 </style>

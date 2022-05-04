@@ -8,16 +8,17 @@
             <div class="user-info">
               <div class="image-container-wrapper d-flex justify-content-center align-items-center">
               <div class="image-container image d-flex flex-column justify-content-center align-items-center">
-                <img class="profilePic" height="100" width="100" src="@/assets/img/profilePicPlaceholder.png">
+                <img class="profilePic" height="100" width="100" :src="profilePicture">
               </div>
               </div>
               <div class="d-sm-flex flex-column justify-content-end">
-                <h1>Brage Minge</h1>
-                <div style="opacity: 0.80;">bragemi@stud.ntnu.no<br><br></div>
+                <h1> {{ firstname + " " + lastname }} </h1>
+                <h6 style="opacity: 0.70;"><br> {{ email }} <br><br></h6>
                 <div class="d-flex justify-content-between">
-                  <p><strong>10.0</strong></p>
-                  <p>3 vurderinger</p>
+                  <p><strong> {{ rating }}/10 </strong></p>
+                  <p> {{ nrOfReviews }} vurderinger</p>
                 </div>
+                  <p v-if="verified">Denne brukeren er verifisert</p>
               </div>
             </div>
           </div>
@@ -54,7 +55,7 @@
       <div class="cardDiv">
         <div class="card cardBodyStyle">
           <div class="card-body">
-            <h4 class="card-title">Følger</h4>
+            <h4 class="card-title">Følger (Kommer snart)</h4>
             <p class="card-text">Se brukerne du følger og deres annonser</p>
           </div>
         </div>
@@ -62,7 +63,7 @@
       <div class="cardDiv">
         <div class="card">
           <div class="card-body cardBodyStyle">
-            <h4 class="card-title">Varslingsinnstillinger</h4>
+            <h4 class="card-title">Varslingsinnstillinger (Kommer snart)</h4>
             <p class="card-text">Bestem hvordan du vil motta varslinger</p>
           </div>
         </div>
@@ -79,11 +80,47 @@
 </template>
 
 <script>
-  import { accountService } from "@/services/account.service";
+  import userService from "@/services/userService";
 
   export default {
     name: "MyProfile",
+    data() {
+      return {
+        profilePicture: null,
+        firstname:"",
+        lastname:"",
+        email:"",
+        rating:"",
+        nrOfReviews:"",
+        verified: false,
+      }
+    },
+    async created() {
+      await userService
+        .getProfilePicture(localStorage.getItem("userId"))
+        .then(response => {
+          this.profilePicture = `data:${response.data.type};base64,${response.data.base64}`
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    mounted() {
+      this.fetchDetails()
+    },
     methods: {
+      fetchDetails(){
+        const userId = localStorage.getItem("userId")
+        userService.getUserById(userId)
+        .then(response => {
+          this.firstname = response.data.firstName
+          this.lastname = response.data.lastName
+          this.email = response.data.email
+          this.rating = response.data.rating
+          this.nrOfReviews = response.data.nrOfReviews
+          this.verified = response.data.verified
+        })
+      },
       myAds() {
         this.$router.push({
           name: "Profile ads",
@@ -112,16 +149,14 @@
         let provider = localStorage.getItem("provider")
 
         if(provider === "facebook") {
-          accountService.logoutFacebook()
+          console.log("Facebook")
         } else if(provider === "google") {
-          accountService.logoutGoogle(this.$gAuth)
+          console.log("Google")
         } else if(provider === "none") {
           this.$store.dispatch("setLoggedIn", false)
           this.$router.push("/")
           localStorage.clear()
         }
-
-
       }
     }
   }

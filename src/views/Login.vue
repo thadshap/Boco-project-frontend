@@ -57,6 +57,7 @@ import FacebookLoginComponent from "@/components/FacebookLoginComponent";
 import GoogleLoginComponent from "@/components/GoogleLoginComponent";
 import { logIn } from "@/services/loginService";
 
+import chatService from "@/services/chatService";
 
 export default {
   inject: ["GStore"],
@@ -132,7 +133,6 @@ export default {
               return;
             }
             if(response.status !== 202) {
-              //legg til nettverksfeil tilbakemelding
               console.log("fikk ikke kontakt med backend")
               return
             }
@@ -148,8 +148,15 @@ export default {
             alert("Nå skjedde det noe galt, prøv på nytt")
           });
 
-
-    }
+        await this.$router.push("/")
+        await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId")))
+        .then(response => {
+        this.groups = response.data
+        })
+        .catch(error => {
+        console.log(error)
+        })
+  },
   }
 };
 </script>

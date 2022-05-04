@@ -1,5 +1,4 @@
 <template>
-  <div>
   <div class="navbar-bg">
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light justify-content-between">
@@ -22,7 +21,7 @@
               </router-link>
             </li>
             <li class="nav-item" v-if="this.$store.getters.loggedIn" @click="closeNavbar">
-              <router-link to="/messages" class="nav-link">
+              <router-link to="/groups" class="nav-link">
                 <i class="fa fa-comments"></i>
                 Meldinger
               </router-link>
@@ -44,22 +43,12 @@
       </nav>
     </div>
   </div>
-    <div class="d-flex justify-content-center" v-if="GStore.flashMessage !== ''">
-      <div id="flashMessageSuccess" class="alert alert-primary mt-5" v-if="GStore.variant === 'Success'">
-        {{ GStore.flashMessage }}
-      </div>
-      <div id="flashMessageError" class="alert alert-primary mt-5" v-if="GStore.variant === 'Error'">
-        {{ GStore.flashMessage }}
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
 import $ from "jquery";
 
   export default {
-    inject: ["GStore"],
     name:"HeaderComponent",
     watch: {
       $route: "checkLoggedIn"
@@ -88,13 +77,5 @@ import $ from "jquery";
 
 #navbarToggler {
   text-align: right;
-}
-#flashMessageSuccess{
-  background-color: rgba(3, 153, 27, 0.50);
-  color: #015601;
-}
-#flashMessageError{
-  background-color: rgba(139, 0, 0, 0.50);
-  color: #5e0000;
 }
 </style>

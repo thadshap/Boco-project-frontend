@@ -2,7 +2,7 @@
   <div class="project-card-container">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
-<!--        <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>-->
+        <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
       </div>
       <div class="d-flex flex-column ad-details-container-style">
         <div class="d-flex flex-column align-items-start">
@@ -17,9 +17,9 @@
           <h4>Aktiv: {{ active }} </h4>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="'align-items-end, h-100'">
-          <a v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
+          <a v-if="active" v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
-            Rediger lån
+            Rediger lån (Kommer snart)
           </a>
           <a v-on:click="goToDetailedView" class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button">
             <i class="fa fa-arrow-circle-right" style="margin-right: 5px;"></i>
@@ -33,6 +33,7 @@
 
 <script>
 import lendingService from "@/services/lendingService";
+import adService from "@/services/adService";
 
 export default {
   name: "Rental",
@@ -41,6 +42,7 @@ export default {
       ownerName: "",
       borrowerName: "",
       title:"",
+      image: null
     }
   },
     props: {
@@ -82,9 +84,6 @@ export default {
       },
 },
 methods: {
-  getImgUrl(img) {
-    return require("../assets/img/" + img);
-  },
   goToDetailedView(){
     console.log(this.$props.adId);
     this.$router.push({
@@ -131,6 +130,16 @@ methods: {
       .then(response => {
         this.title = response.data.title
       })
+
+    adService
+      .getPicturesForAd(this.$props.adId)
+      .then(response => {
+        this.image = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
   }
 };
 </script>
