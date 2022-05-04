@@ -19,7 +19,7 @@
         {{ ad.description }}
       </label>
     </div>
-    <div class="text-center">
+    <div class="text-center" v-if="!usersOwnAddress">
       <button
         id="startChatButton"
         class="btn btn-primary"
@@ -141,6 +141,7 @@ export default {
   name: "DetailedAd",
   data() {
     return {
+      usersOwnAddress: false,
       userLoggedIn: false,
       date: null,
       showRightArrow: true,
@@ -150,11 +151,8 @@ export default {
       userEmail: "",
       reviews: [],
       disable: [new Date()],
-      ad: {
-
-      },
-      lender: {
-      },
+      ad: {},
+      lender: {},
     };
   },
   async created() {
@@ -164,6 +162,9 @@ export default {
     await this.getReviews();
     await this.getUnavailableDates();
     this.setLenderId();
+    if(this.ad.userId == localStorage.getItem('userId')){
+      this.usersOwnAddress = true;
+    }
   },
   setup() {
     const projection = ref("EPSG:4326")
