@@ -191,8 +191,7 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
-      console.log(this.$store.getters.currentAd.lat)
+      //this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
     },
     checkLoggedIn() {
       if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
@@ -256,6 +255,7 @@ export default {
     },
     async setLender(){
       await userService.getUserById(this.ad.userId).then(response => {
+        console.log(response.data)
         this.lender = response.data
       }).catch(error => {
         console.log(error);
@@ -331,7 +331,7 @@ export default {
           datefrom,
           dateto,
           datefrom,
-          price,
+          Math.round(price),
           this.lender.email,
           this.userEmail,
           this.$store.getters.currentAd.id
