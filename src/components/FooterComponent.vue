@@ -36,7 +36,7 @@
               </a>
             </li>
           </ul>
-          <p class="copyright text-muted text-center">Copyright © BoCo 2022 | <br>Web Design by gruppe 5</p>
+          <p class="copyright text-muted text-center">Copyright © Boco 2022 | <br>Web Design by gruppe 5</p>
         </div>
       </div>
     </div>
@@ -170,6 +170,4 @@ div.social-links {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-
-
 </style>
