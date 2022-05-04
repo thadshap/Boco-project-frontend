@@ -47,7 +47,7 @@ export default {
                 localStorage.setItem("lenderId", this.$props.userId)
                 this.$router.push({name:"UserProfile"}) 
             }else{
-                this.$router.push("my_profile")
+                this.$router.push("../my_profile")
             }
             
         }
