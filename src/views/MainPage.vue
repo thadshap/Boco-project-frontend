@@ -234,9 +234,7 @@ export default {
                 img: "ski.jpg",
                 place: response.data[i].postalCode.toString(),
                 price: response.data[i].price,
-<<<<<<< HEAD
                 userId: response.data[i].userId
-=======
                 distance: response.data[i].distance,
                 lat: response.data[i].lat,
                 lng: response.data[i].lng
@@ -256,7 +254,6 @@ export default {
                 title: response.data[i].title,
                 place: response.data[i].city,
                 price: response.data[i].price
->>>>>>> e8ebcba2f598a6a174f90b66e2512ea06727a4fd
               }
               this.ads.push(ad)
             }
