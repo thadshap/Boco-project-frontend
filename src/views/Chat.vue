@@ -55,7 +55,7 @@ import MessageComponent from "@/components/MessageComponent";
 import chatService from "@/services/chatService";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import {required} from "@vuelidate/validators";
+import {required, maxLength} from "@vuelidate/validators";
 import useVuelidate from '@vuelidate/core';
 
 export default {  
@@ -82,7 +82,8 @@ export default {
           required
       },
       input: {
-          required
+          required,
+          maxLength: maxLength(2000)
       }
     }
   },
