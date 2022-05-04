@@ -228,6 +228,7 @@ export default {
                 place: response.data.body[i].postalCode.toString(),
                 price: response.data.body[i].price,
                 distance: response.data.body[i].distance,
+                userid: response.data.body[i].userid,
                 lat: response.data.body[i].lat,
                 lng: response.data.body[i].lng
               }
@@ -278,7 +279,8 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 place: response.data[i].city,
-                price: response.data[i].price
+                price: response.data[i].price,
+                userid: response.data[i].userid
               }
               this.cachedAds.push(ad)
             }
@@ -340,7 +342,8 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 place: response.data[i].city,
-                price: response.data[i].price
+                price: response.data[i].price,
+                userid: response.data[i].userid
               }
               this.sortedAds.push(ad)
               console.log(ad)
@@ -398,7 +401,8 @@ export default {
                   id: response.data[i].adId,
                   title: response.data[i].title,
                   place: response.data[i].city,
-                  price: response.data[i].price
+                  price: response.data[i].price,
+                  userid: response.data[i].userid
                 }
                 this.sortedAds.push(ad)
               }
@@ -438,7 +442,8 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 place: response.data[i].city,
-                price: response.data[i].price
+                price: response.data[i].price,
+                userid: response.data[i].userid
               }
               this.sortedAds.push(ad)
             }
@@ -462,7 +467,8 @@ export default {
               id: res.data[i].adId,
               title: res.data[i].title,
               place: res.data[i].city,
-              price: res.data[i].price
+              price: res.data[i].price,
+              userid: res.data[i].userid
             }
             this.sortedAds.push(ad)
           }
