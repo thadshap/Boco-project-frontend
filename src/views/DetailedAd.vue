@@ -70,9 +70,9 @@
       </div>
       <div class="text-center mt-3 mb-3">
         <label> Vis tidligere anmeldelser for gjenstanden </label>
-        <i class="material-icons arrow-i" v-if="showRightArrow" v-on:click="dropDown"
+        <i class="material-icons" v-if="showRightArrow" v-on:click="dropDown"
           >keyboard_arrow_left</i
-        ><i class="material-icons arrow-i" v-on:click="dropDown" v-if="!showRightArrow"
+        ><i class="material-icons" v-on:click="dropDown" v-if="!showRightArrow"
           >keyboard_arrow_down</i
         >
       </div>
@@ -399,12 +399,7 @@ button{
     font-size: 1.5vh;
     font-style: italic;
   }
-  .arrow-i{
-    color: #0EA0FF;
-    padding: 0.2vw 0.5vw 0 0.5vw;
-    position: absolute;
-    font-size: 30px;
-  }
+
   #lenderName, #lenderNumberLabel{
     font-size: 1.8vh;
     color: blue;
@@ -441,7 +436,10 @@ button{
   }
   .material-icons{
     cursor: pointer;
-    float: bottom;
+    color: #0EA0FF;
+    padding: 0.2vw 0.5vw 0 0.5vw;
+    position: absolute;
+    font-size: 30px;
   }
   #time{
     width: 100%;
