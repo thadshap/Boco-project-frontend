@@ -10,8 +10,8 @@
       <div class="text-end">
         <div class="d-flex flex-column align-content-center flex-wrap">
           <div class="d-flex flex-column user-img-container">
-            <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
-            <img alt="Profilbilde" class="ms-auto user-img" v-if="img" :src="img" width="150" height="200">
+            <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput" v-on:change="disableChangeBtn"/>
+            <img alt="Profilbilde" class="ms-auto user-img" v-if="img" :src="img" width="150" height="150">
             <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
         </div>
@@ -84,7 +84,8 @@ export default {
     return{
       disableBtn: true,
       img: null,
-      imgFile: null
+      imgFile: null,
+      changedImg: false
     };
   },
   setup(){
@@ -140,7 +141,7 @@ export default {
     },
     changeUserInfo:async function(){
       let userId = localStorage.getItem("userId")
-      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,userId)
+      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.passwordChange,userId)
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
@@ -175,7 +176,9 @@ export default {
         })
     },
     disableChangeBtn(){
-      if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === ''|| this.v$.$error) this.disableBtn = true
+      console.log("img text: " + this.changedImg)
+      if (this.changedImg === true) this.disableBtn = false
+      else if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === '' || this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
       else this.disableBtn = false
     },
@@ -186,6 +189,7 @@ export default {
       const file = e.target.files[0];
       this.imgFile = file;
       this.img = URL.createObjectURL(file);
+      this.changedImg = true
     },
     existingUserImg(){
       userService
@@ -208,6 +212,7 @@ export default {
         this.state.lastnameChange = ""
         this.state.passwordChange = ""
         this.state.repeatPasswordChange = ""
+        this.changedImg = false
         this.disableBtn = true
       }
     },

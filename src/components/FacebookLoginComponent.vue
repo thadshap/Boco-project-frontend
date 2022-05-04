@@ -1,7 +1,7 @@
 <template>
   
   <button class="fb-login-button fb btn w-100" @click="logInWithFacebook" data-width="" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="true">
-    <i class="fab fa-facebook-f"></i> Login with Facebook
+    <i class="fab fa-facebook-f"></i> Logg inn med Facebook
   </button>
   
 </template>
@@ -61,5 +61,7 @@ export default {
 .fb {
   background-color: #3B5998;
   color: white;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 </style>
