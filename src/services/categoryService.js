@@ -58,7 +58,8 @@ export default {
         "Content-Type": "application/json"
       },
       data: {
-        geoLoc
+        lat: geoLoc.lat,
+        lng: geoLoc.lng
       }
     };
     return axios.request(options);

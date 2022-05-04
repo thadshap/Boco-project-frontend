@@ -1,7 +1,8 @@
 <template>
 
-    <button class="google btn d-flex justify-content-center align-items-center " id="google-signin-button" data-background="red" data-color="white" data-width="100%">
-      <i class="fab fa-google"></i> Login with Google
+    <button class="google btn d-flex justify-content-center align-items-center mb-3" id="google-signin-button" style="width: 250px; padding: 0px; border-radius: 20px;">
+      <i class="fab fa-google"></i>
+      <span class="buttonText">Google</span>
     </button>
 
 </template>
