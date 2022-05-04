@@ -13,7 +13,7 @@
           <h5 class="opacity-75">{{ place }}</h5>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
-          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn" v-on:click="startChat">
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Send melding
           </a>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-
+import chatService from "@/services/chatService";
 export default {
   name: "AdComponent",
   props: {
@@ -51,6 +51,10 @@ export default {
     image: {
       type: String,
     },
+    userId: {
+      type: Number,
+      required: true,
+    }
   },
   methods: {
     getImgUrl(img) {
@@ -66,6 +70,31 @@ export default {
           id : this.$props.id
         }
       })
+    },
+    async startChat() {
+      if (this.$store.getters.loggedIn) {
+        var userId = localStorage.getItem("userId")
+        console.log(this.$props)
+        if (userId != this.$props.userId) {
+          var groupId
+          var users = [userId, this.$props.userId]
+          console.log(this.$props)
+          await chatService.createGroupChat(this.$props.title, users)
+          .then(response => {
+            groupId = response.data.groupId
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+          this.$store.dispatch("setGroupId", groupId)
+          this.$store.dispatch("setGroupName", this.$props.title)
+          this.$router.push(`/chat/${groupId}`)
+        }else{
+          alert('Cannot create chat with self')
+        }
+      } else {
+        this.$router.push("/login")
+      }      
     },
   }
 };

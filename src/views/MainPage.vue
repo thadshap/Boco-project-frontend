@@ -170,7 +170,8 @@ export default {
                 title: response.data[i].title,
                 img: "ski.jpg",
                 place: response.data[i].postalCode.toString(),
-                price: response.data[i].price
+                price: response.data[i].price,
+                userId: response.data[i].userId
               }
               this.ads.push(ad)
             }
