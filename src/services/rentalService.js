@@ -8,7 +8,7 @@ export default {
      * @param deadline for cancelling the rental, 24 hours before rent starts
      * @param price
      */
-    createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderId, userId, adId) {
+    createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderEmail, userEmail, adId) {
         const options = {
             method: 'POST',
             url: `${url}${port}/rental/create`,
@@ -24,8 +24,8 @@ export default {
                 //change to false when chat works TODO
                 active: 'true',
                 price: price,
-                owner: lenderId,
-                borrower: userId,
+                owner: lenderEmail,
+                borrower: userEmail,
                 adId: adId,
                 id: 0
             },

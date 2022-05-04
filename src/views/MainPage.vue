@@ -13,7 +13,7 @@
     </div>
 
     <div>
-      <h2 class="category-header">Kategorier</h2>
+      <h3 class="category-header">Kategorier</h3>
       <hr>
       <div
         class="d-flex flex-row justify-content-center align-items-center flex-wrap categories-card-container-style"
@@ -56,7 +56,8 @@
           <button
               class="btn sort-btn"
               type="button"
-              v-on:click="showSorting"
+              v-on:click="showSortingOptions"
+              :disabled="disableSortingAndFiltering"
           >
             <img height="30" width="30" src="@/assets/img/list.svg" alt="sort icon">
             Sorter
@@ -73,32 +74,20 @@
           <button
               class="btn filter-btn"
               type="button"
-              v-on:click="showFiltering"
+              v-on:click="showFilteringOptions"
+              :disabled="disableSortingAndFiltering"
           >
             <img height="20" width="20" src="@/assets/img/filter.svg" alt="filter icon">
             Filtrer
           </button>
           <div class="dropdown-item-container" v-if="showMenuBarFiltering">
-            <a class="dropdown-item" href="#">Pris 0-{{priceRangeValue}}kr<br>
-              <input
-                class="form-range"
-                type="range"
-                min="0"
-                max="1000"
-                step="50"
-                v-model="priceRangeValue"
-            /></a
-            ><a class="dropdown-item" href="#">Avstand 0-{{distanceRangeValue}} km<br>
-            <input
-                class="form-range"
-                type="range"
-                min="0"
-                max="60"
-                step="2"
-                v-model="distanceRangeValue"
-            />
-          </a
-          >
+            <a class="dropdown-item" href="#">max-pris:<br>
+              <input type="number" v-model="rangeValuePrice"/>
+              <input type="button" v-on:click="filter('price')" value="filtrer"/></a>
+            <a class="dropdown-item" href="#">max-avstand:<br>
+              <input type="number" v-model="rangeValueDistance"/>
+              <input type="button" v-on:click="filter('distance')" value="filtrer"/>
+            </a>
           </div>
         </div>
         </div>
@@ -108,6 +97,8 @@
 
   <div>
     <hr>
+    <h3 class="category-header">{{ titleHeader }}</h3>
+
     <AdListComponent :ads="this.ads"/>
   </div>
   </div>
@@ -120,8 +111,8 @@
 import AdListComponent from "@/components/AdListComponent";
 import CategoryComponent from "@/components/CategoryComponent";
 import SubCategoryComponent from "@/components/SubCategoryComponent";
-import { geolocationForUser } from '@/geolocationForUser'
-import { computed } from 'vue'
+import { geolocationForUser } from "@/geolocationForUser";
+import { computed } from "vue";
 import adsService from "@/services/adsService";
 import categoryService from "../services/categoryService";
 import adService from "../services/adService";
@@ -143,9 +134,11 @@ export default {
   },
   data() {
     return {
+      titleHeader: "Nyeste gjenstander for utlån",
+      disableSortingAndFiltering: false,
       searchWord: "",
-      priceRangeValue : 0,
-      distanceRangeValue : 0,
+      rangeValueDistance : 0,
+      rangeValuePrice : 0,
       showUnderCategories : 0,
       sorting : '',
       showMenuBarSorting : false,
@@ -155,28 +148,105 @@ export default {
       subCategories: [],
       subSubCategories: [],
       chosenMainCategory: "",
-      chosenSubCategory: ""
+      chosenSubCategory: "",
+      chosenSubSubCategory: "",
+      currentCategoryName:"",
     };
   },
   methods: {
-    showSorting() {
-      console.log(new URL(location.href).searchParams.get('page'));
+    showSortingOptions() {
       this.showMenuBarFiltering = false;
       this.showMenuBarSorting = !this.showMenuBarSorting;
     },
-    showFiltering() {
+    showFilteringOptions() {
       this.showMenuBarSorting = false;
-      this.showMenuBarFiltering = !this.showMenuBarFiltering;
+      this.showMenuBarFiltering = !this.showMenuBarFiltering
     },
     sortingPicked(e){
       this.sorting = e.currentTarget.id;
       this.showMenuBarSorting = false;
-      console.log(this.sorting);
+      if(this.sorting == "lav-hoy"){
+        this.ads.sort((a, b) => { return a.price - b.price;})
+      } else if(this.sorting == "hoy-lav"){
+        this.ads.sort((a, b) => { return b.price - a.price;})
+      } else if (this.sorting == "ny-eld"){
+        this.ads.sort((a, b) => { return b.id - a.id;})
+      } else if (this.sorting == "eld-ny"){
+        this.ads.sort((a, b) => { return a.id - b.id;})
+      }
     },
-    getRandomAds(){
-      adsService.getPageWithRandomAds(5)
+    sortByDecreasingPrice(){
+    },
+    async filter(filterType){
+      this.showMenuBarFiltering = false;
+      this.ads = []
+      if (this.currentCategoryName != ""){
+        await this.filterWithCategory(filterType)
+      } else {
+        await this.filterWithoutCategory(filterType)
+      }
+    },
+    async filterWithCategory(filterType){
+      let rangeValue = ""
+      if(filterType === "price"){
+        rangeValue = this.rangeValuePrice
+      } if(filterType === "distance"){
+        rangeValue = this.rangeValueDistance
+      }
+
+      await adsService.filterAdsInCategoryByDistanceOrPrice(
+          filterType, this.currentCategoryName, rangeValue, true,
+          this.currPos.lat, this.currPos.lng)
           .then(response => {
-            console.log(response)
+            for (let i = 0; i < response.data.body.length; i++) {
+              let ad = {
+                id: response.data.body[i].adId,
+                title: response.data.body[i].title,
+                img: "ski.jpg",
+                place: response.data.body[i].postalCode.toString(),
+                price: response.data.body[i].price,
+                distance: response.data.body[i].distance,
+                lat: response.data.body[i].lat,
+                lng: response.data.body[i].lng
+              }
+              this.ads.push(ad)
+            }
+          }).catch(error => {
+            console.error(error)
+          })
+    },
+    async filterWithoutCategory(filterType){
+      let rangeValue = ""
+      if(filterType === "price"){
+        this.titleHeader = "Gjenstander for utlån filtrert etter pris"
+        rangeValue = this.rangeValuePrice
+      } if(filterType === "distance"){
+        this.titleHeader = "Gjenstander for utlån filtrert etter avstander"
+        rangeValue = this.rangeValueDistance
+      }
+      await adsService.filterAdsForPriceOrDistance(filterType, rangeValue, true,
+          this.currPos.lat, this.currPos.lng)
+          .then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                img: "ski.jpg",
+                place: response.data[i].postalCode.toString(),
+                price: response.data[i].price,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng
+              }
+              this.ads.push(ad)
+            }
+          }).catch(error => {
+            console.error(error)
+          })
+    },
+    async getRandomAds(){
+      await adsService.getPageWithRandomAds(5,this.currPos.lat, this.currPos.lng)
+          .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,
@@ -190,6 +260,7 @@ export default {
           .catch(error => {
             console.error(error)
           })
+        await this.getPictureForAd()
     },
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
@@ -215,13 +286,17 @@ export default {
         })
     },
     async chosenMainCat(title) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + title
+      this.disableSortingAndFiltering = true
+      this.currentCategoryName = title
       this.chosenMainCategory = title
+      this.subCategories = []
+      this.subSubCategories = []
 
       await categoryService
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then(response => {
           if (response.status === 200) {
-            console.log(response)
             this.ads = []
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
@@ -238,17 +313,7 @@ export default {
           console.log(error)
         })
 
-      for (let i = 0; i < this.ads.length; i++) {
-        await adService
-          .getPicturesForAd(this.ads[i].id)
-          .then(response => {
-            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
-            this.ads[i].img = img
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
+      await this.getPictureForAd()
 
       await categoryService
         .getAllSubCategoriesForCategory(title)
@@ -265,12 +330,49 @@ export default {
           console.log(error)
         })
     },
+    async getPictureForAd(){
+      for(let i = 0; i < this.ads.length; i++) {
+        console.log("id til ad: " + this.ads[i].id)
+        await adService
+            .getPictureForAd(this.ads[i].id)
+            .then(response => {
+              console.log(response.data)
+              this.ads[i].img = `data:${response.data.type};base64,${response.data.base64}`
+            })
+            .catch(error => {
+              console.log(error)
+            })
+      }
+    },
     async chosenSubCat(subCat) {
+      this.titleHeader = "Gjenstander for utlån i kategorien " + subCat
+      this.disableSortingAndFiltering = false
+      this.currentCategoryName = subCat
       this.chosenSubCategory = subCat
       this.subSubCategories = []
 
       await categoryService
-        .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
+          .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
+          .then(response => {
+            if(response.status === 200) {
+              this.ads = []
+              for(let i = 0; i < response.data.length; i++) {
+                let ad = {
+                  id: response.data[i].adId,
+                  title: response.data[i].title,
+                  place: response.data[i].city,
+                  price: response.data[i].price
+                }
+                this.ads.push(ad)
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      await this.getPictureForAd()
+      await categoryService
+        .getAllSubCategoriesForCategory(subCat)
         .then(response => {
           if(response.status === 200) {
             this.ads = []
@@ -289,6 +391,8 @@ export default {
     },
     async chosenSubSubCat(subSubCat) {
       this.chosenSubSubCategory = subSubCat
+      this.titleHeader = "Gjenstander for utlån i kategorien " + subSubCat
+      this.currentCategoryName = subSubCat
 
       await categoryService
         .getAllAdsForCategoryAndSubCategories(subSubCat, this.currPos)
@@ -309,26 +413,14 @@ export default {
         .catch(error => {
           console.log(error)
         })
-
-      for(let i = 0; i < this.ads.length; i++) {
-        await adService
-          .getPicturesForAd(this.ads[i].id)
-          .then(response => {
-            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
-            this.ads[i].img = img
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
+      await this.getPictureForAd()
     },
 
-    search() {
+    async search() {
       if(this.searchWord === "") {
         return
       }
-
-      adsService
+      await adsService
         .getAdsBySearch(this.searchWord)
         .then(res => {
           this.ads = []
@@ -354,17 +446,10 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   created() {
+    localStorage.setItem("latForUser", this.currPos.lat)
+    localStorage.setItem("lngForUser", this.currPos.lng)
     this.getRandomAds();
     this.getMainCategories();
-    //TODO send disse koordinatene til backend
-    /*
-    this.currPos.value.lat;
-    this.currPos.value.lng;
-
-     */
-  },
-  updated() {
-    console.log("Main page updated");
   }
 };
 </script>

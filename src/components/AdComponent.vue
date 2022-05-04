@@ -51,6 +51,15 @@ export default {
     image: {
       type: String,
     },
+    distance: {
+      type: Number
+    },
+    lat: {
+      type: Number
+    },
+    lng: {
+      type: Number
+    }
   },
   methods: {
     // getImgUrl(img) {

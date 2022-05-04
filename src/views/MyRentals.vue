@@ -9,14 +9,6 @@
     <div class="d-flex justify-content-center">
       <h2>Mine lån</h2>
     </div>
-    <div class="d-flex justify-content-center search-box-container-style">
-      <div class="d-flex search-container">
-        <input type="search" placeholder="Søk" class="w-100" />
-        <button class="btn btn-primary btn-style" type="button">
-          <i class="fa fa-search"></i>
-        </button>
-      </div>
-    </div>
   </div>
   <div>
     <RentalListComponent
