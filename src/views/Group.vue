@@ -1,9 +1,12 @@
 <template>
 <div class="d-flex flex-column screen">
   <div class="d-flex flex-column groups">
-      <div v-if="!groups.length">Ser ut som du har ingen chatter</div>
+      <!-- <div v-if="!groups.length">Ser ut som du har ingen chatter</div>
       <div>Start en chat:</div>
-      <div><input type="text" placeholder="Epost" class="add"></div>
+      <div>
+          <input type="text" placeholder="Epost" class="add">
+      </div>
+      <button></button> -->
       <GroupComponent 
       v-for="group in groups"
       :key="group"

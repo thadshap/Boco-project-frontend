@@ -104,6 +104,7 @@ export default {
               alert(response.data)
           })
           this.$store.dispatch("setGroupName", this.newGroupName)
+          this.newGroupName = ''
       },
       async addUserToGroupByEmail(){
           const valid = await this.v$.addUser.$validate()
@@ -114,6 +115,7 @@ export default {
           .then(response => {
               alert(response.data)
           })
+          this.addUser = ''
       },
       toGroups(){
           this.$router.push("/groups")
