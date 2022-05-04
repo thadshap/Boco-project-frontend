@@ -1,6 +1,5 @@
 import { shallowMount } from "@vue/test-utils";
 import RentalComponent from "@/components/RentalComponent";
-import CategoryComponent from "@/components/CategoryComponent";
 
 jest.spyOn(RentalComponent.methods, "getOwnerId")
     .mockImplementation(() => {
