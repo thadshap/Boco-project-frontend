@@ -41,7 +41,7 @@
         Forespør lån
       </button><br>
       <div id="time" class="text-center mt-3" v-if="showRequestDetails">
-        <label class="defined-label">Tidsperiode </label>>
+        <label class="defined-label">Tidsperiode </label>
         <div class="date-container">
         <Datepicker class="date-input" v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button

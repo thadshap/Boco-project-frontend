@@ -13,7 +13,7 @@
     </div>
 
     <div>
-      <h2 class="category-header">Kategorier</h2>
+      <h3 class="category-header">Kategorier</h3>
       <hr>
       <div
         class="d-flex flex-row justify-content-center align-items-center flex-wrap categories-card-container-style"
@@ -97,7 +97,7 @@
 
   <div>
     <hr>
-    <h3>{{ titleHeader }}</h3>
+    <h3 class="category-header">{{ titleHeader }}</h3>
 
     <AdListComponent :ads="this.ads"/>
   </div>
@@ -244,8 +244,8 @@ export default {
             console.error(error)
           })
     },
-    getRandomAds(){
-      adsService.getPageWithRandomAds(5,this.currPos.lat, this.currPos.lng)
+    async getRandomAds(){
+      await adsService.getPageWithRandomAds(5,this.currPos.lat, this.currPos.lng)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
@@ -260,6 +260,7 @@ export default {
           .catch(error => {
             console.error(error)
           })
+        await this.getPictureForAd()
     },
     getAdsWhenOnMainpage(){
       if(this.$route.name === "/") this.getRandomAds()
@@ -293,7 +294,7 @@ export default {
       this.subSubCategories = []
 
       await categoryService
-        .getAllSubCategoriesForCategory(title)
+        .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then(response => {
           if (response.status === 200) {
             console.log(response)
@@ -313,17 +314,7 @@ export default {
           console.log(error)
         })
 
-      for (let i = 0; i < this.ads.length; i++) {
-        await adService
-          .getPicturesForAd(this.ads[i].id)
-          .then(response => {
-            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
-            this.ads[i].img = img
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
+      await this.getPictureForAd()
 
       await categoryService
         .getAllSubCategoriesForCategory(title)
@@ -340,6 +331,21 @@ export default {
           console.log(error)
         })
     },
+    async getPictureForAd(){
+      for(let i = 0; i < this.ads.length; i++) {
+        console.log("id til ad: " + this.ads[i].id)
+        await adService
+            .getPicturesForAd(this.ads[i].id)
+            .then(response => {
+              console.log(response.data)
+              let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+              this.ads[i].img = img
+            })
+            .catch(error => {
+              console.log(error)
+            })
+      }
+    },
     async chosenSubCat(subCat) {
       this.titleHeader = "Gjenstander for utlån i kategorien " + subCat
       this.disableSortingAndFiltering = false
@@ -347,6 +353,26 @@ export default {
       this.chosenSubCategory = subCat
       this.subSubCategories = []
 
+      await categoryService
+          .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
+          .then(response => {
+            if(response.status === 200) {
+              this.ads = []
+              for(let i = 0; i < response.data.length; i++) {
+                let ad = {
+                  id: response.data[i].adId,
+                  title: response.data[i].title,
+                  place: response.data[i].city,
+                  price: response.data[i].price
+                }
+                this.ads.push(ad)
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      await this.getPictureForAd()
       await categoryService
         .getAllSubCategoriesForCategory(subCat)
         .then(response => {
@@ -389,18 +415,7 @@ export default {
         .catch(error => {
           console.log(error)
         })
-
-      for(let i = 0; i < this.ads.length; i++) {
-        await adService
-          .getPicturesForAd(this.ads[i].id)
-          .then(response => {
-            let img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
-            this.ads[i].img = img
-          })
-          .catch(error => {
-            console.log(error)
-          })
-      }
+      await this.getPictureForAd()
     },
 
     async search() {
