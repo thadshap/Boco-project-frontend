@@ -140,7 +140,7 @@ export default {
     },
     changeUserInfo:async function(){
       let userId = localStorage.getItem("userId")
-      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,userId)
+      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.passwordChange,userId)
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
