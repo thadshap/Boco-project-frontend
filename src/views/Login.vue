@@ -9,8 +9,8 @@
     <div class="d-flex flex-column justify-content-center align-items-center">
     <div class="d-flex flex-column justify-content-center align-items-center" v-if="!this.$store.getters.loggedIn">
       <div class="text-center form-elements-container-style">
-        <img src="@/assets/img/BoCo.png" class="logo-style" alt="logo">
-        <h1 class="text-center">Logg inn</h1>
+        <h1 class="text-center" style="font-weight: 400; font-size: 3em; color: rgb(1,30,91);">Logg inn</h1>
+        <hr style="margin: 0px">
         <div class="d-flex flex-column flex-shrink-1 align-items-center form-inputs-container-style">
           <div class="text-center form-username-container-style">
             <label class="form-label form-username-label-style">Epost</label>
@@ -31,6 +31,7 @@
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-signin-btn-container-style">
             <button class="btn btn-primary w-100 form-signin-btn-style" @click="loginSubmit">Logg inn</button>
           </div>
+          <p style="font-weight: inherit; font-style: italic">Eller</p>
           <div class="d-flex flex-column justify-content-center">
 
             <FacebookLoginComponent />
@@ -38,7 +39,7 @@
 
           </div>
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
-            <router-link to="/register" class="btn btn-primary w-100 form-register-btn-style">Registrer</router-link>
+            <router-link to="/register" class="btn w-100 form-register-btn-style register-btn">Registrer</router-link>
           </div>
         </div>
       </div>
@@ -168,15 +169,15 @@ export default {
 .form-password-container-style,
 .form-signin-btn-container-style,
 .form-register-container-style {
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 
 .form-elements-container-style {
   width: max-content;
-  background: #d6dde7;
-  box-shadow: 0px 0px 10px 2px;
-  padding: 5vw;
+  background: rgb(230,247,255);
+  border: 1px solid rgba(4, 81, 114, 0.56);
+  padding: 5vw 7vw 5vw 7vw;
 }
 
 .logo-style {
@@ -205,12 +206,12 @@ export default {
 }
 
 .form-signin-btn-container-style {
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .form-signin-btn-style {
-  margin-bottom: 10px;
-  font-size: 25px;
+  margin: 10px 0px 10px 0px;
+  font-size: 20px;
 }
 
 .form-continue-with-facebook-btn {
@@ -249,5 +250,12 @@ export default {
 
 .back-arrow-container:hover {
   cursor: pointer;
+}
+.register-btn{
+  color: #0d6efd;
+  font-size: 20px;
+}
+.register-btn:hover{
+  color: #003B93FF;
 }
 </style>
