@@ -2,7 +2,7 @@
   <div class="project-card-container" v-on:click="goToDetailedView">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
-        <img :src="getImgUrl(image)" class="ad-img-style rounded-top rounded-bottom"/>
+        <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
       </div>
       <div class="d-flex flex-column ad-details-container-style">
         <div class="d-flex flex-column align-items-start">
@@ -51,15 +51,26 @@ export default {
     image: {
       type: String,
     },
+<<<<<<< HEAD
     userId: {
       type: Number,
       required: true,
+=======
+    distance: {
+      type: Number
+    },
+    lat: {
+      type: Number
+    },
+    lng: {
+      type: Number
+>>>>>>> e8ebcba2f598a6a174f90b66e2512ea06727a4fd
     }
   },
   methods: {
-    getImgUrl(img) {
-      return require("../assets/img/" + img);
-    },
+    // getImgUrl(img) {
+    //   return require("../assets/img/" + img);
+    // },
     goToDetailedView(){
       this.$store.dispatch("setCurrentAd", this.$props);
 
@@ -130,6 +141,10 @@ export default {
   font-size: 2.5em;
 }
 
+b{
+  font-weight: inherit;
+  font-size: 35px;
+}
 @media screen and (min-width: 992px) {
   .project-card-container {
     width: 50%;

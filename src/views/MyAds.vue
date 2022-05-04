@@ -10,12 +10,6 @@
       <h2>Mine annonser</h2>
     </div>
     <div class="d-flex justify-content-center search-box-container-style">
-      <div class="d-flex search-container">
-        <input type="search" placeholder="Søk" class="w-100" />
-        <button class="btn btn-primary btn-style" type="button">
-          <i class="fa fa-search"></i>
-        </button>
-      </div>
     </div>
   </div>
 
@@ -28,6 +22,7 @@
 <script>
 import AdListComponent from "@/components/AdListComponent";
 import lendingService from "@/services/lendingService";
+import adService from "@/services/adService";
 
 export default {
   name: "MyAds",
@@ -43,21 +38,33 @@ export default {
     };
   },
   methods: {
-    getMyAds(){
-      lendingService.getAllAdsForUser(JSON.parse(localStorage.getItem("userId")))
+    async getMyAds(){
+      await lendingService.getAllAdsForUser(JSON.parse(localStorage.getItem("userId")))
       .then(response => {
         for (let i = 0; i < response.data.length; i++) {
           //få poststed
           let ad = {
             id: response.data[i].adId,
             title: response.data[i].title,
-            img: "ski.jpg",
             place: response.data[i].postalCode.toString(),
             price: response.data[i].price
           }
           this.ads.push(ad)
         }
       })
+
+      for(let i = 0; i < this.ads.length; i++) {
+        console.log(this.ads[i])
+        await adService
+          .getPicturesForAd(this.ads[i].id)
+          .then(response => {
+            this.ads[i].img = `data:${response.data[0].type};base64,${response.data[0].base64}`;
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+
     },
     back() {
       this.$router.go(-1)

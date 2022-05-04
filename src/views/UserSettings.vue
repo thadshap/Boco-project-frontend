@@ -11,7 +11,7 @@
         <div class="d-flex flex-column align-content-center flex-wrap">
           <div class="d-flex flex-column user-img-container">
             <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput"/>
-            <img alt="Profilbilde" class="ms-auto user-img" v-if="url" :src="url" width="150" height="200">
+            <img alt="Profilbilde" class="ms-auto user-img" v-if="img" :src="img" width="150" height="200">
             <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
         </div>
@@ -83,7 +83,8 @@ export default {
   data(){
     return{
       disableBtn: true,
-      url: null,
+      img: null,
+      imgFile: null
     };
   },
   setup(){
@@ -113,15 +114,16 @@ export default {
     const v$ = useValidate(rules, state);
     return { state, v$ };
   },
-  created: async function() {
+  async created() {
     await this.disableChangeBtn()
     await this.getUserInfo()
+    await this.existingUserImg()
   },
   methods:{
     back() {
       this.$router.go(-1)
     },
-    getUserInfo:async function(){
+    async getUserInfo(){
       await userService.getUserById(parseInt(localStorage.getItem("userId")))
         .then(response => {
           this.state.firstname = response.data.firstName
@@ -137,8 +139,8 @@ export default {
         })
     },
     changeUserInfo:async function(){
-      console.log(parseInt(localStorage.getItem("userId")))
-      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,localStorage.getItem("userId"))
+      let userId = localStorage.getItem("userId")
+      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,"Feil mail",this.state.passwordChange,userId)
       .then(response => {
         this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
         this.GStore.variant = "Success"
@@ -148,6 +150,23 @@ export default {
         console.log(response)
       }).catch(error => {
           this.GStore.flashMessage = "Fikk ikke endret bruker informasjonen!"
+          this.GStore.variant = "Error"
+          setTimeout(() => {
+            this.GStore.flashMessage = ""
+          }, 4000)
+          console.log(error)
+        })
+
+      let formdata = new FormData()
+      formdata.append("file", this.imgFile)
+
+      await userService
+        .updateProfilePicture(userId, formdata)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(error => {
+          this.GStore.flashMessage = "Bildet ble ikke oppdatert!"
           this.GStore.variant = "Error"
           setTimeout(() => {
             this.GStore.flashMessage = ""
@@ -165,12 +184,20 @@ export default {
     },
     onFileChange(e) {
       const file = e.target.files[0];
-      this.url = URL.createObjectURL(file);
+      this.imgFile = file;
+      this.img = URL.createObjectURL(file);
     },
     existingUserImg(){
-      // TODO: sette inn eksisterende profilbilde fra databasen hvis den eksisterer
+      userService
+        .getProfilePicture(localStorage.getItem("userId"))
+        .then(response => {
+          this.img = `data:${response.data.type};base64,${response.data.base64}`
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
-    submit: async function(){
+    async submit(){
       this.v$.$validate()
       if (this.v$.$error){
         this.disableBtn = true
@@ -184,8 +211,10 @@ export default {
         this.disableBtn = true
       }
     },
-    deleteUser:async function(){
-      let deleteAccount = prompt("Hvis du er sikker på å slette kontoen din, tast inn 'JA':");
+    async deleteUser(){
+      let deleteAccount = prompt(
+        "Hvis du er sikker på å slette kontoen din, tast inn 'JA':"
+      );
       if (deleteAccount == "JA") {
         await userService.deleteUser(localStorage.getItem("userId"))
           .then(response => {

@@ -11,7 +11,13 @@
             :image="ad.img"
             :place="ad.place"
             :price="ad.price"
+<<<<<<< HEAD
             :userId="ad.userId"
+=======
+            :distance="ad.distance"
+            :lat="ad.lat"
+            :lng="ad.lng"
+>>>>>>> e8ebcba2f598a6a174f90b66e2512ea06727a4fd
           />
         </div>
       </div>

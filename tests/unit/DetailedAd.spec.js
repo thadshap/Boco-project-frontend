@@ -78,7 +78,7 @@ describe("DetailedAd", () => {
       }
     });
 
-
+    await wrapper.setData({userLoggedIn : true})
     await wrapper.find('[id="makeRequest"]').trigger("click");
     expect(wrapper.find('[id="makeRequest"]').exists()).toBe(true)
     expect(wrapper.find('[id="time"]').exists()).toBe(true);
@@ -94,6 +94,7 @@ describe("DetailedAd", () => {
         plugins:[store]
       }
     });
+    await wrapper.setData({userLoggedIn : true})
     await wrapper.find('[id="makeRequest"]').trigger("click");
     await wrapper.setData({date : '27.06.2021'});
     expect(wrapper.find('[id="sendRequest"]').element.disabled).toBe(false);
