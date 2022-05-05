@@ -54,16 +54,16 @@ export default {
     userId: {
       type: Number,
       required: true,
-      distance: {
-        type: Number
-      },
-      lat: {
-        type: Number
-      },
-      lng: {
-        type: Number
-      }
     },
+    distance: {
+      type: Number
+    },
+    lat: {
+      type: Number
+    },
+    lng: {
+      type: Number
+    }
   },
   methods: {
     goToDetailedView(){
