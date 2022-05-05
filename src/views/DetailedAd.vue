@@ -281,7 +281,7 @@ export default {
           var users = [userId,this.lender.id]
           await chatService.createGroupChat(this.ad.title, users)
           .then(response => {
-            groupId = response.data // TODO: add .groupId when backend is fixed
+            groupId = response.data.groupId
           })
           .catch(error =>{
             console.log(error)

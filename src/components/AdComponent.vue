@@ -1,5 +1,5 @@
 <template>
-  <div class="project-card-container" v-on:click="goToDetailedView">
+  <div class="project-card-container" @click="goToDetailedView">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
         <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
@@ -13,11 +13,11 @@
           <h5 class="opacity-75">{{ place }}</h5>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
-          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn" @click="startChat">
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Send melding
           </a>
-          <a class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button">
+          <a class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button" @click="goToDetailedView">
             <i class="fa fa-arrow-circle-right" style="margin-right: 5px;"></i>
             Til annonse
           </a>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-
+import chatService from "@/services/chatService";
 export default {
   name: "AdComponent",
   props: {
@@ -51,6 +51,10 @@ export default {
     image: {
       type: String,
     },
+    userId: {
+      type: Number,
+      required: true,
+    },
     distance: {
       type: Number
     },
@@ -62,9 +66,6 @@ export default {
     }
   },
   methods: {
-    // getImgUrl(img) {
-    //   return require("../assets/img/" + img);
-    // },
     goToDetailedView(){
       this.$store.dispatch("setCurrentAd", this.$props);
 
@@ -75,6 +76,29 @@ export default {
           id : this.$props.id
         }
       })
+    },
+    async startChat() {
+      if (this.$store.getters.loggedIn) {
+        const userId = parseInt( localStorage.getItem("userId"))
+        if (userId !== this.$props.userId) {
+          let groupId
+          const users = [userId, this.$props.userId]
+          await chatService.createGroupChat(this.$props.title, users)
+          .then(response => {
+            groupId = response.data.groupId
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+          this.$store.dispatch("setGroupId", groupId)
+          this.$store.dispatch("setGroupName", this.$props.title)
+          await this.$router.push(`/chat/${groupId}`)
+        }else{
+          alert('Cannot create chat with self')
+        }
+      } else {
+        await this.$router.push("/login")
+      }      
     },
   }
 };

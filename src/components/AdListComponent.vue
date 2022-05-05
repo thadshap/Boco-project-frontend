@@ -11,6 +11,7 @@
             :image="ad.img"
             :place="ad.place"
             :price="ad.price"
+            :userId="ad.userId"
             :distance="ad.distance"
             :lat="ad.lat"
             :lng="ad.lng"
