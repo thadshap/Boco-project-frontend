@@ -217,9 +217,6 @@ export default {
   },
   //TODO oppdater antall sider når man filtrerer
   methods: {
-    showSorting() {
-      console.log(new URL(location.href).searchParams.get("page"));
-    },
     showSortingOptions() {
       this.showMenuBarFiltering = false;
       this.showMenuBarSorting = !this.showMenuBarSorting;
@@ -342,22 +339,25 @@ export default {
     },
     async getRandomAds() {
       await adsService
-        .getPageWithRandomAds(20, this.currPos.lat, this.currPos.lng)
-        .then((response) => {
-          for (let i = 0; i < response.data.length; i++) {
-            let ad = {
-              id: response.data[i].adId,
-              title: response.data[i].title,
-              place: response.data[i].city,
-              price: response.data[i].price,
-              userId: response.data[i].userId,
-            };
-            this.cachedAds.push(ad);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+        .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
+          .then(response => {
+            for (let i = 0; i < response.data.length; i++) {
+              let ad = {
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                place: response.data[i].city,
+                price: response.data[i].price,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
+                userId: response.data[i].userId
+              }
+              this.cachedAds.push(ad)
+            }
+          })
+          .catch(error => {
+            console.error(error)
+          })
     },
     async displayAds(page, adArray) {
       this.ads = [];
@@ -379,7 +379,6 @@ export default {
       this.totalPages = Math.ceil(adArray.length / this.adsPerPage);
     },
     async getMainCategories() {
-
       // Checks if main categories has already been requested from server
       if (this.$store.getters.getMainCategories.length === 0) {
         let mainCategories = [];
@@ -481,9 +480,12 @@ export default {
                 place: response.data[i].city,
                 price: response.data[i].price,
                 userId: response.data[i].userId,
-              };
-              this.sortedAds.push(ad);
-              console.log(ad);
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
+              }
+              this.sortedAds.push(ad)
+              console.log(ad)
             }
           }
         })
@@ -607,39 +609,31 @@ export default {
           }
         }
       }
-      // await categoryService
-      //     .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
-      //     .then(response => {
-      //       if(response.status === 200) {
-      //         this.sortedAds = []
-      //         for(let i = 0; i < response.data.length; i++) {
-      //           let ad = {
-      //             id: response.data[i].adId,
-      //             title: response.data[i].title,
-      //             place: response.data[i].city,
-      //             price: response.data[i].price,
-      //             userId: response.data[i].userId
-      //           }
-      //           this.sortedAds.push(ad)
-      //         }
-      //       }
-      //     })
-      //     .catch(error => {
-      //       console.log(error)
-      //     })
-      await this.displayAds(1, this.sortedAds);
+      await categoryService
+          .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
+          .then(response => {
+            if(response.status === 200) {
+              this.sortedAds = []
+              for(let i = 0; i < response.data.length; i++) {
+                let ad = {
+                  id: response.data[i].adId,
+                  title: response.data[i].title,
+                  place: response.data[i].city,
+                  price: response.data[i].price,
+                  userId: response.data[i].userId,
+                  distance: response.data[i].distance,
+                  lat: response.data[i].lat,
+                  lng: response.data[i].lng
+                }
+                this.sortedAds.push(ad)
+              }
+            }
+          })
+          .catch(error => {
+            console.log(error)
+          })
 
-      // await categoryService
-      //   .getAllSubCategoriesForCategory(subCat)
-      //   .then((response) => {
-      //     if (response.status === 200) {
-      //       for (let i = 0; i < response.data.length; i++) {
-      //         this.subSubCategories.push(response.data[i].name);
-      //       }
-      //     } else {
-      //       console.log("Fikk ingen underkategorier fra server...");
-      //     }
-      //   });
+      await this.displayAds(1, this.sortedAds);
     },
     async chosenSubSubCat(subSubCat) {
       this.chosenSubSubCategory = subSubCat;
@@ -658,8 +652,11 @@ export default {
                 place: response.data[i].city,
                 price: response.data[i].price,
                 userId: response.data[i].userId,
-              };
-              this.sortedAds.push(ad);
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
+              }
+              this.sortedAds.push(ad)
             }
           }
         })
@@ -673,22 +670,25 @@ export default {
         return;
       }
       await adsService
-        .getAdsBySearch(this.searchWord)
-        .then((res) => {
-          this.sortedAds = [];
-          for (let i = 0; i < res.data.length; i++) {
+        .getAdsBySearch(this.searchWord, this.currPos.lat, this.currPos.lng)
+        .then(response => {
+          this.sortedAds = []
+          for(let i = 0; i < response.data.length; i++) {
             let ad = {
-              id: res.data[i].adId,
-              title: res.data[i].title,
-              place: res.data[i].city,
-              price: res.data[i].price,
-              userId: res.data[i].userId,
-            };
-            this.sortedAds.push(ad);
+              id: response.data[i].adId,
+              title: response.data[i].title,
+              place: response.data[i].city,
+              price: response.data[i].price,
+              userId: response.data[i].userId,
+              lat: response.data[i].lat,
+              lng: response.data[i].lng,
+              distance: response.data[i].distance,
+            }
+            this.sortedAds.push(ad)
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error(error);
         });
       this.setNrOfPages(this.sortedAds);
       await this.displayAds(1, this.sortedAds);

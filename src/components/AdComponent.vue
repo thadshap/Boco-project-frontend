@@ -10,10 +10,10 @@
             <b>{{ title }}</b>
           </h3>
           <h4>{{ price }} kr</h4>
-          <h5 class="opacity-75">{{ place }}</h5>
+          <h5 class="opacity-75"><i class="fas fa-map-marked-alt"></i> {{ place }}</h5>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
-          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn" @click="startChat">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="!this.$data.isMyAd" @click="startChat">
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Send melding
           </a>
@@ -31,6 +31,14 @@
 import chatService from "@/services/chatService";
 export default {
   name: "AdComponent",
+  created() {
+    this.checkIfMyAd()
+  },
+  data(){
+    return{
+      isMyAd:false,
+    }
+  },
   props: {
     id: {
       type: Number,
@@ -73,9 +81,14 @@ export default {
         path: "/ad/:id",
         name : "Ad",
         params : {
-          id : this.$props.id
+          id : this.$props.id,
+          lat : this.$props.lat,
+          lng : this.$props.lng,
         }
       })
+    },
+    checkIfMyAd(){
+      this.$data.isMyAd = parseInt(localStorage.getItem("userId")) === this.$props.userId;
     },
     async startChat() {
       if (this.$store.getters.loggedIn) {
@@ -105,6 +118,12 @@ export default {
 </script>
 
 <style scoped>
+@import url('../../node_modules/fontawesome-free/css/all.css');
+@import url('../../node_modules/fontawesome-free/css/brands.css');
+@import url('../../node_modules/fontawesome-free/css/fontawesome.css');
+@import url('../../node_modules/fontawesome-free/css/v4-shims.css');
+@import url('../../node_modules/fontawesome-free/css/solid.css');
+@import url('../../node_modules/font-awesome/css/font-awesome.css');
 .project-card-container {
   padding: 20px;
 }

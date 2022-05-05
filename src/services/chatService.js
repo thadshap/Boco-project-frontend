@@ -77,4 +77,16 @@ export default{
           };
           return axios.request(options)
     },
+    createGroupFromEmails(chatName, listOfEmails){
+      const options = {
+        method: 'POST',
+        url: `${url}${port}/api/create/group/email`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        data: {groupName: chatName, emails: listOfEmails}
+      };
+      return axios.request(options)
+    }
 }

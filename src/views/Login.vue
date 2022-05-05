@@ -50,7 +50,7 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import lendingService from "@/services/lendingService";
+import loginRegistrationService from "@/services/loginRegistrationService";
 import { helpers, email } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
@@ -96,7 +96,7 @@ export default {
       let changePasswordMessage = prompt("Skriv inn e-post")
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       if (regex.test(changePasswordMessage)) {
-        await lendingService.forgotPassword(changePasswordMessage)
+        await loginRegistrationService.forgotPassword(changePasswordMessage)
           .then(response => {
             this.GStore.flashMessage = "Sent! Sjekk den oppgitte e-posten"
             this.GStore.variant = "Success"
@@ -121,6 +121,15 @@ export default {
         }, 4000)
       }
     },
+    async getGroupChat(){
+      await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId")))
+        .then(response => {
+          this.groups = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     async loginSubmit(){
       this.v$.$validate()
       if (this.v$.$error){
@@ -142,21 +151,13 @@ export default {
             console.log(localStorage.getItem("userId"))
             localStorage.setItem("provider","none")
             this.$store.dispatch("setLoggedIn",true)
+            this.getGroupChat()
             this.$router.push("/")
           })
           .catch(error => {
             console.error(error)
             alert("Nå skjedde det noe galt, prøv på nytt")
           });
-
-        await this.$router.push("/")
-        await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId")))
-        .then(response => {
-        this.groups = response.data
-        })
-        .catch(error => {
-        console.log(error)
-        })
   },
   }
 };

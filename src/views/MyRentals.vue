@@ -19,7 +19,7 @@
 
 <script>
 import RentalListComponent from "@/components/RentalListComponent";
-import lendingService from "@/services/lendingService";
+import rentalService from "@/services/rentalService";
 
 export default {
   name: "MyRentals",
@@ -37,8 +37,7 @@ export default {
     },
   },
   created() {
-      lendingService
-          .getHistoryRentalForUser(localStorage.getItem("userId"))
+      rentalService.getHistoryRentalForUser(localStorage.getItem("userId"))
           .then(response => {
             for (let i = 0; i < response.data.rentals.length; i++) {
               this.rentals.push(response.data.rentals[i])

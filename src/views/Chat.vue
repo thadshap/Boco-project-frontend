@@ -148,8 +148,8 @@ export default {
           })
       },
   async connect(){
-        var socket = new SockJS(`http://localhost:8443/ws/`);
-        var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
+        let socket = new SockJS(`http://localhost:8443/ws/`);
+        let options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
         console.log("creating socket")
         this.stompClient = Stomp.over(socket, options);
         console.log("connecting...")
@@ -182,7 +182,7 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
    },
     scroll(){
-        var content = this.$refs.chat
+        let content = this.$refs.chat
         content.scrollTop = content.scrollHeight
     }
 },
