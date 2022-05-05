@@ -8,7 +8,7 @@ export default {
      * @param deadline for cancelling the rental, 24 hours before rent starts
      * @param price
      */
-    createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderId, userId, adId) {
+    createRental(dateOfRental, rentFrom, rentTo, deadline, price, lenderEmail, userEmail, adId) {
         const options = {
             method: 'POST',
             url: `${url}${port}/rental/create`,
@@ -21,11 +21,11 @@ export default {
                 rentFrom: rentFrom,
                 rentTo: rentTo,
                 deadline: deadline,
-                //change to false when chat works TODO
-                active: 'true',
+                active: false,
                 price: price,
-                owner: lenderId,
-                borrower: userId,
+                isReviewed: false,
+                owner: lenderEmail,
+                borrower: userEmail,
                 adId: adId,
                 id: 0
             },
@@ -48,7 +48,7 @@ export default {
 
         return axios.request(options);
     },
-    deleteRental(rentalId) {
+    deleteRental(rentalId, description, rating) {
         const options = {
             method: 'DELETE',
             url: `${url}${port}/rental/delete/` + rentalId,
@@ -56,6 +56,10 @@ export default {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
+            data: {
+                rating: rating,
+                description: description
+            }
         };
 
         return axios.request(options);
