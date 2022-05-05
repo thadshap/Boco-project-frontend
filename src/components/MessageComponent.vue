@@ -1,13 +1,13 @@
 <template>
     <div class="d-flex message">
         <img class="profile-picture" v-bind:src="`data:${this.$props.type};base64,${this.$props.base64}`"/>
-        <div class="flex-grow-1 padding">
+        <div class="flex-grow-1 padding padding-top">
             <div class="text">
                 <span v-on:click="routeToProfile" class="name">{{firstName}}&nbsp;</span>
                 <span v-on:click="routeToProfile" class="name">{{lastName}}</span>
                 <span class="timestamp">&nbsp;{{timestamp}}</span>
             </div>
-            <div class="text">{{content}}</div>
+            <div class="text" v-html="editedContent"></div>
         </div>
     </div>
 </template>
@@ -45,6 +45,11 @@ export default {
             required: true,
         }
     },
+    data(){
+        return{
+            editedContent: this.$props.content
+        }
+    },
     methods:{
         routeToProfile(){
             if (this.$props.userId!=localStorage.getItem("userId")) {
@@ -54,7 +59,21 @@ export default {
                 this.$router.push("../my_profile")
             }
             
+        },
+        urlify() {
+            var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g
+            if (this.editedContent.match(urlRegex)) {
+                let urls = this.editedContent.match(urlRegex)
+                for (let i = 0; i < urls.length; i++) {
+                    let url = urls[i];
+                    url = url.link(url)
+                    this.editedContent = this.editedContent.replace(urlRegex, url);
+                }
+            }
         }
+    },
+    mounted(){
+        this.urlify()
     }
 }
 </script>
@@ -81,5 +100,8 @@ export default {
     text-decoration: underline;
     color: blue;
     cursor: pointer;
+}
+.padding-top{
+    padding-top: 0px;
 }
 </style>
