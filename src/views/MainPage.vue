@@ -181,7 +181,7 @@ export default {
     SubCategoryComponent,
     Pagination,
   },
-  async setup() {
+  setup() {
     const { coords } = geolocationForUser();
     const currPos = computed(() => ({
       lat: coords.value.latitude,
