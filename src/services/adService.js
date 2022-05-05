@@ -107,7 +107,7 @@ export default {
     getAllUnavailableDatesForAd(adId){
         const options = {
             method: 'POST',
-            url: `${url}${port}/api/calender/get`,
+            url: `${url}${port}/api/calendar/get`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
