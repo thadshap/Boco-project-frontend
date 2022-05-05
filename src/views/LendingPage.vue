@@ -143,7 +143,6 @@ import axios from "axios"
 import MainPage from "./MainPage";
 import categoryService from "@/services/categoryService";
 import adService from "@/services/adService";
-import lendingService from "@/services/lendingService";
 
 export default {
   inject: ["GStore"],
@@ -235,8 +234,18 @@ export default {
       this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
+        let adId;
 
-        let adId = await adService.postNewAd(this.state.title,this.state.description,1,this.state.price,this.state.streetAddress,this.state.postalCode, this.idToCategory)
+        await adService
+          .postNewAd(
+            this.state.title,
+            this.state.description,
+            1,
+            this.state.price,
+            this.state.streetAddress,
+            this.state.postalCode,
+            this.idToCategory
+          )
           .then(response => {
             this.GStore.flashMessage = "Annonsen ble opprettet!"
             this.GStore.variant = "Success"
@@ -248,7 +257,8 @@ export default {
               name: "MainPage",
               component: MainPage,
             });
-          }).catch(error => {
+          })
+          .catch(error => {
             this.GStore.flashMessage = "Anonsen ble ikke opprettet!"
             this.GStore.variant = "Error"
             setTimeout(() => {
@@ -257,8 +267,15 @@ export default {
             console.log(error)
           })
 
-        await lendingService
-          .uploadPictureForAd(adId, this.imgFiles)
+
+        let formdata = new FormData()
+
+        for(let i = 0; i < this.imgFiles.length; i++) {
+          formdata.append("files", this.imgFiles[i])
+        }
+
+        await adService
+          .uploadPicturesForAd(adId, formdata)
           .then(response => {
             console.log(response)
           })
@@ -304,20 +321,23 @@ export default {
 
       if (name == '--Velg kategori--') this.isSubCategory = false
       else {
-        await categoryService.getAllSubCategoriesForCategory(name).then(response => {
-          this.subCategories = response.data
-          this.isSubCategory = true
-          this.idToCategory = this.categoriesId
-        }).catch(error => {
-          this.isSubCategory = false
-          this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
-          this.GStore.variant = "Error"
-          setTimeout(() => {
-            this.GStore.flashMessage = ""
-          }, 4000)
-          console.log(error)
-        })
-      }
+        await categoryService
+          .getAllSubCategoriesForCategory(name)
+          .then(response => {
+            this.subCategories = response.data
+            this.isSubCategory = true
+            this.idToCategory = this.categoriesId
+          })
+          .catch(error => {
+            this.isSubCategory = false
+            this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
+        }
     },
     resetClickedSubCategories(){
       this.isSubSubCategory = false

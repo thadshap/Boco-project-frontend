@@ -68,19 +68,17 @@ export default {
      * @param adId API call for adding picture have adId in the return, which is what you sends to add picture afterwards
      * @param pictureLink is the link to the picture, example format: 'C:UsersKarolOneDriveDiversePicturesdayEivind_Hellstrom.jpg'
      */
-    uploadPictureForAd(adId, pictureLink){
-        const form = new FormData();
-        form.append("multipartFile", pictureLink);
-        form.append("id", adId);
+    uploadPicturesForAd(adId, pictures){
+        let userId = localStorage.getItem("userId");
 
         const options = {
             method: 'POST',
-            url: `${url}${port}/api/auth/ads/newPicture`,
+            url: `${url}${port}/auth/ads/newPicture/${userId}/${adId}`,
             headers: {
                 'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
-            data: '[form]'
+            data: [pictures]
         };
         return axios.request(options);
     },
