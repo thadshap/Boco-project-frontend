@@ -36,10 +36,10 @@ export default {
     /**
      * Method to activate a rental when the lender has accepted the request
      */
-    activateRental(rentalId) {
+    approveRental(rentalId) {
         const options = {
-            method: 'PUT',
-            url: `${url}${port}/rental/` + rentalId,
+            method: 'PATCH',
+            url: `${url}${port}/rental/activate` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
@@ -48,13 +48,13 @@ export default {
 
         return axios.request(options);
     },
-    deleteRental(rentalId) {
+    declineRental(rentalId) {
         const options = {
-            method: 'DELETE',
-            url: `${url}${port}/rental/delete/` + rentalId,
+            method: "DELETE",
+            url: `${url}${port}/rental/decline/` + rentalId,
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("token"),
             },
         };
 
