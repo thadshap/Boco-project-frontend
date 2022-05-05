@@ -274,7 +274,8 @@ export default {
           })
     },
     async getRandomAds(){
-      await adsService.getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
+      await adsService
+        .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
