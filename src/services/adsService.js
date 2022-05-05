@@ -48,7 +48,7 @@ export default {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+ localStorage.getItem("token")
     },
-        data: {lat: lat, lng: lng}
+        data: {"lat": lat, "lng": lng}
     };
 
         return axios.request(options);

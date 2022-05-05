@@ -8,29 +8,27 @@
       class="text-center"
     >
 
-
     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
           <div class="images-wrapper">
-            <img v-for="picture in pictures" :src="picture" :key="picture">
+            <img :src="pictures[pictureIndex]" style="width:60vh; height:auto" alt="Bilde av gjenstand.">
           </div>
         </div>
       </div>
-      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+    </div>
+      <a class="carousel-control-prev" v-on:click="nextImage" href="#carouselExampleControls" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
       </a>
-      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+      <a class="carousel-control-next" v-on:click="prevImage" href="#carouselExampleControls" role="button" data-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
+  
+    
     </div>
-      
-
-
-    </div>
-    <div class="text-center">
+    <div class="text-center pt-2">
       <label class="form-label">
         <label class="defined-label">Leiepris</label> : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
@@ -42,13 +40,12 @@
       </label>
     </div>
     </div>
-    <div class="text-center mb-4" v-if="!usersOwnAddress">
+    <div class="text-center mb-4">
       <button
         id="startChatButton"
         class="btn btn-primary"
         type="button"
         v-on:click="startChat"
-        :disabled="!this.userLoggedIn"
       >
         Send melding
       </button>
@@ -57,12 +54,11 @@
         class="btn btn-primary"
         type="button"
         v-on:click="makeRequest"
-        :disabled="!this.userLoggedIn"
       >
         Forespør lån
       </button><br>
       <div id="time" class="text-center mt-3" v-if="showRequestDetails">
-        <label class="defined-label">Tidsperiode </label>
+        <label class="defined-label">Tidsperiode </label>>
         <div class="date-container">
         <Datepicker class="date-input" v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button
@@ -167,15 +163,13 @@ export default {
   name: "DetailedAd",
   data() {
     return {
-      usersOwnAddress: false,
-      userLoggedIn: false,
       date: null,
       showRightArrow: true,
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
-      userEmail: "",
       reviews: [],
+      pictureIndex:0,
       disable: [new Date()],
       pictures: [],
       ad: {},
@@ -183,22 +177,18 @@ export default {
     };
   },
   async created() {
-    await this.checkLoggedIn()
     await this.getCurrentAd();
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
     await this.getAdPictures();
     this.setLenderId();
-    if(this.ad.userId == localStorage.getItem('userId')){
-      this.usersOwnAddress = true;
-    }
   },
   setup() {
-    const projection = ref("EPSG:4326")
-    const zoom = ref(8)
-    const rotation = ref(0)
-    const strokeWidth = ref(10)
+    const projection = ref("EPSG:4326");
+    const zoom = ref(8);
+    const rotation = ref(0);
+    const strokeWidth = ref(10);
     return {
       projection,
       zoom,
@@ -210,9 +200,9 @@ export default {
   methods: {
     async getCurrentAd(){
       await adService.getAdById(this.$store.getters.currentAd.id).then(response => {
-        this.ad = response.data
+        this.ad = response.data;
       }).catch(error => {
-        console.log(error)
+        console.log(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -220,13 +210,19 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      //this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
     },
-    checkLoggedIn() {
-      if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
-        this.userLoggedIn = true
-      } else {
-        this.userLoggedIn = false
+    nextImage(){
+      if(this.pictureIndex==this.pictures.length-1){
+        this.pictureIndex=0;
+      }else{
+        this.pictureIndex++
+      }
+    },
+    prevImage(){
+      if(this.pictureIndex==0){
+          this.pictureIndex=this.pictures.length-1;
+      }else{
+        this.pictureIndex--
       }
     },
     getDurationTypeToNorwegian(){
@@ -271,7 +267,7 @@ export default {
     },
     async getUnavailableDates(){
       await adService.getAllUnavailableDatesForAd(1).then(response => {
-        console.log("her er datoene" + response.data)
+        console.log(response.data)
         this.disable = response.data;
       }).catch(error => {
         console.log(error);
@@ -335,20 +331,7 @@ export default {
       }
       this.showRequestDetails = !this.showRequestDetails;
     },
-    async getUserEmail(){
-      await userService.getUserById(localStorage.getItem("userId"),).then(response => {
-        this.userEmail = response.data.email
-      }).catch(error => {
-        console.log(error);
-        this.GStore.flashMessage = "Fikk ikke hentet emailen din"
-        this.GStore.variant = "Error"
-        setTimeout(() => {
-          this.GStore.flashMessage = ""
-        }, 4000)
-      })
-    },
     async sendRequest(){
-      await this.getUserEmail()
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
       const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
@@ -359,9 +342,9 @@ export default {
           datefrom,
           dateto,
           datefrom,
-          Math.round(price),
-          this.lender.email,
-          this.userEmail,
+          price,
+          this.lender.id,
+          localStorage.getItem("userId"),
           this.$store.getters.currentAd.id
       ).then(response => {
         console.log(response)
@@ -485,6 +468,9 @@ button{
     justify-items: center;
     font-size: 1.4vh;
   }
+  .images-wrapper{
+
+  }
   .material-icons{
     cursor: pointer;
     color: #0EA0FF;
@@ -497,6 +483,20 @@ button{
     display: grid;
     justify-items: center;
   }
+  .cards-wrapper {
+  display: flex;
+  justify-content: center;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  background-color: #e1e1e1;
+  width: 5vh;
+  height: 5vh;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
   hr{
     margin: 5px;
     background-color: #0EA0FF;
