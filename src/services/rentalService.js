@@ -78,7 +78,7 @@ export default {
     getRentalById(rentalId) {
         const options = {
             method: 'GET',
-            url: `${url}${port}/auth/rental/` + rentalId,
+            url: `${url}${port}/rental/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
