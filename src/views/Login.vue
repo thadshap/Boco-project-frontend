@@ -121,6 +121,15 @@ export default {
         }, 4000)
       }
     },
+    async getGroupChat(){
+      await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId")))
+        .then(response => {
+          this.groups = response.data
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
     async loginSubmit(){
       this.v$.$validate()
       if (this.v$.$error){
@@ -142,21 +151,13 @@ export default {
             console.log(localStorage.getItem("userId"))
             localStorage.setItem("provider","none")
             this.$store.dispatch("setLoggedIn",true)
+            this.getGroupChat()
             this.$router.push("/")
           })
           .catch(error => {
             console.error(error)
             alert("Nå skjedde det noe galt, prøv på nytt")
           });
-
-        await this.$router.push("/")
-        await chatService.getGroupChatsByUserId(parseInt(localStorage.getItem("userId")))
-        .then(response => {
-        this.groups = response.data
-        })
-        .catch(error => {
-        console.log(error)
-        })
   },
   }
 };

@@ -141,23 +141,26 @@ export default {
     },
     changeUserInfo:async function(){
       let userId = localStorage.getItem("userId")
-      await userService.updateUser(this.state.firstnameChange,this.state.lastnameChange,this.state.passwordChange,userId)
-      .then(response => {
-        this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
-        this.GStore.variant = "Success"
-        setTimeout(() => {
-          this.GStore.flashMessage = ""
-        }, 4000)
-        console.log(response)
-      }).catch(error => {
-          this.GStore.flashMessage = "Fikk ikke endret bruker informasjonen!"
-          this.GStore.variant = "Error"
-          setTimeout(() => {
-            this.GStore.flashMessage = ""
-          }, 4000)
-          console.log(error)
-        })
-
+      if (this.state.firstnameChange !== '' || this.state.lastnameChange !== '' || this.state.passwordChange !== '') {
+        await userService.updateUser(this.state.firstnameChange, this.state.lastnameChange, this.state.passwordChange, userId)
+          .then(response => {
+            this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
+            this.GStore.variant = "Success"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(response)
+          }).catch(error => {
+            this.GStore.flashMessage = "Fikk ikke endret bruker informasjonen!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
+      }
+      console.log(this.changedImg)
+      if (this.changedImg === true){
       let formdata = new FormData()
       formdata.append("file", this.imgFile)
 
@@ -174,9 +177,9 @@ export default {
           }, 4000)
           console.log(error)
         })
+      }
     },
     disableChangeBtn(){
-      console.log("img text: " + this.changedImg)
       if (this.changedImg === true) this.disableBtn = false
       else if (this.state.firstnameChange === '' && this.state.lastnameChange === '' && this.state.passwordChange === '' && this.state.repeatPasswordChange === '' || this.v$.$error) this.disableBtn = true
       else if (this.state.passwordChange === '' && this.state.repeatPasswordChange !== '' || this.state.passwordChange !== '' && this.state.repeatPasswordChange === '') this.disableBtn = true
@@ -190,6 +193,7 @@ export default {
       this.imgFile = file;
       this.img = URL.createObjectURL(file);
       this.changedImg = true
+
     },
     existingUserImg(){
       userService
@@ -214,7 +218,9 @@ export default {
         this.state.repeatPasswordChange = ""
         this.changedImg = false
         this.disableBtn = true
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 4000)
       }
     },
     async deleteUser(){
