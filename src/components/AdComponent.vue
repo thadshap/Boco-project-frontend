@@ -13,7 +13,7 @@
           <h5 class="opacity-75"><i class="fas fa-map-marked-alt"></i> {{ place }}</h5>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
-          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn && !checkIfMyAd" @click="startChat">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="!this.$data.isMyAd" @click="startChat">
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Send melding
           </a>
@@ -31,6 +31,14 @@
 import chatService from "@/services/chatService";
 export default {
   name: "AdComponent",
+  created() {
+    this.checkIfMyAd()
+  },
+  data(){
+    return{
+      isMyAd:false,
+    }
+  },
   props: {
     id: {
       type: Number,
@@ -80,8 +88,7 @@ export default {
       })
     },
     checkIfMyAd(){
-      return parseInt(localStorage.getItem("userId")) === this.userId;
-
+      this.$data.isMyAd = parseInt(localStorage.getItem("userId")) === this.$props.userId;
     },
     async startChat() {
       if (this.$store.getters.loggedIn) {
