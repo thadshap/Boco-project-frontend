@@ -43,7 +43,7 @@
               <br>
             </div>
             <div class="d-inline-flex w-100 password-container">
-              <label class="form-label password-label">Deadline</label>
+              <label class="form-label password-label">Avlysningsfrist</label>
               <text class="user-input" >{{ this.deadline }}</text>
             </div>
             <div>
@@ -66,7 +66,6 @@
 import rentalService from "@/services/rentalService";
 
 export default {
-  inject: ["GStore"],
   name: "ResetPassword",
   data(){
     return{
@@ -82,67 +81,34 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.query.page)
-    rentalService.getRentalById(this.$route.query.page)
+    rentalService.getRentalById(this.$route.query.rentalId)
         .then(response => {
-          this.dateOfRental = response.data.dateOfRental,
-          this.rentFrom =  response.data.rentFrom,
-          this.rentTo = response.data.rentTo,
-          this.deadline = response.data.deadline,
-          this.price = response.data.price,
-          this.borrower = response.data.borrower,
-          this.title = response.data.title,
-          this.adId = response.data.adId,
-          this.id = response.data.id,
-          // this.GStore.flashMessage = "Passoret har blitt endret!"
-          // this.GStore.variant = "Success"
-          // setTimeout(() => {
-          //   this.GStore.flashMessage = ""
-          // }, 4000)
-          console.log(response)
-        }).catch(error => {
-      // this.GStore.flashMessage = "Fikk ikke endret passordet!"
-      // this.GStore.variant = "Error"
-      // setTimeout(() => {
-      //   this.GStore.flashMessage = ""
-      // }, 4000)
-      console.log(error)
-    })
+          this.dateOfRental = response.data.dateOfRental
+          this.rentFrom =  response.data.rentFrom
+          this.rentTo = response.data.rentTo
+          this.deadline = response.data.deadline
+          this.price = response.data.price
+          this.borrower = response.data.borrower
+          this.title = response.data.title
+          this.adId = response.data.adId
+          this.id = response.data.id
+        })
+        .catch(error => {
+          console.log(error)
+        })
   },
-  methods:{
+  methods: {
     back() {
       this.$router.go(-1)
     },
-    },
-    approve(){
-    console.log("approve")
+    approve() {
+      console.log("approve")
       //TODO approve the rental
-      //this.changePassword()
-      // setTimeout(() => {
-      //   this.GStore.flashMessage = ""
-      // }, 60000)
-      // this.state.passwordChange = ""
-      // this.state.repeatPasswordChange = ""
-      // this.disableBtn = true
-      // this.$router.push({
-      //   name: "MainPage",
-      //   component: MainPage,
-      // });
     },
-  decline(){
-    console.log("dont approve")
-    //TODO decline the rental
-    //this.changePassword()
-    // setTimeout(() => {
-    //   this.GStore.flashMessage = ""
-    // }, 60000)
-    // this.state.passwordChange = ""
-    // this.state.repeatPasswordChange = ""
-    // this.disableBtn = true
-    // this.$router.push({
-    //   name: "MainPage",
-    //   component: MainPage,
-    // });
+    decline() {
+      console.log("dont approve")
+      //TODO decline the rental
+    }
   }
 };
 </script>
