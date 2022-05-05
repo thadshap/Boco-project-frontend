@@ -46,13 +46,13 @@ export default {
             id: response.data[i].adId,
             title: response.data[i].title,
             place: response.data[i].postalCode.toString(),
-            price: response.data[i].price
+            price: response.data[i].price,
+            userId: response.data[i].userId
           }
           this.ads.push(ad)
         }
       })
       for(let i = 0; i < this.ads.length; i++) {
-        console.log(this.ads[i])
         await adService
           .getPicturesForAd(this.ads[i].id)
           .then(response => {

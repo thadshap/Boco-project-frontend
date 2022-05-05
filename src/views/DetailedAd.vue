@@ -7,9 +7,28 @@
       id="adPictureDiv"
       class="text-center"
     >
-      <img v-for="picture in pictures" :src="picture" :key="picture">
+
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="images-wrapper">
+            <img :src="pictures[pictureIndex]" style="width:60vh; height:auto" alt="Bilde av gjenstand.">
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="text-center">
+      <a class="carousel-control-prev" v-on:click="nextImage" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" v-on:click="prevImage" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+
+
+    </div>
+    <div class="text-center pt-2">
       <label class="form-label">
         <label class="defined-label">Leiepris</label> : {{ ad.price }} kr pr/{{ ad.durationType }}
       </label>
@@ -159,6 +178,7 @@ export default {
       showRequestDetails: false,
       userEmail: "",
       reviews: [],
+      pictureIndex:0,
       disable: [new Date()],
       pictures: [],
       ad: {},
@@ -217,6 +237,20 @@ export default {
         this.userLoggedIn = false
       }
     },
+    nextImage(){
+      if(this.pictureIndex==this.pictures.length-1){
+        this.pictureIndex=0;
+      }else{
+        this.pictureIndex++
+      }
+    },
+    prevImage(){
+      if(this.pictureIndex==0){
+        this.pictureIndex=this.pictures.length-1;
+      }else{
+        this.pictureIndex--
+      }
+    },
     getDurationTypeToNorwegian(){
       if (this.ad.durationType == 'MONTH'){
         this.ad.durationType = "måned"
@@ -230,7 +264,6 @@ export default {
     },
     async getReviews(){
       await reviewService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
-        console.log(response.data)
         this.reviews = response.data;
         for(let i=0; i<response.data.length; i++){
           this.setNameOfUserLeftReview(response.data[i].userId, i)
@@ -260,7 +293,6 @@ export default {
     },
     async getUnavailableDates(){
       await adService.getAllUnavailableDatesForAd(1).then(response => {
-        console.log(response.data)
         this.disable = response.data;
       }).catch(error => {
         console.log(error);
@@ -291,7 +323,7 @@ export default {
           var users = [userId,this.lender.id]
           await chatService.createGroupChat(this.ad.title, users)
           .then(response => {
-            groupId = response.data // TODO: add .groupId when backend is fixed
+            groupId = response.data.groupId
           })
           .catch(error =>{
             console.log(error)
@@ -486,6 +518,20 @@ button{
     display: grid;
     justify-items: center;
   }
+  .cards-wrapper {
+  display: flex;
+  justify-content: center;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  background-color: #e1e1e1;
+  width: 5vh;
+  height: 5vh;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
   hr{
     margin: 5px;
     background-color: #0EA0FF;

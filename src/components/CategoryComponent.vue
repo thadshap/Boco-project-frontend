@@ -3,7 +3,7 @@
     <div
       class=" d-flex flex-column justify-content-center align-items-center card-body-style"
     >
-      <i :class="['fa', 'icon-style', icon]"></i>
+      <i :class="['icon-style', icon]"></i>
       <h4 class="card-title title-style">{{ title }}</h4>
 
     </div>
@@ -33,6 +33,12 @@ export default {
 </script>
 
 <style scoped>
+@import url('../../node_modules/fontawesome-free/css/all.css');
+@import url('../../node_modules/fontawesome-free/css/brands.css');
+@import url('../../node_modules/fontawesome-free/css/fontawesome.css');
+@import url('../../node_modules/fontawesome-free/css/v4-shims.css');
+@import url('../../node_modules/fontawesome-free/css/solid.css');
+
 .card-style {
   width: max-content;
   margin: 5px;
