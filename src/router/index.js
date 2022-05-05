@@ -16,7 +16,6 @@ import MyRentals from "@/views/MyRentals";
 import UserProfile from "@/views/UserProfile";
 import { redirectGuard } from "@/helpers/redirect.guard";
 import ApproveRental from "@/views/ApproveRental";
-import {rentalApprovalGuard} from "@/helpers/rentalApproval.guard";
 
 const routes = [
   {
@@ -68,7 +67,7 @@ const routes = [
     path: "/approve_rental",
     name: "ApproveRental",
     component: ApproveRental,
-    beforeEnter: rentalApprovalGuard
+    beforeEnter: authGuard
   },
   {
     path: "/groups",
