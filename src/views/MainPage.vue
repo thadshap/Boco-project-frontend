@@ -470,7 +470,7 @@ export default {
         return
       }
       await adsService
-        .getAdsBySearch(this.searchWord)
+        .getAdsBySearch(this.searchWord, this.currPos.lat, this.currPos.lng)
         .then(res => {
           this.sortedAds = []
           for(let i = 0; i < res.data.length; i++) {
@@ -479,7 +479,10 @@ export default {
               title: res.data[i].title,
               place: res.data[i].city,
               price: res.data[i].price,
-              userId: res.data[i].userId
+              userId: res.data[i].userId,
+              lat: res.data[i].lat,
+              lng: res.data[i].lng,
+              distance: res.data[i].distance,
             }
             this.sortedAds.push(ad)
           }
