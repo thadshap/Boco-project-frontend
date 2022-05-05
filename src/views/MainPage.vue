@@ -377,87 +377,6 @@ export default {
     setNrOfPages(adArray) {
       this.totalPages = Math.ceil(adArray.length / this.adsPerPage);
     },
-    async getMainCategories() {
-      // Checks if main categories has already been requested from server
-      if (this.$store.getters.getMainCategories.length === 0) {
-        let mainCategories = [];
-
-        await categoryService
-          .getAllParentCategories()
-          .then((response) => {
-            console.log(response.data)
-            if (response.status !== 204) {
-              for (let i = 0; i < response.data.length; i++) {
-                let cat = {
-                  title: response.data[i].name,
-                  icon: response.data[i].icon,
-                };
-                mainCategories.push(cat);
-              }
-            } else {
-              console.log("Fikk ingen kategorier fra server...");
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-
-        this.categories = mainCategories;
-        this.$store.dispatch("setMainCategories", mainCategories);
-      } else {
-        this.categories = this.$store.getters.getMainCategories;
-      }
-
-      await this.getSubCategories();
-    },
-    async getSubCategories() {
-      let subCategories = [];
-
-      for (let i = 0; i < this.$store.getters.getMainCategories.length; i++) {
-        await categoryService
-          .getAllSubCategoriesForCategory(
-            this.$store.getters.getMainCategories[i].title
-          )
-          .then((response) => {
-            for (let i = 0; i < response.data.length; i++) {
-              let cat = {
-                parentCat: response.data[i].parentName,
-                title: response.data[i].name,
-              };
-              subCategories.push(cat);
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-      this.$store.dispatch("setSubCategories", subCategories);
-      await this.getSubSubCategories();
-    },
-    async getSubSubCategories() {
-      let subSubCategories = [];
-
-      for (let i = 0; i < this.$store.getters.getSubCategories.length; i++) {
-        await categoryService
-          .getAllSubCategoriesForCategory(this.$store.getters.getSubCategories[i].title)
-          .then((response) => {
-            if (response.status === 200) {
-              // console.log(response.data)
-              for (let i = 0; i < response.data.length; i++) {
-                let cat = {
-                  parentCat: response.data[i].parentName,
-                  title: response.data[i].name,
-                };
-                subSubCategories.push(cat);
-              }
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-      this.$store.dispatch("setSubSubCategories", subSubCategories);
-    },
     async chosenMainCat(title) {
       this.titleHeader = "Gjenstander for utlån i kategorien " + title;
       this.disableSortingAndFiltering = true;
@@ -465,6 +384,14 @@ export default {
       this.chosenMainCategory = title;
       this.subCategories = [];
       this.subSubCategories = [];
+
+      for (let i = 0; i < this.$store.getters.getSubCategories.length; i++) {
+        if (this.$store.getters.getSubCategories[i].parentCat === title) {
+          this.subCategories.push(
+            this.$store.getters.getSubCategories[i].title
+          );
+        }
+      }
 
       await categoryService
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
@@ -494,66 +421,6 @@ export default {
 
       this.setNrOfPages(this.sortedAds)
       await this.displayAds(1, this.sortedAds);
-
-
-      // Checks if subcategories has been requested from server
-      if (this.$store.getters.getSubCategories.length === 0) {
-        let subCategories = [];
-
-        for (let i = 0; i < this.$store.getters.getMainCategories.length; i++) {
-          await categoryService
-            .getAllSubCategoriesForCategory(
-              this.$store.getters.getMainCategories[i].title
-            )
-            .then((response) => {
-              for (let i = 0; i < response.data.length; i++) {
-                let cat = {
-                  parentCat: response.data[i].parentName,
-                  title: response.data[i].name,
-                };
-                subCategories.push(cat);
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-
-        let categoriesToDisplay = []
-
-        for(let i = 0; i < subCategories.length; i++) {
-          if(subCategories[i].parentCat === title) {
-            categoriesToDisplay.push(subCategories[i].title)
-          }
-        }
-
-        this.subCategories = categoriesToDisplay
-        this.$store.dispatch("setSubCategories", subCategories);
-      } else {
-        console.log("Inside else block in chosen main cat");
-        this.subCategories = [];
-        for (let i = 0; i < this.$store.getters.getSubCategories.length; i++) {
-          if (this.$store.getters.getSubCategories[i].parentCat === title) {
-            this.subCategories.push(
-              this.$store.getters.getSubCategories[i].title
-            );
-          }
-        }
-      }
-    },
-    async getPictureForAd() {
-      for (let i = 0; i < this.ads.length; i++) {
-        await adService
-          .getPictureForAd(this.ads[i].id)
-          .then((response) => {
-            this.ads[
-              i
-            ].img = `data:${response.data.type};base64,${response.data.base64}`;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
     },
     async chosenSubCat(subCat) {
       this.titleHeader = "Gjenstander for utlån i kategorien " + subCat;
@@ -562,53 +429,15 @@ export default {
       this.chosenSubCategory = subCat;
       this.subSubCategories = [];
 
-      // Checks if subsubcategories has already been requested from server
-      if (this.$store.getters.getSubSubCategories.length === 0) {
-        console.log("Inside if block in chosen sub cat");
-        let subSubCategories = [];
-
-        for (let i = 0; i < this.$store.getters.getSubCategories.length; i++) {
-          await categoryService
-            .getAllSubCategoriesForCategory(this.$store.getters.getSubCategories[i].title)
-            .then((response) => {
-              if (response.status === 200) {
-                // console.log(response.data)
-                for (let i = 0; i < response.data.length; i++) {
-                  let cat = {
-                    parentCat: response.data[i].parentName,
-                    title: response.data[i].name,
-                  };
-                  subSubCategories.push(cat);
-                }
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }
-
-        let categoriesToDisplay = []
-
-        for(let i = 0; i < subSubCategories.length; i++) {
-          if(subSubCategories[i].parentCat === subCat) {
-            categoriesToDisplay.push(subSubCategories[i].title)
-          }
-        }
-
-        this.subSubCategories = categoriesToDisplay;
-        this.$store.dispatch("setSubSubCategories", subSubCategories);
-      } else {
-        console.log("Inside else block in chosen sub cat");
-        this.subSubCategories = [];
-        for (let i = 0; i < this.$store.getters.getSubSubCategories.length; i++) {
-          if (this.$store.getters.getSubSubCategories[i].parentCat === subCat) {
-            console.log(this.$store.getters.getSubSubCategories[i])
-            this.subSubCategories.push(
-              this.$store.getters.getSubSubCategories[i].title
-            );
-          }
+      for (let i = 0; i < this.$store.getters.getSubSubCategories.length; i++) {
+        if (this.$store.getters.getSubSubCategories[i].parentCat === subCat) {
+          console.log(this.$store.getters.getSubSubCategories[i])
+          this.subSubCategories.push(
+            this.$store.getters.getSubSubCategories[i].title
+          );
         }
       }
+
       await categoryService
           .getAllAdsForCategoryAndSubCategories(subCat, this.currPos)
           .then(response => {
@@ -664,8 +493,68 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+
       this.setNrOfPages(this.sortedAds)
       await this.displayAds(1, this.sortedAds);
+    },
+    async getPictureForAd() {
+      for (let i = 0; i < this.ads.length; i++) {
+        await adService
+          .getPictureForAd(this.ads[i].id)
+          .then((response) => {
+            this.ads[
+              i
+              ].img = `data:${response.data.type};base64,${response.data.base64}`;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    async getAllCategories() {
+      if(this.$store.getters.getMainCategories.length !== 0) {
+        console.log("Already in store!!")
+        return
+      }
+
+      await categoryService
+        .getAllCategories()
+        .then(response => {
+          let mainCategories = [];
+          let subCategories = [];
+          let subSubCategories = [];
+          for(let i = 0; i < response.data.length; i++) {
+            switch (response.data[i].level) {
+              case 1:
+                mainCategories.push({
+                  title: response.data[i].name,
+                  icon: response.data[i].icon
+                })
+                break;
+              case 2:
+                subCategories.push({
+                  parentCat: response.data[i].parentName,
+                  title: response.data[i].name
+                })
+                break;
+              case 3:
+                subSubCategories.push({
+                  parentCat: response.data[i].parentName,
+                  title: response.data[i].name
+                })
+                break;
+            }
+            this.$store.dispatch("setMainCategories", mainCategories)
+            this.$store.dispatch("setSubCategories", subCategories)
+            this.$store.dispatch("setSubSubCategories", subSubCategories)
+
+            this.categories = []
+            this.categories = mainCategories
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
     },
 
     async search() {
@@ -707,11 +596,10 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   async mounted() {
+    await this.getAllCategories();
     await this.getRandomAds();
     await this.setNrOfPages(this.cachedAds);
     await this.displayAds(1, this.cachedAds);
-
-    await this.getMainCategories();
   },
 };
 </script>
