@@ -10,7 +10,7 @@
       <div class="text-end">
         <div class="w-100 user-info-container">
           <div class="header-container">
-            <div class="header">Bekreft Leieforhold</div>
+            <div class="header">Bekreft leieforhold</div>
             <div>Venligst bekreft eller avslå leieforhold.</div>
           </div>
           <div class="me-auto w-100 user-info">
@@ -78,10 +78,14 @@ export default {
       title: "",
       adId: null,
       id: null,
+      rentalId:""
     };
   },
   mounted() {
-    rentalService.getRentalById(this.$route.query.rentalId)
+    //kan legges til en sjekk her for å se at det ikke er noe suspekt
+    //med det som er skrevet i url-en
+    this.rentalId = this.$route.query.rentalId
+    rentalService.getRentalById(this.rentalId)
         .then(response => {
           this.dateOfRental = response.data.dateOfRental
           this.rentFrom =  response.data.rentFrom
@@ -101,13 +105,31 @@ export default {
     back() {
       this.$router.go(-1)
     },
-    approve() {
+    async approve() {
       console.log("approve")
-      //TODO approve the rental
+      //TODO approve the rental, gjøre boolean til false i store
+      await rentalService.approveRental(this.rentalId)
+      .then(response => {
+        if(response.status === 200){
+          alert("Leieforholdet er nå godtatt")
+          this.$router.push("/profile/my_rentals")
+        }
+      })
+      this.$store.dispatch("setRentalApprovalInProgress",false)
     },
-    decline() {
-      console.log("dont approve")
-      //TODO decline the rental
+    async decline() {
+      await rentalService.declineRental(this.rentalId)
+      .then(response => {
+        if(response.status === 200){
+          alert("Leieforholdet er nå avslått")
+          this.$router.push("/")
+        }
+      })
+      .catch(error => {
+        console.error(error)
+      })
+      console.log(2)
+      this.$store.dispatch("setRentalApprovalInProgress",false)
     }
   }
 };
