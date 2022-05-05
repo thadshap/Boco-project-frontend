@@ -249,7 +249,6 @@ export default {
       await this.displayAds(1, this.sortedAds);
     },
     async filter(filterType) {
-      //TODO fiks det her
       this.showMenuBarFiltering = false;
       if (this.currentCategoryName !== "") {
         await this.filterWithCategory(filterType);
@@ -493,6 +492,7 @@ export default {
           console.log(error);
         });
 
+      this.setNrOfPages(this.sortedAds)
       await this.displayAds(1, this.sortedAds);
 
 
@@ -633,6 +633,7 @@ export default {
             console.log(error)
           })
 
+      this.setNrOfPages(this.sortedAds)
       await this.displayAds(1, this.sortedAds);
     },
     async chosenSubSubCat(subSubCat) {
@@ -663,6 +664,8 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      this.setNrOfPages(this.sortedAds)
+      await this.displayAds(1, this.sortedAds);
     },
 
     async search() {
@@ -704,11 +707,11 @@ export default {
     $route: "getAdsWhenOnMainpage",
   },
   async mounted() {
-    await this.getMainCategories();
     await this.getRandomAds();
-
     await this.setNrOfPages(this.cachedAds);
     await this.displayAds(1, this.cachedAds);
+
+    await this.getMainCategories();
   },
 };
 </script>
