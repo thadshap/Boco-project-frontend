@@ -9,7 +9,6 @@ export default createStore({
     groupName: null,
     groupId: null,
     messages: [],
-    rentalApprovalInProgress: false
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
@@ -17,9 +16,6 @@ export default createStore({
     },
     SET_CURRENT_AD(state, currentAd) {
       state.currentAd = currentAd
-    },
-    SET_RENTAL_APPROVAL_IN_PROGRESS(state, bool){
-      state.rentalApprovalInProgress = bool
     },
     // SET_CHOSEN_MAIN_CATEGORY(state, chosenMainCategory) {
     //   state.chosenMainCategory = chosenMainCategory;
@@ -47,9 +43,6 @@ export default createStore({
     setCurrentAd({ commit }, currentAd) {
       commit("SET_CURRENT_AD", currentAd)
     },
-    setRentalApprovalInProgress({commit},bool){
-      commit("SET_RENTAL_APPROVAL_IN_PROGRESS", bool)
-    },
     // setChosenMainCategory({ commit }, chosenMainCategory) {
     //   commit("SET_CHOSEN_MAIN_CATEGORY", chosenMainCategory);
     // },
@@ -72,9 +65,6 @@ export default createStore({
   getters: {
     loggedIn(state) {
       return state.isLoggedIn;
-    },
-    rentalApprovalInProgress(state){
-      return state.rentalApprovalInProgress
     },
     // chosenMainCategory(state) {
     //   return state.chosenMainCategory;
