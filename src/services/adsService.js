@@ -57,16 +57,20 @@ export default {
      *      or category will be filtered by the searchString
      * @param searchString is the string who ads will be filtered by
      */
-    getAdsBySearch(searchString) {
+    getAdsBySearch(searchString, lat, lng) {
         const options = {
-            method: "GET",
-            url: `${url}${port}/api/search/` + searchString,
+            method: 'POST',
+            url: 'http://localhost:8443/api/search/' + searchString,
             headers: {
-                "Content-Type": "application/json"
-            },
-        };
+                cookie: 'JSESSIONID=616BD12D32FD5D5C9895AE82DDC4F493',
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer '
+    },
+        data: {lat: lat, lng: lng}
+    };
 
         return axios.request(options);
+
     },
     getAdsByRentalType(){
         const options = {

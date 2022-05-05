@@ -10,7 +10,7 @@
                 <div class="flex-column temp">
                     <button v-on:click="showPopup" class="leave"><i class="fa fa-times-circle "></i></button>
                 <button class="flex-row groupButton" v-on:click="goToChat">
-                    <div class="groupName">{{groupName}}</div>  
+                    <div class="groupName">{{groupName}}</div>
                 </button>
                 </div>
             </div>

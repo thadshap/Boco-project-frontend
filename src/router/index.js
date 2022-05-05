@@ -54,6 +54,7 @@ const routes = [
     path: "/ad/:id",
     name: "Ad",
     component: DetailedAd,
+    props: true
   },
   {
     path: "/chat/:id",
