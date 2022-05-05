@@ -47,7 +47,7 @@ export default {
             headers: {
                 'Content-Type': 'application/json'
     },
-        data: {lat: lat, lng: lng}
+        data: {"lat": lat, "lng": lng}
     };
 
         return axios.request(options);
