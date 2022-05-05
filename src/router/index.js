@@ -15,6 +15,7 @@ import { authGuard } from "@/helpers/auth.guard";
 import MyRentals from "@/views/MyRentals";
 import UserProfile from "@/views/UserProfile";
 import { redirectGuard } from "@/helpers/redirect.guard";
+import ApproveRental from "@/views/ApproveRental";
 
 const routes = [
   {
@@ -63,16 +64,16 @@ const routes = [
     beforeEnter: authGuard
   },
   {
+    path: "/approve_rental",
+    name: "ApproveRental",
+    component: ApproveRental,
+    beforeEnter: authGuard
+  },
+  {
     path: "/groups",
     name: "Group",
     component: Group,
     beforeEnter: authGuard
-  },
-  {
-    path: "/rentals",
-    name: "Rental",
-    component: MyRentals,
-    // beforeEnter: authGuard
   },
   {
     path: "/profile",

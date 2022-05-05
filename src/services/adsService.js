@@ -45,9 +45,10 @@ export default {
             method: 'POST',
             url: `${url}${port}/api/ads/page/${pageSize}`,
             headers: {
-                'Content-Type': 'application/json'
-    },
-        data: {"lat": lat, "lng": lng}
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
+            },
+            data: {"lat": lat, "lng": lng}
     };
 
         return axios.request(options);
@@ -95,7 +96,7 @@ export default {
             url: `${url}${port}/api/ads/filter`,
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem("token")
+                Authorization: 'Bearer '
             },
             data: {
                 filterType: filterType,
@@ -123,7 +124,7 @@ export default {
             url: 'http://localhost:8443/api/ads/category/filter',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem("token")
+                Authorization: 'Bearer '
             },
             data: {
                 filterType: filterType,
