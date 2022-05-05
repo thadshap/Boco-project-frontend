@@ -13,10 +13,26 @@
                 
             </div>
             <div class="d-flex flex-column">
-                <input type="text" v-if="this.changeGroupName" v-model="v$.newGroupName.$model">
-                <button v-if="changeGroupName" v-on:click="editGroupName" class="editButtons">Change group name</button>
-                <input type="text" v-if="this.changeGroupName" v-model.trim="v$.addUser.$model">
-                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons">Add user by email</button>
+              <div class="d-inline-flex pt-4 pb-3 justify-content-between">
+                <input type="text" v-if="this.changeGroupName" v-model="v$.newGroupName.$model" placeholder="Ski utlån" style="border-radius: 5px;">
+                <button v-if="changeGroupName" v-on:click="editGroupName" class="editButtons"
+                        style="
+                                border: 1.5px solid #2A94EE7F;
+                                border-radius: 5px;
+                                box-shadow: 5px 5px 5px rgba(0,0,0,0.1);">
+                  Bytt gruppenavn
+                </button>
+              </div>
+              <div class="d-inline-flex pb-3 justify-content-between">
+                <input type="text" v-if="this.changeGroupName" v-model.trim="v$.addUser.$model" placeholder="hans1205@@gmail.com" style="padding: 5px; border-radius: 5px">
+                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons"
+                        style="
+                                border: 1.5px solid #2A94EE7F;
+                                border-radius: 5px;
+                                box-shadow: 5px 5px 5px rgba(0,0,0,0.1);">
+                  Legg til bruker
+                </button>
+                </div>
             </div>
         </div>
         <div class="flex-grow-1 chat-container" ref="chat">
@@ -237,7 +253,7 @@ export default {
     min-width: 50px;
 }
 .editButtons {
-  margin: 5px;
+  margin: 0px 5px 0px 5px;
   padding: 5px;
   word-wrap: break-word;
   background-color: #fff;
