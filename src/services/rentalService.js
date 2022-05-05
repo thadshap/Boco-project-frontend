@@ -39,7 +39,7 @@ export default {
     approveRental(rentalId) {
         const options = {
             method: 'PATCH',
-            url: `${url}${port}/rental/activate` + rentalId,
+            url: `${url}${port}/rental/activate/` + rentalId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
