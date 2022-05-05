@@ -43,7 +43,7 @@ describe("AdComponent.vue", () => {
         expect(wrapper.text()).toMatch(price.toString());
     });
 
-    it("Renders 'Send melding' if logged in", () => {
+    it("Renders 'til annonse' button", () => {
         const id = 1;
         const title = "Motorsag";
         const price = 1000;
@@ -62,7 +62,7 @@ describe("AdComponent.vue", () => {
             },
         });
 
-        const sendMessageBtn = findByText(wrapper, 'a', "Send melding").at(0)
+        const sendMessageBtn = findByText(wrapper, 'a', "Til annonse").at(0)
         expect(sendMessageBtn.exists()).toBeTruthy()
     });
 });
