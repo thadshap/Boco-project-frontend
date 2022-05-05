@@ -26,8 +26,9 @@
           @last-clicked-main-cat="chosenMainCat"
         />
       </div>
-      <div v-if="subCategories.length !== 0" class="my-5">
-        <h5>Underkategori</h5>
+      <div v-if="subCategories.length !== 0" class="mt-3">
+        <h4 class="category-header">Underkategori</h4>
+        <hr>
         <SubCategoryComponent
           v-for="cat in subCategories"
           :key="cat"
@@ -36,8 +37,9 @@
           @chosen-sub-cat="chosenSubCat"
         />
       </div>
-      <div v-if="subSubCategories.length !== 0" class="my-5">
-        <h6>Underkategori</h6>
+      <div v-if="subSubCategories.length !== 0" class="mt-3">
+        <h6 class="category-header">... underkategori</h6>
+        <hr>
         <SubCategoryComponent
           v-for="cat in subSubCategories"
           :key="cat"
@@ -328,7 +330,6 @@ export default {
       this.chosenMainCategory = title
       this.subCategories = []
       this.subSubCategories = []
-
       await categoryService
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then(response => {
@@ -538,6 +539,9 @@ export default {
 }
 hr{
   margin: 5px;
+}
+SubCategoryComponent{
+
 }
 @media (min-width: 992px) {
   .search-container {

@@ -11,6 +11,16 @@
           <h4>Leie fra: {{ rentFrom }}</h4>
           <h4>Leie til: {{ rentTo }}</h4>
           <h4>Total pris: {{ price }} kr</h4>
+          <h4>Aktivert: {{ active }}</h4>
+          <div id="review" v-if="showReviewBox">
+            Legg igjen en anmeldelse av dette lånet!
+            <br>Din beskrivelse av leieforholdet: <input type="text" maxlength="120" v-model="description">
+            <br>Din rating av leieforholdet på en skala fra 1-10: <input type="number" min="1" max="10" v-model="rating" v-on:change="enableSendRequestButton=true">
+            <br>
+            <a v-if="this.enableSendRequestButton" v-on:click="sendReview" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
+              Send tilbakemelding
+            </a>
+          </div>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="'align-items-end, h-100'">
           <a v-if="active" v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
@@ -28,7 +38,8 @@
 </template>
 
 <script>
-
+import rentalService from "@/services/rentalService";
+import adService from "@/services/adService";
 export default {
   name: "Rental",
   props: {
@@ -73,7 +84,54 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+      showReviewBox : false,
+      rating : 0,
+      description : "",
+      enableSendRequestButton : false,
+      ownerId : null,
+      userId: null
+    };
+  },
+  created() {
+    this.checkIfReviewBoxShouldEnable()
+  },
   methods: {
+    async sendReview() {
+      await rentalService.deleteRental(this.$props.id, this.description, this.rating).then(response => {
+        console.log(response)
+        this.showReviewBox = false
+        this.GStore.flashMessage = "Tilbakemelding opprettet!"
+        this.GStore.variant = "Success"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      }).catch(error => {
+        console.log(error)
+        this.GStore.flashMessage = "Tilbakemelding ikke mulig å opprette"
+        this.GStore.variant = "Success"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
+    async checkIfReviewBoxShouldEnable(){
+      await this.getOwnerId()
+      if( (!this.active) &&
+          (this.rentTo < new Date().toLocaleDateString('en-CA')) &&
+          (this.userId != this.ownerId)){
+        this.showReviewBox = true
+      }
+    },
+    async getOwnerId(){
+      this.userId = localStorage.getItem("userId")
+      await adService.getAdById(this.$props.adId).then(response => {
+        this.ownerId = response.data.userId
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     goToDetailedView() {
       console.log(this.$props.adId);
       this.$router.push({
@@ -161,5 +219,10 @@ export default {
     padding-left: 20px;
     width: 50%;
   }
+}
+#review{
+  border : 2px #0EA0FF solid;
+  padding: 3px;
+  margin-bottom: 5px;
 }
 </style>
