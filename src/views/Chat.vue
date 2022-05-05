@@ -10,7 +10,7 @@
                 <button v-on:click="changeGroupNameState">
                     <i class="fa fa-cog"></i>
                 </button>
-                
+
             </div>
             <div class="d-flex flex-column">
               <div class="d-inline-flex pt-4 pb-3 justify-content-between">
@@ -74,7 +74,7 @@ import Stomp from "webstomp-client";
 import {required, maxLength} from "@vuelidate/validators";
 import useVuelidate from '@vuelidate/core';
 
-export default {  
+export default {
   name: "Chat",
   data(){
       return{
@@ -148,16 +148,16 @@ export default {
           })
       },
   async connect(){
-        let socket = new SockJS(`http://localhost:8443/ws/`);
+        let socket = new SockJS(`https://localhost:8443/ws/`);
         let options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
         console.log("creating socket")
         this.stompClient = Stomp.over(socket, options);
         console.log("connecting...")
         await this.stompClient.connect({Authorization: 'Bearer '+localStorage.getItem("token")}, function(frame){
-            console.log("connected to socket " + frame);            
+            console.log("connected to socket " + frame);
         })
         await this.sleep(1000)
-        this.subscribe()    
+        this.subscribe()
   },
   disconnect(){
       console.log("disconnected")
