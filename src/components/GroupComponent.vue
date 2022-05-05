@@ -20,7 +20,6 @@
 
 <script>
 import chatService from "@/services/chatService";
-import userService from "@/services/userService";
 export default {
   name: "GroupComponent",
   data(){

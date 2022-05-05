@@ -16,15 +16,15 @@
           </div>
         </div>
       </div>
-    </div>
-      <a class="carousel-control-prev" v-on:click="nextImage" href="#carouselExampleControls" role="button" data-slide="prev">
+      <a class="carousel-control-prev" v-if="showArrows" v-on:click="nextImage" href="#carouselExampleControls" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
       </a>
-      <a class="carousel-control-next" v-on:click="prevImage" href="#carouselExampleControls" role="button" data-slide="next">
+      <a class="carousel-control-next" v-if="showArrows" v-on:click="prevImage" href="#carouselExampleControls" role="button" data-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
+    </div>
 
 
     </div>
@@ -169,6 +169,7 @@ export default {
   },
   data() {
     return {
+      showArrows: true,
       usersOwnAddress: false,
       userLoggedIn: false,
       date: null,
@@ -391,7 +392,7 @@ export default {
         this.GStore.variant = "Success"
         setTimeout(() => {
           this.GStore.flashMessage = ""
-        }, 40000)
+        }, 4000)
       }).catch(error => {
         console.log(error);
         this.GStore.flashMessage = "Fikk ikke oprettet forespørsel"
@@ -422,6 +423,9 @@ export default {
         .then(response => {
           for(let i = 0; i < response.data.length; i++) {
             this.pictures.push(`data:${response.data[i].type};base64,${response.data[i].base64}`)
+          }
+          if(this.pictures.length<2){
+            this.showArrows = false;
           }
         })
         .catch(error => {
