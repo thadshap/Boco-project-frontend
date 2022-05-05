@@ -181,7 +181,7 @@ export default {
     SubCategoryComponent,
     Pagination,
   },
-  setup() {
+  async setup() {
     const { coords } = geolocationForUser();
     const currPos = computed(() => ({
       lat: coords.value.latitude,
@@ -382,12 +382,12 @@ export default {
 
       // Checks if main categories has already been requested from server
       if (this.$store.getters.getMainCategories.length === 0) {
-        console.log("Inside if block");
         let mainCategories = [];
 
         await categoryService
           .getAllParentCategories()
           .then((response) => {
+            console.log(response.data)
             if (response.status !== 204) {
               for (let i = 0; i < response.data.length; i++) {
                 let cat = {
@@ -407,10 +407,58 @@ export default {
         this.categories = mainCategories;
         this.$store.dispatch("setMainCategories", mainCategories);
       } else {
-        console.log("Inside else block in get main category");
         this.categories = this.$store.getters.getMainCategories;
-        console.log(this.$store.getters.getMainCategories);
       }
+
+      await this.getSubCategories();
+    },
+    async getSubCategories() {
+      let subCategories = [];
+
+      for (let i = 0; i < this.$store.getters.getMainCategories.length; i++) {
+        await categoryService
+          .getAllSubCategoriesForCategory(
+            this.$store.getters.getMainCategories[i].title
+          )
+          .then((response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              let cat = {
+                parentCat: response.data[i].parentName,
+                title: response.data[i].name,
+              };
+              subCategories.push(cat);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      this.$store.dispatch("setSubCategories", subCategories);
+      await this.getSubSubCategories();
+    },
+    async getSubSubCategories() {
+      let subSubCategories = [];
+
+      for (let i = 0; i < this.$store.getters.getSubCategories.length; i++) {
+        await categoryService
+          .getAllSubCategoriesForCategory(this.$store.getters.getSubCategories[i].title)
+          .then((response) => {
+            if (response.status === 200) {
+              // console.log(response.data)
+              for (let i = 0; i < response.data.length; i++) {
+                let cat = {
+                  parentCat: response.data[i].parentName,
+                  title: response.data[i].name,
+                };
+                subSubCategories.push(cat);
+              }
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+      this.$store.dispatch("setSubSubCategories", subSubCategories);
     },
     async chosenMainCat(title) {
       this.titleHeader = "Gjenstander for utlån i kategorien " + title;
@@ -536,14 +584,23 @@ export default {
               console.error(error);
             });
         }
-        console.log(this.subSubCategories)
-        // this.subSubCategories = subSubCategories;
+
+        let categoriesToDisplay = []
+
+        for(let i = 0; i < subSubCategories.length; i++) {
+          if(subSubCategories[i].parentCat === subCat) {
+            categoriesToDisplay.push(subSubCategories[i].title)
+          }
+        }
+
+        this.subSubCategories = categoriesToDisplay;
         this.$store.dispatch("setSubSubCategories", subSubCategories);
       } else {
         console.log("Inside else block in chosen sub cat");
         this.subSubCategories = [];
         for (let i = 0; i < this.$store.getters.getSubSubCategories.length; i++) {
           if (this.$store.getters.getSubSubCategories[i].parentCat === subCat) {
+            console.log(this.$store.getters.getSubSubCategories[i])
             this.subSubCategories.push(
               this.$store.getters.getSubSubCategories[i].title
             );
@@ -572,17 +629,17 @@ export default {
       //     })
       await this.displayAds(1, this.sortedAds);
 
-      await categoryService
-        .getAllSubCategoriesForCategory(subCat)
-        .then((response) => {
-          if (response.status === 200) {
-            for (let i = 0; i < response.data.length; i++) {
-              this.subSubCategories.push(response.data[i].name);
-            }
-          } else {
-            console.log("Fikk ingen underkategorier fra server...");
-          }
-        });
+      // await categoryService
+      //   .getAllSubCategoriesForCategory(subCat)
+      //   .then((response) => {
+      //     if (response.status === 200) {
+      //       for (let i = 0; i < response.data.length; i++) {
+      //         this.subSubCategories.push(response.data[i].name);
+      //       }
+      //     } else {
+      //       console.log("Fikk ingen underkategorier fra server...");
+      //     }
+      //   });
     },
     async chosenSubSubCat(subSubCat) {
       this.chosenSubSubCategory = subSubCat;
