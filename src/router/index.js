@@ -75,12 +75,6 @@ const routes = [
     beforeEnter: authGuard
   },
   {
-    path: "/rentals",
-    name: "Rental",
-    component: MyRentals,
-    // beforeEnter: authGuard
-  },
-  {
     path: "/profile",
     name: "Profile",
     component: Profile,
