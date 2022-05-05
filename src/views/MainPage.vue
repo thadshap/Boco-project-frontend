@@ -312,11 +312,13 @@ export default {
         .then(response => {
           if(response.status !== 204) {
             for(let i = 0; i < response.data.length; i++) {
-              let cat = {
-                title: response.data[i].name,
-                icon: response.data[i].icon
+              if (response.data[i].child === false) {
+                let cat = {
+                  title: response.data[i].name,
+                  icon: response.data[i].icon
+                }
+                this.categories.push(cat)
               }
-              this.categories.push(cat)
             }
           } else {
             console.log("Fikk ingen kategorier fra server...")
