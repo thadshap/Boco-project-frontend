@@ -1,12 +1,19 @@
 <template>
+  <div class="d-flex w-100 justify-content-center pt-3">
   <ul class="pagination">
     <li class="pagination-item">
       <button
           type="button"
           @click="onClickFirstPage"
           :disabled="isInFirstPage"
+          style="
+          border: 1.5px solid #2A94EE7F;
+          border-radius: 5px;
+          box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+          "
+          class="first-and-last-btn"
       >
-        First
+        Første
       </button>
     </li>
 
@@ -16,7 +23,7 @@
           @click="onClickPreviousPage"
           :disabled="isInFirstPage"
       >
-        Previous
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
       </button>
     </li>
 
@@ -45,7 +52,7 @@
           @click="onClickNextPage"
           :disabled="isInLastPage"
       >
-        Next
+        <i class="fa fa-arrow-right" aria-hidden="true"></i>
       </button>
     </li>
 
@@ -54,11 +61,18 @@
           type="button"
           @click="onClickLastPage"
           :disabled="isInLastPage"
+          style="
+          border: 1.5px solid #2A94EE7F;
+          border-radius: 5px;
+          box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
+          "
+          class="first-and-last-btn"
       >
-        Last
+        Siste
       </button>
     </li>
   </ul>
+  </div>
 </template>
 
 <script>
@@ -149,6 +163,16 @@ export default {
 .pagination {
   list-style-type: none;
 }
+button {
+  background: none;
+  color: #015d9a;
+  border: none;
+  padding: 1px 20px 1px 20px;
+  font-weight: 400;
+  outline: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
 
 .pagination-item {
   display: inline-block;
@@ -157,5 +181,8 @@ export default {
 .active {
   background-color: #4AAE9B;
   color: #ffffff;
+}
+.first-and-last-btn:hover{
+  background-color: #2A94EE7F;
 }
 </style>
