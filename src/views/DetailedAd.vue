@@ -309,7 +309,7 @@ export default {
         this.lender = response.data
       }).catch(error => {
         console.log(error);
-        this.GStore.flashMessage = "Fikk ikke hentet uttlåneren av annonsen"
+        this.GStore.flashMessage = "Fikk ikke hentet utlåneren av annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
           this.GStore.flashMessage = ""
@@ -318,10 +318,10 @@ export default {
     },
     async startChat() {
       if (this.$store.getters.loggedIn) {
-        var userId = localStorage.getItem("userId")
+        let userId = localStorage.getItem("userId")
         if (userId != this.lender.id) {
-          var groupId
-          var users = [userId,this.lender.id]
+          let groupId
+          let users = [userId,this.lender.id]
           await chatService.createGroupChat(this.ad.title, users)
           .then(response => {
             groupId = response.data.groupId
@@ -331,12 +331,12 @@ export default {
           })
           this.$store.dispatch("setGroupId", groupId)
           this.$store.dispatch("setGroupName", this.ad.title)
-          this.$router.push(`/chat/${groupId}`)
+          await this.$router.push(`/chat/${groupId}`)
         }else{
           alert('Cannot create chat with self')
         }
       } else {
-        this.$router.push("/login")
+        await this.$router.push("/login")
       }
     },
     makeRequest() {
@@ -388,14 +388,15 @@ export default {
       ).then(response => {
         console.log(response)
         this.showRequestDetails = false;
-        this.GStore.flashMessage = "Forespørsel om utlån opprette! Se detaljer på dine sider"
+        this.GStore.flashMessage = "Forespørsel om utlån opprettet! Se detaljer på dine sider"
         this.GStore.variant = "Success"
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
+        this.$router.push("/")
       }).catch(error => {
         console.log(error);
-        this.GStore.flashMessage = "Fikk ikke oprettet forespørsel"
+        this.GStore.flashMessage = "Fikk ikke opprettet forespørsel"
         this.GStore.variant = "Error"
         setTimeout(() => {
           this.GStore.flashMessage = ""
@@ -403,11 +404,7 @@ export default {
       })
     },
     dropDown() {
-      if (this.showRightArrow) {
-        this.showRightArrow = false;
-      } else {
-        this.showRightArrow = true;
-      }
+      this.showRightArrow = !this.showRightArrow;
     },
     setLenderId(){
       localStorage.setItem("lenderId", this.ad.userId);
