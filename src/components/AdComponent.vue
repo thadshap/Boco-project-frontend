@@ -10,7 +10,7 @@
             <b>{{ title }}</b>
           </h3>
           <h4>{{ price }} kr</h4>
-          <h5 class="opacity-75">{{ place }}</h5>
+          <h5 class="opacity-75"><i class="fas fa-map-marked-alt"></i> {{ place }}</h5>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
           <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="this.$store.getters.loggedIn && !checkIfMyAd" @click="startChat">
@@ -111,6 +111,12 @@ export default {
 </script>
 
 <style scoped>
+@import url('../../node_modules/fontawesome-free/css/all.css');
+@import url('../../node_modules/fontawesome-free/css/brands.css');
+@import url('../../node_modules/fontawesome-free/css/fontawesome.css');
+@import url('../../node_modules/fontawesome-free/css/v4-shims.css');
+@import url('../../node_modules/fontawesome-free/css/solid.css');
+@import url('../../node_modules/font-awesome/css/font-awesome.css');
 .project-card-container {
   padding: 20px;
 }
