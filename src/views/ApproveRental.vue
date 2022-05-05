@@ -98,7 +98,8 @@ export default {
           this.id = response.data.id
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
+          this.$router.push("/")
         })
   },
   methods: {
