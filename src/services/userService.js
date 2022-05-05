@@ -3,7 +3,7 @@ let url = 'http://localhost:'
 let port = "8443"
 
 export default {
-    updateUser(firstName, lastName, email, password, userId){
+    updateUser(firstName, lastName, password, userId){
         const options = {
             method: 'PUT',
             url: `${url}${port}/user/` + userId,

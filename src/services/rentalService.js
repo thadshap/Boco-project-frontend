@@ -21,9 +21,9 @@ export default {
                 rentFrom: rentFrom,
                 rentTo: rentTo,
                 deadline: deadline,
-                //change to false when chat works TODO
-                active: 'true',
+                active: false,
                 price: price,
+                isReviewed: false,
                 owner: lenderEmail,
                 borrower: userEmail,
                 adId: adId,

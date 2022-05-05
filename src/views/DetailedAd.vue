@@ -199,7 +199,7 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+      //this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
     },
     checkLoggedIn() {
       if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
@@ -250,7 +250,7 @@ export default {
     },
     async getUnavailableDates(){
       await adService.getAllUnavailableDatesForAd(1).then(response => {
-        console.log(response.data)
+        console.log("her er datoene" + response.data)
         this.disable = response.data;
       }).catch(error => {
         console.log(error);
