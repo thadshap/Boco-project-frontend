@@ -26,6 +26,7 @@ export default {
                 isReviewed: false,
                 owner: lenderEmail,
                 borrower: userEmail,
+                title: "title",
                 adId: adId,
                 id: 0
             },
@@ -93,7 +94,7 @@ export default {
     getHistoryRentalForUser(userId) {
         const options = {
             method: 'GET',
-            url: `${url}${port}/auth/rental/s/` + userId,
+            url: `${url}${port}/rental/s/` + userId,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")

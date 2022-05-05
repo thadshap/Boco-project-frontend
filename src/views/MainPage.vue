@@ -169,9 +169,6 @@ export default {
   },
   //TODO oppdater antall sider når man filtrerer
   methods: {
-    showSorting() {
-      console.log(new URL(location.href).searchParams.get('page'));
-    },
     showSortingOptions() {
       this.showMenuBarFiltering = false;
       this.showMenuBarSorting = !this.showMenuBarSorting;
@@ -283,6 +280,9 @@ export default {
                 title: response.data[i].title,
                 place: response.data[i].city,
                 price: response.data[i].price,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
                 userId: response.data[i].userId
               }
               this.cachedAds.push(ad)
@@ -312,11 +312,13 @@ export default {
         .then(response => {
           if(response.status !== 204) {
             for(let i = 0; i < response.data.length; i++) {
-              let cat = {
-                title: response.data[i].name,
-                icon: response.data[i].icon
+              if (response.data[i].child === false) {
+                let cat = {
+                  title: response.data[i].name,
+                  icon: response.data[i].icon
+                }
+                this.categories.push(cat)
               }
-              this.categories.push(cat)
             }
           } else {
             console.log("Fikk ingen kategorier fra server...")
@@ -345,7 +347,10 @@ export default {
                 title: response.data[i].title,
                 place: response.data[i].city,
                 price: response.data[i].price,
-                userId: response.data[i].userId
+                userId: response.data[i].userId,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
               }
               this.sortedAds.push(ad)
               console.log(ad)
@@ -404,7 +409,10 @@ export default {
                   title: response.data[i].title,
                   place: response.data[i].city,
                   price: response.data[i].price,
-                  userId: response.data[i].userId
+                  userId: response.data[i].userId,
+                  distance: response.data[i].distance,
+                  lat: response.data[i].lat,
+                  lng: response.data[i].lng,
                 }
                 this.sortedAds.push(ad)
               }
@@ -445,7 +453,10 @@ export default {
                 title: response.data[i].title,
                 place: response.data[i].city,
                 price: response.data[i].price,
-                userId: response.data[i].userId
+                userId: response.data[i].userId,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
               }
               this.sortedAds.push(ad)
             }
@@ -461,7 +472,7 @@ export default {
         return
       }
       await adsService
-        .getAdsBySearch(this.searchWord)
+        .getAdsBySearch(this.searchWord, this.currPos.lat, this.currPos.lng)
         .then(res => {
           this.sortedAds = []
           for(let i = 0; i < res.data.length; i++) {
@@ -470,7 +481,10 @@ export default {
               title: res.data[i].title,
               place: res.data[i].city,
               price: res.data[i].price,
-              userId: res.data[i].userId
+              userId: res.data[i].userId,
+              lat: res.data[i].lat,
+              lng: res.data[i].lng,
+              distance: res.data[i].distance,
             }
             this.sortedAds.push(ad)
           }

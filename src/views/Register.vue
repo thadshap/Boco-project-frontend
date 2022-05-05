@@ -77,7 +77,7 @@
 import {computed, reactive} from "vue";
 import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
 import useValidate from "@vuelidate/core";
-import lendingService from "@/services/lendingService";
+import loginRegistrationService from "@/services/loginRegistrationService";
 export default {
   name: "Register",
 
@@ -130,7 +130,7 @@ export default {
       if(this.v$.$error) {
         return
       }
-      this.response = await lendingService
+      this.response = await loginRegistrationService
           .registerUser(
               this.state.firstname,
               this.state.lastname,
