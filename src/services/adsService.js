@@ -43,12 +43,11 @@ export default {
     getPageWithRandomAds(pageSize, lat,lng) {
         const options = {
             method: 'POST',
-            url: 'http://localhost:8443/api/ads/page/' + pageSize,
+            url: `${url}${port}/api/ads/page/${pageSize}`,
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ localStorage.getItem("token")
+                'Content-Type': 'application/json'
     },
-        data: {lat: lat, lng: lng}
+        data: {"lat": lat, "lng": lng}
     };
 
         return axios.request(options);

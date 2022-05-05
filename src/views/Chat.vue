@@ -1,27 +1,41 @@
 <template>
 <div class="d-flex flex-column screen">
-    <button class="btn btn-primary menu-button" type="button" v-on:click="toGroups">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
-            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-        </svg>
-    </button>
   <div class="d-flex flex-column chat">
-        <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex flex-grow-1 justify-content-center align-items-center">
-                <span class="name">{{this.$store.getters.getGroupName}}</span>
-                <input type="text" v-if="this.changeGroupName" v-model="newGroupName">
-                <button v-if="changeGroupName" v-on:click="editGroupName">Change group name</button>
-                <input type="text" v-if="this.changeGroupName" v-model="addUser">
-                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail">Add user by email</button>
-                <button v-on:click="changeGroupNameState">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-list">
-                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
-                    </svg>
+        <div class="d-flex flex-column justify-content-between align-items-center">
+            <div class="d-flex flex-grow-1 flex-row width">
+                <button class="btn menu-button" type="button" v-on:click="toGroups">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 </button>
+                <span class="name">{{this.$store.getters.getGroupName}}</span>
+                <button v-on:click="changeGroupNameState">
+                    <i class="fa fa-cog"></i>
+                </button>
+                
             </div>
-            <img class="profile-picture">
+            <div class="d-flex flex-column">
+              <div class="d-inline-flex pt-4 pb-3 justify-content-between">
+                <input type="text" v-if="this.changeGroupName" v-model="v$.newGroupName.$model" placeholder="Ski utlån" style="border-radius: 5px;">
+                <button v-if="changeGroupName" v-on:click="editGroupName" class="editButtons"
+                        style="
+                                border: 1.5px solid #2A94EE7F;
+                                border-radius: 5px;
+                                box-shadow: 5px 5px 5px rgba(0,0,0,0.1);">
+                  Bytt gruppenavn
+                </button>
+              </div>
+              <div class="d-inline-flex pb-3 justify-content-between">
+                <input type="text" v-if="this.changeGroupName" v-model.trim="v$.addUser.$model" placeholder="hans1205@@gmail.com" style="padding: 5px; border-radius: 5px">
+                <button v-if="changeGroupName" v-on:click="addUserToGroupByEmail" class="editButtons"
+                        style="
+                                border: 1.5px solid #2A94EE7F;
+                                border-radius: 5px;
+                                box-shadow: 5px 5px 5px rgba(0,0,0,0.1);">
+                  Legg til bruker
+                </button>
+                </div>
+            </div>
         </div>
-        <div class="flex-grow-1 chat-container">
+        <div class="flex-grow-1 chat-container" ref="chat">
             <MessageComponent
             v-for="message in this.$store.getters.getMessages"
             :key="message"
@@ -29,17 +43,18 @@
             :lastName="message.lastName"
             :timestamp="message.timeStamp"
             :content="message.content"
-            :profilePicture="message.picture"
-            :userId="message.user_id"/>
+            :type="message.type"
+            :base64="message.base64"
+            :userId="message.userId"/>
         </div>
         <div class="d-flex align-items-end bottom-toolbar">
-            <button class="btn btn-primary plus-button" type="button">
+            <!--<button class="btn btn-primary plus-button" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-plus">
                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
                 </svg>
-            </button>
+            </button>-->
             <div class="d-flex flex-grow-1 align-self-center">
-                <input class="d-flex input" type="text" placeholder="Send message" v-model="input">
+                <input class="d-flex input" type="text" placeholder="Send message" v-model.trim="v$.input.$model" v-on:keyup.enter="sendMessage"   >
             </div>
             <button class="btn btn-primary send-button" type="button" v-on:click="sendMessage">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="bi bi-arrow-right-circle">
@@ -56,17 +71,39 @@ import MessageComponent from "@/components/MessageComponent";
 import chatService from "@/services/chatService";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import {required, maxLength} from "@vuelidate/validators";
+import useVuelidate from '@vuelidate/core';
 
 export default {  
   name: "Chat",
   data(){
       return{
           changeGroupName: false,
-          newGroupName: null,
+          newGroupName: '',
           addUser:'',
           input:'',
-          temp:''
       }
+  },
+  setup(){
+      return{
+          v$: useVuelidate()
+      }
+  },
+  validations() {
+      return{
+      newGroupName: {
+          required,
+          maxLength: maxLength(255)
+      },
+      addUser: {
+          required,
+          maxLength: maxLength(255)
+      },
+      input: {
+          required,
+          maxLength: maxLength(2000)
+      }
+    }
   },
   components:{
       MessageComponent
@@ -76,17 +113,27 @@ export default {
           this.changeGroupName = !this.changeGroupName
       },
         async editGroupName(){
+            const valid = await this.v$.newGroupName.$validate()
+            if (!valid) {
+                return
+            }
           await chatService.editGroupName(this.$store.getters.getGroupId, this.newGroupName)
           .then(response => {
               alert(response.data)
           })
           this.$store.dispatch("setGroupName", this.newGroupName)
+          this.newGroupName = ''
       },
       async addUserToGroupByEmail(){
+          const valid = await this.v$.addUser.$validate()
+            if (!valid) {
+                return
+            }
           await chatService.addUserToGroupByEmail(this.$store.getters.getGroupId, this.addUser)
           .then(response => {
               alert(response.data)
           })
+          this.addUser = ''
       },
       toGroups(){
           this.$router.push("/groups")
@@ -100,7 +147,6 @@ export default {
               console.log(error)
           })
       },
-  
   async connect(){
         var socket = new SockJS(`http://localhost:8443/ws/`);
         var options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
@@ -113,23 +159,42 @@ export default {
         await this.sleep(1000)
         this.subscribe()    
   },
+  disconnect(){
+      console.log("disconnected")
+      this.stompClient.disconnect()
+  },
   subscribe(){
         console.log(`Subscribing to ${this.$store.getters.getGroupId}`)
         this.stompClient.subscribe(`/topic/messages/${this.$store.getters.getGroupId}`, messageOutput => {
-            this.$store.dispatch("addMessage", JSON.parse(messageOutput.body))
+            let messageObject = JSON.parse(messageOutput.body)
+            this.$store.dispatch("addMessage", messageObject)
         })
   },
-  sendMessage() {
-        this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
+  async sendMessage() {
+      const valid = await this.v$.input.$validate()
+      if (!valid) {
+          return
+      }
+    this.stompClient.send(`/app/chat/${this.$store.getters.getGroupId}`,JSON.stringify({ content: this.input , userId: localStorage.getItem("userId")}),{})
+    this.input = ''
   },
   sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
    },
-
+    scroll(){
+        var content = this.$refs.chat
+        content.scrollTop = content.scrollHeight
+    }
 },
+    beforeUnmount() {
+      this.disconnect()
+  },
   mounted(){
       this.getMessages()
       this.connect()
+  },
+  updated(){
+      this.$nextTick(() => this.scroll());
   }
 };
 </script>
@@ -140,6 +205,11 @@ export default {
 }
 .name{
     font-size: 24px;
+    text-align: center;
+}
+.width{
+    width: 100vw;
+    justify-content: space-evenly;
 }
 .profile-picture{
     font-size: 24px;
@@ -163,20 +233,8 @@ export default {
 .groups{
     width: 100vw;
 }
-.screen{
-    
-}
+
 /* Buttons */
-.menu-button{
-    background: transparent;
-    width: 50px;
-    border-radius: 5px;
-    padding: 0px;
-    height: 50px;
-    border-width: 1px;
-    border-color: #004AAD;
-    margin-left: 10px;
-}
 .plus-button{
     background: transparent;
     border-color: #004AAD;
@@ -194,8 +252,32 @@ export default {
     border-color: transparent;
     min-width: 50px;
 }
+.editButtons {
+  margin: 0px 5px 0px 5px;
+  padding: 5px;
+  word-wrap: break-word;
+  background-color: #fff;
+  border: 3px solid rgb(0, 128, 255);
+  border-radius: 0.25rem;
+  min-width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
 
-
+.editButtons:hover {
+  background-color: rgb(0, 128, 255);
+  color: white;
+  cursor: pointer;
+}
+.fa-arrow-left{
+    color: black;
+}
+button{
+    background-color: #fff;
+    border: none;
+}
 /* Icons */
 .bi-arrow-right-circle{
     width: 1em;
@@ -203,13 +285,6 @@ export default {
     fill: currentColor;
     color: black;
     font-size: 40px;
-}
-.bi-list{
-    width: 1em;
-    height: 1em;
-    fill: currentColor;
-    color: black;
-    font-size: 32px;
 }
 .bi-plus{
     width: 1em;

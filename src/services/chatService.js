@@ -68,7 +68,7 @@ export default{
     createGroupWithUsers(chatName, listOfUsers){
         const options = {
             method: 'POST',
-            url: `${url}${port}api/create/group/list`,
+            url: `${url}${port}/api/create/group/list`,
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${localStorage.getItem("token")}`
