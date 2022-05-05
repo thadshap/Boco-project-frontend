@@ -112,7 +112,12 @@ export default {
       .then(response => {
         if(response.status === 200){
           alert("Leieforholdet er nå godtatt")
-          this.$router.push("/profile/my_rentals")
+          this.$router.push({
+            name: "My Rentals",
+            query:{
+              redirect: "/profile/rentals"
+            }
+          })
         }
       })
       this.$store.dispatch("setRentalApprovalInProgress",false)
