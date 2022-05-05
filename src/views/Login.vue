@@ -50,7 +50,7 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import lendingService from "@/services/lendingService";
+import loginRegistrationService from "@/services/loginRegistrationService";
 import { helpers, email } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
@@ -96,7 +96,7 @@ export default {
       let changePasswordMessage = prompt("Skriv inn e-post")
       const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       if (regex.test(changePasswordMessage)) {
-        await lendingService.forgotPassword(changePasswordMessage)
+        await loginRegistrationService.forgotPassword(changePasswordMessage)
           .then(response => {
             this.GStore.flashMessage = "Sent! Sjekk den oppgitte e-posten"
             this.GStore.variant = "Success"

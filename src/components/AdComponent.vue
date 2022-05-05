@@ -72,7 +72,9 @@ export default {
         path: "/ad/:id",
         name : "Ad",
         params : {
-          id : this.$props.id
+          id : this.$props.id,
+          lat : this.$props.lat,
+          lng : this.$props.lng,
         }
       })
     },

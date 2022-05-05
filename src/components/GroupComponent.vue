@@ -9,7 +9,7 @@
 
 <script>
 import chatService from "@/services/chatService";
-import lendingService from "@/services/lendingService";
+import userService from "@/services/userService";
 export default {
   name: "GroupComponent",
   props:{
@@ -37,7 +37,7 @@ export default {
       },
       async getUsers(){
         for(let i = 0; i<this.$store.getters.getMessages.length; i++){ 
-                await lendingService.getUserById(this.$store.getters.getMessages[i].user_id)
+                await userService.getUserById(this.$store.getters.getMessages[i].user_id)
                   .then(response => { 
                       this.$store.getters.getMessages[i].firstName = response.data.firstName; this.$store.getters.getMessages[i].lastName=response.data.lastName 
                     })

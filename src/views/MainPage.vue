@@ -169,9 +169,6 @@ export default {
   },
   //TODO oppdater antall sider når man filtrerer
   methods: {
-    showSorting() {
-      console.log(new URL(location.href).searchParams.get('page'));
-    },
     showSortingOptions() {
       this.showMenuBarFiltering = false;
       this.showMenuBarSorting = !this.showMenuBarSorting;
@@ -279,7 +276,10 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 place: response.data[i].city,
-                price: response.data[i].price
+                price: response.data[i].price,
+                distance: response.data[i].distance,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng
               }
               this.cachedAds.push(ad)
             }

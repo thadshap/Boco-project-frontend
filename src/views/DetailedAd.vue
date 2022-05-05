@@ -102,7 +102,7 @@
       >
         <ol-view
           ref="view"
-          :center="[ad.lat, ad.lng]"
+          :center="coordinate"
           :rotation="rotation"
           :zoom="zoom"
           :projection="projection"
@@ -116,7 +116,7 @@
           <ol-source-vector>
             <ol-feature>
               <ol-geom-point
-                :coordinates="[ad.lat, ad.lng]"
+                :coordinates="coordinate"
               ></ol-geom-point>
               <ol-style>
                 <ol-style-stroke :width="strokeWidth"></ol-style-stroke>
@@ -144,6 +144,10 @@ export default {
   inject : ["GStore"],
   components: { Datepicker },
   name: "DetailedAd",
+  props:{
+    lat: {type: String},
+    lng: {type: String}
+  },
   data() {
     return {
       usersOwnAddress: false,
@@ -173,17 +177,22 @@ export default {
       this.usersOwnAddress = true;
     }
   },
-  setup() {
+  setup(props) {
+    console.log(props)
+    console.log(parseFloat(props.lat))
+    console.log(parseFloat(props.lng))
     const projection = ref("EPSG:4326")
     const zoom = ref(8)
     const rotation = ref(0)
     const strokeWidth = ref(10)
+    const coordinate = [parseFloat(props.lng), parseFloat(props.lat)]
     return {
       projection,
       zoom,
       rotation,
       strokeWidth,
-      mapIcon
+      mapIcon,
+      coordinate
     };
   },
   methods: {
@@ -199,7 +208,7 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      //this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+      this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
     },
     checkLoggedIn() {
       if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
@@ -221,6 +230,7 @@ export default {
     },
     async getReviews(){
       await reviewService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
+        console.log(response.data)
         this.reviews = response.data;
         for(let i=0; i<response.data.length; i++){
           this.setNameOfUserLeftReview(response.data[i].userId, i)
@@ -250,7 +260,7 @@ export default {
     },
     async getUnavailableDates(){
       await adService.getAllUnavailableDatesForAd(1).then(response => {
-        console.log("her er datoene" + response.data)
+        console.log(response.data)
         this.disable = response.data;
       }).catch(error => {
         console.log(error);

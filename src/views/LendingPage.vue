@@ -143,7 +143,6 @@ import axios from "axios"
 import MainPage from "./MainPage";
 import categoryService from "@/services/categoryService";
 import adService from "@/services/adService";
-import lendingService from "@/services/lendingService";
 
 export default {
   inject: ["GStore"],
@@ -257,7 +256,7 @@ export default {
             console.log(error)
           })
 
-        await lendingService
+        await adService
           .uploadPictureForAd(adId, this.imgFiles)
           .then(response => {
             console.log(response)

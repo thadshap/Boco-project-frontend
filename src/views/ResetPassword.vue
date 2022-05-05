@@ -40,8 +40,8 @@
 import { minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
-import lendingService from "../services/lendingService";
 import MainPage from "./MainPage";
+import loginRegistrationService from "@/services/loginRegistrationService";
 
 export default {
   inject: ["GStore"],
@@ -83,7 +83,7 @@ export default {
       console.log(this.$router.currentRoute)
       this.password = this.state.passwordChange
       this.repeatPassword = this.state.repeatPasswordChange
-      await lendingService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("forgotPasswordToken"))
+      await loginRegistrationService.renewPassword(this.password,this.repeatPassword,localStorage.getItem("forgotPasswordToken"))
         .then(response => {
           this.GStore.flashMessage = "Passoret har blitt endret!"
           this.GStore.variant = "Success"
