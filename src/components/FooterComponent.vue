@@ -170,6 +170,4 @@ div.social-links {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-
-
 </style>

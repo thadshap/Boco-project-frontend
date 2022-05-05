@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex message">
-        <img class="profile-picture" src="{{profilePicture}}">
+        <img class="profile-picture" v-bind:src="`data:${this.$props.type};base64,${this.$props.base64}`"/>
         <div class="flex-grow-1 padding">
             <div class="text">
                 <span v-on:click="routeToProfile" class="name">{{firstName}}&nbsp;</span>
@@ -32,12 +32,16 @@ export default {
             type: null,
             required: true,
         },
-        profilePicture:{
-            type: Image,
-            required: true,
-        },
         userId:{
             type: Number,
+            required: true,
+        },
+        type:{
+            type: String,
+            required: true,
+        },
+        base64:{
+            type: String,
             required: true,
         }
     },
@@ -47,7 +51,7 @@ export default {
                 localStorage.setItem("lenderId", this.$props.userId)
                 this.$router.push({name:"UserProfile"}) 
             }else{
-                this.$router.push("my_profile")
+                this.$router.push("../my_profile")
             }
             
         }
@@ -63,12 +67,15 @@ export default {
 .text{
     text-align: left;
     padding-bottom: 10px;
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 .timestamp{
     font-size: 10px;
 }
 .padding{
     padding: 10px;
+    max-width: 80vw;
 }
 .name{
     text-decoration: underline;
