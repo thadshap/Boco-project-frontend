@@ -21,8 +21,8 @@
 
 <script>
 import AdListComponent from "@/components/AdListComponent";
-import lendingService from "@/services/lendingService";
 import adService from "@/services/adService";
+import adsService from "@/services/adsService";
 
 export default {
   name: "MyAds",
@@ -39,10 +39,9 @@ export default {
   },
   methods: {
     async getMyAds(){
-      await lendingService.getAllAdsForUser(JSON.parse(localStorage.getItem("userId")))
+      await adsService.getAllAdsForUser(JSON.parse(localStorage.getItem("userId")))
       .then(response => {
         for (let i = 0; i < response.data.length; i++) {
-          //få poststed
           let ad = {
             id: response.data[i].adId,
             title: response.data[i].title,
@@ -53,7 +52,6 @@ export default {
           this.ads.push(ad)
         }
       })
-
       for(let i = 0; i < this.ads.length; i++) {
         await adService
           .getPicturesForAd(this.ads[i].id)
@@ -64,7 +62,6 @@ export default {
             console.log(error)
           })
       }
-
     },
     back() {
       this.$router.go(-1)

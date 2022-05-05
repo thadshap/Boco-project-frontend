@@ -83,6 +83,9 @@ export default {
     dateOfRental: {
       type: String,
     },
+    reviewed: {
+      type: Boolean,
+    }
   },
   data() {
     return {
@@ -120,7 +123,8 @@ export default {
       await this.getOwnerId()
       if( (!this.active) &&
           (this.rentTo < new Date().toLocaleDateString('en-CA')) &&
-          (this.userId != this.ownerId)){
+          (this.userId != this.ownerId) &&
+          (!this.reviewed)){
         this.showReviewBox = true
       }
     },
