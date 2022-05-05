@@ -46,7 +46,7 @@ export default {
             url: 'http://localhost:8443/api/ads/page/' + pageSize,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+ localStorage.getItem("token")
+                'Authorization': 'Bearer '
     },
         data: {lat: lat, lng: lng}
     };
@@ -92,7 +92,7 @@ export default {
             url: `${url}${port}/api/ads/filter`,
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem("token")
+                Authorization: 'Bearer '
             },
             data: {
                 filterType: filterType,
@@ -120,7 +120,7 @@ export default {
             url: 'http://localhost:8443/api/ads/category/filter',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer ' + localStorage.getItem("token")
+                Authorization: 'Bearer '
             },
             data: {
                 filterType: filterType,
