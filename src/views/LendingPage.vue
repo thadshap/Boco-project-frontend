@@ -96,6 +96,18 @@
         </div>
         <div class="d-flex flex-column">
           <label class="form-label">
+            Varighet
+          </label>
+          <select class="form-select" id="varighet" v-model="state.durationType">
+            <option value="">--Velg varighet--</option>
+            <option v-for="duration in durations" :key="duration">{{ duration.displayName }}</option>
+          </select>
+          <span class="text-danger" v-if="v$.durationType.$error">
+            {{ v$.durationType.$errors[0].$message }}
+          </span>
+        </div>
+        <div class="d-flex flex-column">
+          <label class="form-label">
             Adresse
           </label>
           <input class="form-control" type="text" v-model="state.streetAddress">
@@ -152,6 +164,7 @@ export default {
       title: "",
       description: "",
       price: "",
+      durationType: "",
       streetAddress: "",
       postalCode: "",
       phoneNumber: "",
@@ -172,6 +185,9 @@ export default {
         price: {
           required: helpers.withMessage("Pris må være satt! Dersom gratis skriv inn 0", required),
           integer: helpers.withMessage("Pris må være et tall! Dersom gratis skriv inn 0", integer)
+        },
+        durationType: {
+          required: helpers.withMessage("Varighet må være sett!", required)
         },
         streetAddress: {
           required: helpers.withMessage("Adresse må være satt!", required)
@@ -209,10 +225,28 @@ export default {
       subCategoriesId :"",
       subSubCategoriesId :"",
       idToCategory: "",
-      city:""
+      city:"",
+      durations: [
+        {
+          displayName: "Time",
+          serverName: "HOUR"
+        },
+        {
+          displayName: "Dag",
+          serverName: "DAY"
+        },
+        {
+          displayName: "Uke",
+          serverName: "WEEK"
+        },
+        {
+          displayName: "Måned",
+          serverName: "MONTH"
+        }
+      ]
     }
   },
-  created: async function() {
+  async created() {
     await this.getCategories()
   },
   methods: {
@@ -220,13 +254,10 @@ export default {
       this.$refs.fileInput.click()
     },
     onFileChange(e) {
-      console.log(e.target.files.length)
       for(let i = 0; i < e.target.files.length; i++) {
-        console.log(e.target.files[i])
         let file = e.target.files[i];
         this.imgFiles.push(file);
         this.imgUrl.push(URL.createObjectURL(file));
-        console.log(this.imgUrl)
       }
     },
     async submit() {
@@ -235,23 +266,27 @@ export default {
 
       if(!this.v$.$error && this.imgError === "") {
         let adId;
+        let durationType;
+
+        for(let i= 0; i < this.durations.length; i++) {
+          if(this.durations[i].displayName === this.state.durationType) {
+            durationType = this.durations[i].serverName
+          }
+        }
+
 
         await adService
           .postNewAd(
             this.state.title,
             this.state.description,
-            1,
+            durationType,
             this.state.price,
             this.state.streetAddress,
             this.state.postalCode,
             this.idToCategory
           )
           .then(response => {
-            this.GStore.flashMessage = "Annonsen ble opprettet!"
-            this.GStore.variant = "Success"
-            setTimeout(() => {
-              this.GStore.flashMessage = ""
-            }, 4000)
+            adId = response.data
             console.log(response)
             this.$router.push({
               name: "MainPage",
@@ -259,12 +294,12 @@ export default {
             });
           })
           .catch(error => {
+            console.log(error)
             this.GStore.flashMessage = "Anonsen ble ikke opprettet!"
             this.GStore.variant = "Error"
             setTimeout(() => {
               this.GStore.flashMessage = ""
             }, 4000)
-            console.log(error)
           })
 
 
@@ -277,14 +312,24 @@ export default {
         await adService
           .uploadPicturesForAd(adId, formdata)
           .then(response => {
+            this.GStore.flashMessage = "Annonsen ble opprettet!"
+            this.GStore.variant = "Success"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
             console.log(response)
           })
           .catch(error => {
             console.log(error)
+            this.GStore.flashMessage = "Klarte ikke laste opp bildene..."
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
           })
       }
     },
-    getCategories:async function(){
+    async getCategories(){
       await categoryService.getAllParentCategories()
       .then(response => {
         this.categories = response.data
@@ -311,7 +356,7 @@ export default {
         }
       }
     },
-    clickedCategory:async function(e){
+    async clickedCategory(e){
       this.resetClickedCategory()
 
       let name = e.target.options[e.target.options.selectedIndex].text
@@ -344,7 +389,7 @@ export default {
       this.subSubCategoriesId = ""
       this.idToCategory = ""
     },
-    clickedSubCategories:async function(e){
+    async clickedSubCategories(e){
 
       this.resetClickedSubCategories()
 

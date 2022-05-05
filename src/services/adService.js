@@ -73,12 +73,12 @@ export default {
 
         const options = {
             method: 'POST',
-            url: `${url}${port}/auth/ads/newPicture/${userId}/${adId}`,
+            url: `${url}${port}/api/auth/ads/newPicture/${userId}/${adId}`,
             headers: {
                 'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
                 'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
-            data: [pictures]
+            data: pictures
         };
         return axios.request(options);
     },
@@ -117,14 +117,14 @@ export default {
         return axios.request(options);
     },
     /**
+     *Posts a new ad
      *
-     * @param title
-     * @param description
+     * @param title title of the ad
+     * @param description description of the ad
      * @param durationType can be 'HOUR', 'DAY', 'WEEK', 'MONTH'
-     * @param price
-     * @param streetaddress
-     * @param postalCode
-     * @param userId
+     * @param price price of the ad
+     * @param streetaddress address of the ad
+     * @param postalCode postal code of the ad
      * @param categoryId is the id of the subcategory
      */
     postNewAd(
@@ -148,7 +148,6 @@ export default {
                 description: description,
                 rental: true,
                 durationType: durationType,
-                duration: 1,
                 price: price,
                 streetAddress: streetaddress,
                 postalCode: postalCode,
