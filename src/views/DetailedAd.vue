@@ -21,12 +21,13 @@
       </label>
     </div>
     </div>
-    <div class="text-center mb-4">
+    <div class="text-center mb-4" v-if="!usersOwnAddress">
       <button
         id="startChatButton"
         class="btn btn-primary"
         type="button"
         v-on:click="startChat"
+        :disabled="!this.userLoggedIn"
       >
         Send melding
       </button>
@@ -35,11 +36,12 @@
         class="btn btn-primary"
         type="button"
         v-on:click="makeRequest"
+        :disabled="!this.userLoggedIn"
       >
         Forespør lån
       </button><br>
       <div id="time" class="text-center mt-3" v-if="showRequestDetails">
-        <label class="defined-label">Tidsperiode </label>>
+        <label class="defined-label">Tidsperiode </label>
         <div class="date-container">
         <Datepicker class="date-input" v-model="date" range :min-date='new Date()' :disabledDates="disable"/>
         <button
@@ -144,11 +146,14 @@ export default {
   name: "DetailedAd",
   data() {
     return {
+      usersOwnAddress: false,
+      userLoggedIn: false,
       date: null,
       showRightArrow: true,
       requestStartDate: "",
       requestEndDate: "",
       showRequestDetails: false,
+      userEmail: "",
       reviews: [],
       disable: [new Date()],
       pictures: [],
@@ -157,18 +162,22 @@ export default {
     };
   },
   async created() {
+    await this.checkLoggedIn()
     await this.getCurrentAd();
     await this.setLender();
     await this.getReviews();
     await this.getUnavailableDates();
     await this.getAdPictures();
     this.setLenderId();
+    if(this.ad.userId == localStorage.getItem('userId')){
+      this.usersOwnAddress = true;
+    }
   },
   setup() {
-    const projection = ref("EPSG:4326");
-    const zoom = ref(8);
-    const rotation = ref(0);
-    const strokeWidth = ref(10);
+    const projection = ref("EPSG:4326")
+    const zoom = ref(8)
+    const rotation = ref(0)
+    const strokeWidth = ref(10)
     return {
       projection,
       zoom,
@@ -180,9 +189,9 @@ export default {
   methods: {
     async getCurrentAd(){
       await adService.getAdById(this.$store.getters.currentAd.id).then(response => {
-        this.ad = response.data;
+        this.ad = response.data
       }).catch(error => {
-        console.log(error);
+        console.log(error)
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -190,6 +199,14 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
+      //this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+    },
+    checkLoggedIn() {
+      if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
+        this.userLoggedIn = true
+      } else {
+        this.userLoggedIn = false
+      }
     },
     getDurationTypeToNorwegian(){
       if (this.ad.durationType == 'MONTH'){
@@ -233,7 +250,7 @@ export default {
     },
     async getUnavailableDates(){
       await adService.getAllUnavailableDatesForAd(1).then(response => {
-        console.log(response.data)
+        console.log("her er datoene" + response.data)
         this.disable = response.data;
       }).catch(error => {
         console.log(error);
@@ -297,7 +314,20 @@ export default {
       }
       this.showRequestDetails = !this.showRequestDetails;
     },
+    async getUserEmail(){
+      await userService.getUserById(localStorage.getItem("userId"),).then(response => {
+        this.userEmail = response.data.email
+      }).catch(error => {
+        console.log(error);
+        this.GStore.flashMessage = "Fikk ikke hentet emailen din"
+        this.GStore.variant = "Error"
+        setTimeout(() => {
+          this.GStore.flashMessage = ""
+        }, 4000)
+      })
+    },
     async sendRequest(){
+      await this.getUserEmail()
       const datefrom = moment(this.date[0]).format('YYYY-MM-DD')
       const dateto = moment(this.date[1]).format('YYYY-MM-DD')
       const diffTime = Math.abs(this.date[1] - this.date[0] + 1);
@@ -308,9 +338,9 @@ export default {
           datefrom,
           dateto,
           datefrom,
-          price,
-          this.lender.id,
-          localStorage.getItem("userId"),
+          Math.round(price),
+          this.lender.email,
+          this.userEmail,
           this.$store.getters.currentAd.id
       ).then(response => {
         console.log(response)

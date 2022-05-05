@@ -4,112 +4,6 @@ let port = "8443"
 
 export default {
     /**
-     * Method to get sort a list from lowest to highest price
-     * @param listOfAds the ads who need to be sorted
-     */
-    sortListOfAdsByIncreasingPrice(listOfAds) {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/sort/list/price/ascending`,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: [{ list: listOfAds }],
-        };
-
-        return axios.request(options);
-    },
-    /**
-     * Method to get sort a list from highest to lowest price
-     * @param listOfAds the ads who need to be sorted
-     */
-    sortListByDescendingPrice(listOfAds) {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/sort/list/price/descending`,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: [
-                {
-                    list: listOfAds,
-                },
-            ],
-        };
-
-        return axios.request(options);
-    },
-
-    /**
-     * Method to sort a list of Ads from lowest to highest distance
-     * @param listOfAds is the list to be sorted
-     */
-    sortListByAscendingDistance(listOfAds) {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/sort/list/distance/ascending`,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: [{ list: listOfAds }],
-        };
-
-        return axios.request(options);
-    },
-    /**
-     * Method to sort a list of Ads from lowest to highest distance
-     * @param listOfAds is the list to be sorted
-     */
-    sortListByDescendingDistance(listOfAds) {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/sort/list/distance/descending`,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            data: [{ list: listOfAds }],
-        };
-
-        return axios.request(options);
-    },
-
-    /**
-     * Method to get a list of ads who in a price range
-     */
-    getAdsInPriceRange(listOfAds, upperLimit){
-        const options = {
-            method: 'POST',
-            url: `${url}${port}/api/getListWithinPriceRange`,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                list: listOfAds,
-                upperLimit: upperLimit,
-                lowerLimit: 0
-            }
-        };
-        return axios.request(options);
-    },
-
-    /**
-     * Method to get a list of ads who in a span of distance from the user
-     * @param listOfAds list of ads to sort
-     * @param limitUpper upper limit for distance
-     */
-    getSortedListOfAdsWithinDistance(listOfAds, limitUpper) {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/filterByDistance`,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            data: { list: listOfAds, upperLimit: limitUpper },
-        };
-
-        return axios.request(options);
-    },
-    /**
      * Method to get a list of ads who are nearby the user
      */
     getAllAdsForUser(userId) {
@@ -120,40 +14,9 @@ export default {
 
         return axios.request(options);
     },
-    //Available
-    getAllAvailableAdsByUserId(userId) {
-        const options = {
-            method: "GET",
-            url: `${url}${port}/api/ads/available/`+userId,
-        };
 
-        return axios.request(options);
-    },
-
-    /**
-     * Method to get a list of ads who have a specific postal code
-     * @param postalCode is the specific postal code who will be filtered by
-     */
-    getAdsByPostalCode(postalCode) {
-        const options = {
-            method: "GET",
-            url: `${url}${port}/api/ads/postal/` + postalCode,
-        };
-
-        return axios.request(options);
-    },
     getAllAds() {
         const options = { method: "GET", url: `${url}${port}/api/ads` };
-
-        return axios.request(options);
-    },
-
-    getAllAvailableAds() {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/ads/available/true`,
-            headers: { "Content-Type": "application/json" },
-        };
 
         return axios.request(options);
     },
@@ -177,14 +40,16 @@ export default {
      * Method to get a list of random ads
      * @param pageSize how many ads on the page
      */
-    getPageWithRandomAds(pageSize) {
+    getPageWithRandomAds(pageSize, lat,lng) {
         const options = {
-            method: "GET",
-            url: `${url}${port}/api/ads/page/` + pageSize,
+            method: 'POST',
+            url: 'http://localhost:8443/api/ads/page/' + pageSize,
             headers: {
-                "Content-Type": "application/json"
-            },
-        };
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ localStorage.getItem("token")
+    },
+        data: {lat: lat, lng: lng}
+    };
 
         return axios.request(options);
     },
@@ -212,4 +77,60 @@ export default {
 
         return axios.request(options);
     },
+    /**
+     * Method for filtering ads when category is not chosen
+     * @param filterType can be "distance" or "price"
+     * @param upperLimit is the upperlimit of the filterType
+     * @param lowestValueFirst is a boolean, set true if you want to sort increasing, and false for decreasing
+     * @param lat is the latitude coordinate for the user
+     * @param lng is the longitude coordinate for the user
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+    filterAdsForPriceOrDistance(filterType, upperLimit, lowestValueFirst, lat,lng){
+        const options = {
+            method: 'POST',
+            url: `${url}${port}/api/ads/filter`,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem("token")
+            },
+            data: {
+                filterType: filterType,
+                upperLimit: upperLimit,
+                lowestValueFirst: lowestValueFirst,
+                lat: lat,
+                lng: lng
+            }
+        };
+        return axios.request(options);
+    },
+    /**
+     * Method for filtering ads when category is chosen
+     * @param filterType can be "distance" or "price"
+     * @param category is the name of the category selected by user
+     * @param upperLimit is the upperlimit of the filterType
+     * @param lowestValueFirst is a boolean, set true if you want to sort increasing, and false for decreasing
+     * @param lat is the latitude coordinate for the user
+     * @param lng is the longitude coordinate for the user
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+    filterAdsInCategoryByDistanceOrPrice(filterType, category, upperLimit, lowestValueFirst, lat, lng){
+        const options = {
+            method: 'POST',
+            url: 'http://localhost:8443/api/ads/category/filter',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem("token")
+            },
+            data: {
+                filterType: filterType,
+                category: category,
+                upperLimit: upperLimit,
+                lowestValueFirst: lowestValueFirst,
+                lat: lat,
+                lng: lng
+            }
+        };
+        return axios.request(options);
+    }
 }

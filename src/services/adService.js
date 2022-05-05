@@ -84,6 +84,17 @@ export default {
         };
         return axios.request(options);
     },
+    getPictureForAd(adId) {
+        const options = {
+            method: 'GET',
+            url: `${url}${port}/api/ads/picture/${adId}`,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '
+            }
+        };
+        return axios.request(options);
+    },
     getPicturesForAd(adId) {
         const options = {
             method: 'GET',
@@ -98,10 +109,10 @@ export default {
     getAllUnavailableDatesForAd(adId){
         const options = {
             method: 'POST',
-            url: `${url}${port}/api/calender/get`,
+            url: `${url}${port}/api/calendar/get`,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
             },
             data: { adId : adId}
         };
