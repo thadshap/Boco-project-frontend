@@ -61,7 +61,7 @@ export default {
             
         },
         urlify() {
-            var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g
+            let urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g
             if (this.editedContent.match(urlRegex)) {
                 let urls = this.editedContent.match(urlRegex)
                 for (let i = 0; i < urls.length; i++) {
