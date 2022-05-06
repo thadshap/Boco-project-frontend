@@ -14,11 +14,12 @@
           <p>Total pris: {{ price }} kr</p>
           <p>Aktivert: {{ active }}</p>
           </div>
-          <div id="review" v-if="showReviewBox">
-            Legg igjen en anmeldelse av dette lånet!
-            <br>Din beskrivelse av leieforholdet: <input type="text" maxlength="120" v-model="description">
-            <br>Din rating av leieforholdet på en skala fra 1-10: <input type="number" min="1" max="10" v-model="rating" v-on:change="enableSendRequestButton=true">
-            <br>
+          <div id="review" v-if="showReviewBox" class="w-100 mt-2 mb-2 p-2" style="display:table-column;">
+            <h5 class="mb-0">Legg igjen en anmeldelse av dette lånet!</h5>
+            <hr class="mt-0">
+            <p class="d-flex justify-content-between">Din beskrivelse av leieforholdet: <input type="text" maxlength="120" v-model="description"></p>
+            <p class="d-flex justify-content-between">Din rating av leieforholdet på en skala fra 1-10: <input type="number" min="1" max="10" v-model="rating" v-on:change="enableSendRequestButton=true"></p>
+
             <a v-if="this.enableSendRequestButton" v-on:click="sendReview" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
               Send tilbakemelding
             </a>
