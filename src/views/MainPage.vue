@@ -46,8 +46,8 @@
                 @chosen-sub-cat="chosenSubCat"
               />
             </div>
-            <div v-if="subSubCategories.length !== 0" class="mt-3">
-              <h6 class="category-header">... underkategori</h6>
+            <div v-if="subSubCategories.length !== 0" class="mt-5">
+              <h5 class="category-header">... underkategori</h5>
               <hr />
               <SubCategoryComponent
                 v-for="cat in subSubCategories"
@@ -344,7 +344,6 @@ export default {
       await adsService
         .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
           .then(response => {
-            console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,
@@ -642,8 +641,8 @@ export default {
 
 .filter-and-sort-btn-container {
   display: flex;
-  justify-content: right;
-  margin-right: 12px;
+  justify-content: left;
+  margin-left: 12px;
 }
 .sort-container,
 .filter-container {
