@@ -1,7 +1,6 @@
-import { mount, shallowMount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import {createStore} from "vuex"
 import MainPage from "@/views/MainPage";
-import UserSettings from "@/views/UserSettings";
 
 
 const store = createStore({
