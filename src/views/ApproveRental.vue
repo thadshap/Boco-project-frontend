@@ -64,6 +64,7 @@
 
 <script>
 import rentalService from "@/services/rentalService";
+import adService from "@/services/adService";
 
 export default {
   name: "ResetPassword",
@@ -78,14 +79,15 @@ export default {
       title: "",
       adId: null,
       id: null,
-      rentalId:""
+      rentalId:"",
+      ownerId:"",
     };
   },
-  mounted() {
+  async mounted() {
     //kan legges til en sjekk her for å se at det ikke er noe suspekt
     //med det som er skrevet i url-en
     this.rentalId = this.$route.query.rentalId
-    rentalService.getRentalById(this.rentalId)
+    await rentalService.getRentalById(this.rentalId)
         .then(response => {
           this.dateOfRental = response.data.dateOfRental
           this.rentFrom =  response.data.rentFrom
@@ -101,14 +103,20 @@ export default {
           console.error(error)
           this.$router.push("/")
         })
+    await adService.getAdById(this.adId)
+    .then(response => {
+      this.ownerId = response.data.userId
+    })
+
+    if(this.ownerId !== parseInt(localStorage.getItem("userId"))){
+      await this.$router.push("/")
+    }
   },
   methods: {
     back() {
       this.$router.go(-1)
     },
     async approve() {
-      console.log("approve")
-      //TODO approve the rental, gjøre boolean til false i store
       await rentalService.approveRental(this.rentalId)
       .then(response => {
         if(response.status === 200){
@@ -121,7 +129,6 @@ export default {
           })
         }
       })
-      this.$store.dispatch("setRentalApprovalInProgress",false)
     },
     async decline() {
       await rentalService.declineRental(this.rentalId)
@@ -134,8 +141,6 @@ export default {
       .catch(error => {
         console.error(error)
       })
-      console.log(2)
-      this.$store.dispatch("setRentalApprovalInProgress",false)
     }
   }
 };
