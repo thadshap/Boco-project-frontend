@@ -49,6 +49,19 @@ export default {
 
         return axios.request(options);
     },
+    deleteRental(rentalId, rating, review){
+        const options = {
+            method: 'DELETE',
+            url: 'http://localhost:8443/rental/delete/' + rentalId,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + localStorage.getItem("token")
+            },
+            data: {review: rating, rating: review}
+        };
+
+        return axios.request(options);
+    },
     declineRental(rentalId) {
         const options = {
             method: "DELETE",
