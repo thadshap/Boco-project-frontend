@@ -26,7 +26,7 @@ const store = createStore({
 
 jest.spyOn(AdComponent.methods, "goToDetailedView")
     .mockImplementation(() => {
-        AdComponent.data().disable.push([new Date()])
+        AdComponent.data().disable = [new Date()]
     })
 
 describe("AdComponent.vue", () => {
@@ -58,36 +58,4 @@ describe("AdComponent.vue", () => {
         });
         expect(wrapper.find("img").attributes("src")).toBe(`${image}`)
     });
-
-    it("test that clicking on 'Send melding' routes to detailed ad", async () => {
-
-        const id = 1;
-        const title = "Motorsag";
-        const price = 1000;
-        const place = "Trondheim";
-        const image = "BoCo.png";
-        const userId = 1
-
-        const mockRoute = {}
-
-        const mockRouter = {
-            push: jest.fn()
-        }
-
-        const wrapper = mount(AdComponent, {
-            props: { id,title,price,place,image,userId },
-            global: {
-                mocks: {
-                    $route: mockRoute,
-                    $router: mockRouter
-                }
-            }
-        })
-        let btn = wrapper.findAll('a').filter(a => a.text() === "Til annonse")[0]
-
-        await btn.trigger("click")
-
-        expect(mockRouter.push).toHaveBeenCalledTimes(1)
-        expect(mockRouter.push).toHaveBeenCalledWith({"name": "Ad"})
-    })
 });
