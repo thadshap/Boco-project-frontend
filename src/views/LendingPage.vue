@@ -8,11 +8,11 @@
       </div>
       <form @submit.prevent="submit">
         <div class="d-flex flex-column">
-          <label class="form-label">
+          <label class="form-label" for="titleOfTheAd">
             Tittel
           </label>
-          <input class="form-control" type="text" v-model="state.title">
-          <span class="text-danger" v-if="v$.title.$error">
+          <input class="form-control" id="titleOfTheAd" type="text" v-model="state.title">
+          <span class="text-danger" id="titleError" v-if="v$.title.$error">
             {{ v$.title.$errors[0].$message }}
           </span>
         </div>
@@ -24,7 +24,7 @@
             <option value="">--Velg kategori--</option>
             <option v-for="category in categories" :key="category" value="category.title">{{ category.title }} </option>
           </select>
-          <span class="text-danger" v-if="v$.category.$error">
+          <span class="text-danger" id="mainCategoryError" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
           </span>
         </div>
@@ -50,8 +50,8 @@
           <label class="form-label">
             Beskrivelse
           </label>
-          <textarea class="form-control" v-model="state.description"></textarea>
-          <span class="text-danger" v-if="v$.description.$error">
+          <textarea class="form-control" v-model="state.description" id="description"></textarea>
+          <span class="text-danger" id="descriptionError" v-if="v$.description.$error">
             {{ v$.description.$errors[0].$message }}
           </span>
         </div>
@@ -86,11 +86,11 @@
 
         </div>
         <div class="d-flex flex-column mt-5">
-          <label class="form-label">
+          <label class="form-label" for="price">
             Pris
           </label>
-          <input class="form-control" type="text" v-model="state.price">
-          <span class="text-danger" v-if="v$.price.$error">
+          <input class="form-control" type="text" v-model="state.price" id="price">
+          <span class="text-danger" id="priceError" v-if="v$.price.$error">
             {{ v$.price.$errors[0].$message }}
           </span>
         </div>
@@ -107,20 +107,20 @@
           </span>
         </div>
         <div class="d-flex flex-column">
-          <label class="form-label">
+          <label class="form-label" for="streetAddress">
             Adresse
           </label>
-          <input class="form-control" type="text" v-model="state.streetAddress">
+          <input class="form-control" type="text" v-model="state.streetAddress" id="streetAddress">
           <span class="text-danger" v-if="v$.streetAddress.$error">
             {{ v$.streetAddress.$errors[0].$message }}
           </span>
         </div>
         <div class="d-flex flex-column">
-          <label class="form-label">
+          <label class="form-label" for="postalCode">
             Postnummer
           </label>
-          <input class="form-control" type="text" v-model="state.postalCode" @focusout="findPostalplace(state.postalCode)">
-          <span class="text-danger" v-if="v$.postalCode.$error">
+          <input class="form-control" type="text" v-model="state.postalCode" @focusout="findPostalplace(state.postalCode)" id="postalCode">
+          <span class="text-danger" id="postalCodeError" v-if="v$.postalCode.$error">
             {{ v$.postalCode.$errors[0].$message }}
           </span>
         </div>
@@ -131,15 +131,15 @@
           <input class="form-control" type="text" :value="city" readonly>
         </div>
         <div class="d-flex flex-column">
-          <label class="form-label">
+          <label class="form-label" for="phoneNumber">
             Telefonummer
           </label>
-          <input class="form-control" type="tel" v-model="state.phoneNumber">
-          <span class="text-danger" v-if="v$.phoneNumber.$error">
+          <input class="form-control" type="tel" v-model="state.phoneNumber" id="phoneNumber">
+          <span class="text-danger" id="phoneNumberError" v-if="v$.phoneNumber.$error">
             {{ v$.phoneNumber.$errors[0].$message }}
           </span>
         </div>
-        <button class="btn btn-primary w-100 btn-style" type="submit">
+        <button class="btn btn-primary w-100 btn-style" type="submit" id="postAdBtn">
           Opprett annonse
         </button>
       </form>
