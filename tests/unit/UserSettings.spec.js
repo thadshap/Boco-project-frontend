@@ -1,6 +1,15 @@
 import { shallowMount } from "@vue/test-utils";
 import UserSettings from "@/views/UserSettings";
 
+jest.spyOn(UserSettings.methods, "disableChangeBtn")
+  .mockImplementation(() => {})
+
+jest.spyOn(UserSettings.methods, "getUserInfo")
+  .mockImplementation(() => {})
+
+jest.spyOn(UserSettings.methods, "existingUserImg")
+  .mockImplementation(() => {})
+
 describe("UserSettings", () => {
   it('should render a firstname input field and its belonging label', () => {
     const wrapper = shallowMount(UserSettings);

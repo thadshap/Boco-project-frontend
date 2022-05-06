@@ -16,7 +16,7 @@ describe("AdComponent.vue", () => {
             props: { id,title,price,place,image,userId },
         });
 
-        expect(wrapper.text()).toContain(`${title}${price} kr Trondheim Send melding  Til annonse`);
+        expect(wrapper.text()).toContain(`${title}${price} kr   Til annonse`);
     });
 
     it("Renders image when passed", () => {

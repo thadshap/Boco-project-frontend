@@ -429,7 +429,7 @@ export default {
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
-        this.$router.push("/")
+        this.$router.push("/groups")
       }).catch(error => {
         console.error(error);
         this.GStore.flashMessage = "Fikk ikke opprettet forespørsel"
