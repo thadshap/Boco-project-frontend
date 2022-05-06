@@ -200,9 +200,6 @@ export default {
     }
   },
   setup(props) {
-    console.log(props)
-    console.log(parseFloat(props.lat))
-    console.log(parseFloat(props.lng))
     const projection = ref("EPSG:4326")
     const zoom = ref(8)
     const rotation = ref(0)
@@ -222,7 +219,7 @@ export default {
       await adService.getAdById(this.$store.getters.currentAd.id).then(response => {
         this.ad = response.data
       }).catch(error => {
-        console.log(error)
+        console.error(error)
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -270,7 +267,7 @@ export default {
           this.setNameOfUserLeftReview(response.data[i].userId, i)
         }
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -283,7 +280,7 @@ export default {
         this.reviews[i].firstName = response.data.firstName;
         this.reviews[i].lastName = response.data.lastName;
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet navn på anmeldelsene"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -296,7 +293,7 @@ export default {
       await adService.getAllUnavailableDatesForAd(1).then(response => {
         this.disable = response.data;
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet utilgjengelige datoer for annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -308,7 +305,7 @@ export default {
       await userService.getUserById(this.ad.userId).then(response => {
         this.lender = response.data
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet utlåneren av annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -316,8 +313,6 @@ export default {
         }, 4000)
       })
       let userId = localStorage.getItem("userId")
-      console.log(userId)
-      console.log(this.lender.id)
       if (userId != this.lender.id) {
         this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
       }
@@ -333,7 +328,7 @@ export default {
             groupId = response.data.groupId
           })
           .catch(error =>{
-            console.log(error)
+            console.error(error)
           })
           this.$store.dispatch("setGroupId", groupId)
           this.$store.dispatch("setGroupName", this.ad.title)
@@ -367,7 +362,7 @@ export default {
       await userService.getUserById(localStorage.getItem("userId"),).then(response => {
         this.userEmail = response.data.email
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet emailen din"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -392,7 +387,7 @@ export default {
           this.userEmail,
           this.$store.getters.currentAd.id
       ).then(response => {
-        console.log(response)
+        console.error(response)
         this.showRequestDetails = false;
         this.GStore.flashMessage = "Forespørsel om utlån opprettet! Se detaljer på dine sider"
         this.GStore.variant = "Success"
@@ -401,7 +396,7 @@ export default {
         }, 4000)
         this.$router.push("/")
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke opprettet forespørsel"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -432,7 +427,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     }
   },
