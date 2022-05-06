@@ -101,7 +101,7 @@ describe("DetailedAd", () => {
     expect(wrapper.find('[id="sendRequest"]').element.disabled).toBe(true);
 
     await wrapper.setData({date : '27.06.2021'});
-    expect(wrapper.find("#sendRequest")).toBe(false);
+    expect(wrapper.find("#sendRequest").exists()).toBe(false);
   });
 
   it("test that input date will enable button", async () => {
@@ -113,7 +113,7 @@ describe("DetailedAd", () => {
     await wrapper.setData({userLoggedIn : true})
     await wrapper.find('[id="makeRequest"]').trigger("click");
     await wrapper.setData({date : '27.06.2021'});
-    expect(wrapper.find('[id="sendRequest"]')).toBe(false);
+    expect(wrapper.find('[id="sendRequest"]').exists()).toBe(false);
   });
 
   it("test that dropdown arrow show earlier reviews", async () => {
