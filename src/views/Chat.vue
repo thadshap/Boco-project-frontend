@@ -154,7 +154,7 @@ export default {
           })
       },
   async connect(){
-        let socket = new SockJS(`https://localhost:8443/ws/`);
+        let socket = new SockJS(`http://localhost:8443/ws/`);
         let options = {debug: false, protocols: Stomp.VERSIONS.supportedProtocols()};
         console.log("creating socket")
         this.stompClient = Stomp.over(socket, options);
