@@ -45,7 +45,9 @@ export default {
           let ad = {
             id: response.data[i].adId,
             title: response.data[i].title,
-            place: response.data[i].postalCode.toString(),
+            city: response.data[i].city,
+            postalCode: response.data[i].postalCode.toString(),
+            streetAddress: response.data[i].streetAddress,
             price: response.data[i].price,
             userId: response.data[i].userId
           }

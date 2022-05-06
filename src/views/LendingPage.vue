@@ -20,9 +20,9 @@
           <label class="form-label">
             Hovedkategori
           </label>
-          <select class="form-select" id="category" v-on:change="clickedCategory($event)">
+          <select class="form-select" id="category" v-on:change="chosenMainCat($event)">
             <option value="">--Velg kategori--</option>
-            <option v-for="category in categories" :key="category" value="category.name">{{ category.name }} </option>
+            <option v-for="category in categories" :key="category" value="category.title">{{ category.title }} </option>
           </select>
           <span class="text-danger" v-if="v$.category.$error">
             {{v$.category.$errors[0].$message }}
@@ -34,16 +34,16 @@
           </label>
           <select class="form-select" id="subCategory" v-on:change="clickedSubCategories($event)">
             <option value="">--Velg kategori--</option>
-            <option v-for="subCategory in subCategories" :key="subCategory" value="subCategory.name">{{ subCategory.name }}</option>
+            <option v-for="subCategory in subCategories" :key="subCategory" value="subCategory.title">{{ subCategory.title }}</option>
           </select>
         </div>
         <div class="d-flex flex-column" v-if="this.isSubSubCategory">
           <label class="form-label">
             ... kategori
           </label>
-          <select class="form-select" id="subSubCategory" >
+          <select class="form-select" id="subSubCategory" v-on:change="clickedSubSubCategories($event)">
             <option value="">--Velg kategori--</option>
-            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory" value="subSubCategory.name" v-on:change="clickedSubSubCategories(subSubCategory.id)">{{ subSubCategory.name }}</option>
+            <option v-for="subSubCategory in subSubCategories" :key="subSubCategory" value="subSubCategory">{{ subSubCategory.title }}</option>
           </select>
         </div>
         <div class="d-flex flex-column">
@@ -247,7 +247,8 @@ export default {
     }
   },
   async created() {
-    await this.getCategories()
+    await this.getAllCategories()
+    this.categories = this.$store.getters.getMainCategories
   },
   methods: {
     chooseImages() {
@@ -273,7 +274,6 @@ export default {
             durationType = this.durations[i].serverName
           }
         }
-
 
         await adService
           .postNewAd(
@@ -329,16 +329,57 @@ export default {
           })
       }
     },
-    async getCategories(){
-      await categoryService.getAllParentCategories()
-      .then(response => {
-        this.categories = response.data
-      }).catch(error => {
-          this.GStore.flashMessage = "Fikk ikke hentet kategoriene!"
-          this.GStore.variant = "Error"
-          setTimeout(() => {
-            this.GStore.flashMessage = ""
-          }, 4000)
+    async getAllCategories() {
+      if(this.$store.getters.getMainCategories.length !== 0) {
+        console.log("Already in store!!")
+        return
+      }
+
+      await categoryService
+        .getAllCategories()
+        .then(response => {
+          let mainCategories = [];
+          let subCategories = [];
+          let subSubCategories = [];
+          for(let i = 0; i < response.data.length; i++) {
+            switch (response.data[i].level) {
+              case 1:
+                mainCategories.push({
+                  title: response.data[i].name,
+                  icon: response.data[i].icon,
+                  id: response.data[i].id,
+                  child: response.data[i].child,
+                  parent: response.data[i].parent
+                })
+                break;
+              case 2:
+                subCategories.push({
+                  parentCat: response.data[i].parentName,
+                  title: response.data[i].name,
+                  id: response.data[i].id,
+                  child: response.data[i].child,
+                  parent: response.data[i].parent
+                })
+                break;
+              case 3:
+                subSubCategories.push({
+                  parentCat: response.data[i].parentName,
+                  title: response.data[i].name,
+                  id: response.data[i].id,
+                  child: response.data[i].child,
+                  parent: response.data[i].parent
+                })
+                break;
+            }
+            this.$store.dispatch("setMainCategories", mainCategories)
+            this.$store.dispatch("setSubCategories", subCategories)
+            this.$store.dispatch("setSubSubCategories", subSubCategories)
+
+            this.categories = []
+            this.categories = mainCategories
+          }
+        })
+        .catch(error => {
           console.log(error)
         })
     },
@@ -351,38 +392,34 @@ export default {
     },
     searchClickedCategory(name){
       for (let i = 0; i<this.categories.length; i++){
-        if (this.categories[i].name == name){
+        if (this.categories[i].name === name){
           this.categoriesId = this.categories[i].id
         }
       }
     },
-    async clickedCategory(e){
-      this.resetClickedCategory()
-
+    async chosenMainCat(e) {
       let name = e.target.options[e.target.options.selectedIndex].text
       this.state.category = name
-      console.log(this.state.category)
-      this.searchClickedCategory(name)
 
-      if (name == '--Velg kategori--') this.isSubCategory = false
-      else {
-        await categoryService
-          .getAllSubCategoriesForCategory(name)
-          .then(response => {
-            this.subCategories = response.data
-            this.isSubCategory = true
-            this.idToCategory = this.categoriesId
-          })
-          .catch(error => {
-            this.isSubCategory = false
-            this.GStore.flashMessage = "Fikk ikke hentet under kategoriene!"
-            this.GStore.variant = "Error"
-            setTimeout(() => {
-              this.GStore.flashMessage = ""
-            }, 4000)
-            console.log(error)
-          })
+      this.resetClickedCategory()
+      for (let i = 0; i < this.$store.getters.getMainCategories.length; i++){
+        if (this.$store.getters.getMainCategories[i].title === name){
+          this.categoriesId = this.$store.getters.getMainCategories[i].id
+          this.idToCategory = this.categoriesId
         }
+      }
+
+      this.subCategories = [];
+
+      if (name === '--Velg kategori--') this.isSubCategory = false
+      else {
+        for (let i = 0; i < this.$store.getters.getSubCategories.length; i++) {
+          if (this.$store.getters.getSubCategories[i].parentCat === name) {
+            this.subCategories.push(this.$store.getters.getSubCategories[i]);
+          }
+        }
+        this.isSubCategory = true
+      }
     },
     resetClickedSubCategories(){
       this.isSubSubCategory = false
@@ -390,33 +427,35 @@ export default {
       this.idToCategory = ""
     },
     async clickedSubCategories(e){
-
       this.resetClickedSubCategories()
 
       let name = e.target.options[e.target.options.selectedIndex].text
+
       let isChild = false
       Boolean(isChild)
 
       let isParent = false
       Boolean(isParent)
-      for (let i = 0; i<this.subCategories.length; i++){
-        if (this.subCategories[i].name == name){
-          isChild = this.subCategories[i].child
-          isParent = this.subCategories[i].parent
-          this.subCategoriesId = this.subCategories[i].id
+      for (let i = 0; i < this.$store.getters.getSubCategories.length; i++){
+        if (this.$store.getters.getSubCategories[i].title === name){
+          isChild = this.$store.getters.getSubCategories[i].child
+          isParent = this.$store.getters.getSubCategories[i].parent
+          this.subCategoriesId = this.$store.getters.getSubCategories[i].id
         }
       }
-
       if (name == '--Velg kategori--') return
-      else if (isChild == false && isParent == false) this.idToCategory = this.subCategoriesId
-      else if (isChild == true && isParent == true) {
-        await categoryService.getAllSubCategoriesForCategory(name).then(response => {
-          this.isSubSubCategory = true
-          this.subSubCategories = response.data
-        }).catch(error => {
-          this.isSubSubCategory = false
-          console.log(error)
-        })
+      else if (isChild === true && isParent === false) {
+        this.idToCategory = this.subCategoriesId
+      }
+      else if (isChild === true && isParent === true) {
+        this.subSubCategories = [];
+
+        for (let i = 0; i < this.$store.getters.getSubSubCategories.length; i++) {
+          if (this.$store.getters.getSubSubCategories[i].parentCat === name) {
+            this.subSubCategories.push(this.$store.getters.getSubSubCategories[i]);
+          }
+        }
+        this.isSubSubCategory = true
       }
       else {
         this.GStore.flashMessage = "Noe gikk galt!!!"
@@ -425,11 +464,16 @@ export default {
           this.GStore.flashMessage = ""
         }, 4000)
       }
-
     },
-    clickedSubSubCategories(id){
-      this.subSubCategoriesId = id
-      this.idToCategory = this.subSubCategoriesId
+    clickedSubSubCategories(e){
+      let name = e.target.options[e.target.options.selectedIndex].text
+
+      for (let i = 0; i < this.$store.getters.getSubSubCategories.length; i++){
+        if (this.$store.getters.getSubSubCategories[i].title === name){
+          this.subSubCategoriesId = this.$store.getters.getSubSubCategories[i].id
+          this.idToCategory = this.subSubCategoriesId
+        }
+      }
     },
     validateImages() {
       if(this.imgUrl.length === 0) {
