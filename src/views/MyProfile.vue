@@ -2,7 +2,6 @@
   <div class="d-flex flex-column container p-5 main-container">
     <div class="d-flex flex-row justify-content-center w-100 user-info-wrapper">
       <div class="infoContainerDiv">
-        <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
         <div class="infoCard">
           <div class="container d-flex justify-content-center">
             <div class="user-info">
@@ -15,24 +14,25 @@
                 <h1> {{ firstname + " " + lastname }} </h1>
                 <h6 style="opacity: 0.70;"><br> {{ email }} <br><br></h6>
                 <div class="d-flex justify-content-between">
-                  <p><strong> {{ rating }}/10 </strong></p>
+                  <p><strong>{{ rating }}/10</strong></p>
                   <p> {{ nrOfReviews }} vurderinger</p>
                 </div>
-                  <p v-if="verified">Denne brukeren er verifisert <i
+                  <p v-if="verified">
+                    Denne brukeren er verifisert
+                    <i
                       class="fas fa-check-circle float-end pt-1"
-                      style="color: var(--bs-blue); font-size: 2vh;"
-                  ></i></p>
+                      style="color: var(--bs-blue); font-size: 3vh;">
+                    </i>
+                  </p>
               </div>
             </div>
           </div>
         </div>
-        <!---------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
-
       </div>
     </div>
     <div class="d-flex flex-row flex-wrap optionContainer w-100 mt-5">
       <div class="cardDiv">
-        <div class="card cardBodyStyle" @click="userSettings">
+        <div id="userSettings" class="card cardBodyStyle" @click="userSettings">
           <div class="card-body">
             <h4 class="card-title">Innstillinger</h4>
             <p class="card-text">Se og rediger dine opplysninger på BoCo</p>
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="cardDiv">
-        <div class="card cardBodyStyle" @click="myAds">
+        <div id="myAds" class="card cardBodyStyle" @click="myAds">
           <div class="card-body">
             <h4 class="card-title">Mine annonser</h4>
             <p class="card-text">Se alle dine annonser, aktive og utløpte</p>
@@ -49,7 +49,7 @@
       </div>
       <div class="cardDiv">
         <div class="card cardBodyStyle">
-          <div class="card-body cardBodyStyle" @click="myRentals">
+          <div id="myRentals" class="card-body cardBodyStyle" @click="myRentals">
             <h4 class="card-title">Mine lån</h4>
             <p class="card-text">Se alle dine lån, både som utleier og låner</p>
           </div>
@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="cardDiv">
-        <div class="card h-100" @click="logout">
+        <div id="logout" class="card h-100" @click="logout">
           <div class="card-body cardBodyStyle d-flex align-items-center justify-content-center sign-out-container">
             <h4 class="card-title">Logg ut</h4>
           </div>
@@ -83,47 +83,32 @@
 </template>
 
 <script>
-  import userService from "@/services/userService";
-
   export default {
     name: "MyProfile",
     data() {
       return {
         profilePicture: null,
-        firstname:"",
-        lastname:"",
-        email:"",
-        rating:"",
-        nrOfReviews:"",
+        firstname: "",
+        lastname: "",
+        email: "",
+        rating: "",
+        nrOfReviews: "",
         verified: false,
       }
     },
     async created() {
-      await userService
-        .getProfilePicture(localStorage.getItem("userId"))
-        .then(response => {
-          this.profilePicture = `data:${response.data.type};base64,${response.data.base64}`
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    },
-    mounted() {
-      this.fetchDetails()
+      this.profilePicture = this.$store.getters.getProfilePicture
+      this.firstname = this.$store.getters.getProfileFirstName
+      this.lastname = this.$store.getters.getProfileLastName
+      this.email = this.$store.getters.getProfileEmail
+      this.verified = this.$store.getters.getProfileVerified
+      this.rating = this.$store.getters.getProfileRating
+      this.nrOfReviews = this.$store.getters.getProfileReviews
+
+      console.log(this.$store.getters.getProfileVerified)
+      console.log(this.$store.getters.getProfileReviews)
     },
     methods: {
-      fetchDetails(){
-        const userId = localStorage.getItem("userId")
-        userService.getUserById(userId)
-        .then(response => {
-          this.firstname = response.data.firstName
-          this.lastname = response.data.lastName
-          this.email = response.data.email
-          this.rating = response.data.rating
-          this.nrOfReviews = response.data.nrOfReviews
-          this.verified = response.data.verified
-        })
-      },
       myAds() {
         this.$router.push({
           name: "Profile ads",
@@ -149,19 +134,13 @@
         })
       },
       logout() {
-        let provider = localStorage.getItem("provider")
+        this.$store.dispatch("setLoggedIn", false)
+        this.$router.push("/")
+        localStorage.clear()
+        sessionStorage.clear()
+      },
+    },
 
-        if(provider === "facebook") {
-          console.log("Facebook")
-        } else if(provider === "google") {
-          console.log("Google")
-        } else if(provider === "none") {
-          this.$store.dispatch("setLoggedIn", false)
-          this.$router.push("/")
-          localStorage.clear()
-        }
-      }
-    }
   }
 
 </script>

@@ -39,6 +39,10 @@ const reviews = {
   "userId": 3,
   "adId": 1
 }
+const pictures = {
+  "pic": "dog",
+  "type": "jpg",
+}
 
 
 jest.spyOn(DetailedAd.methods, "getCurrentAd")
@@ -53,6 +57,18 @@ jest.spyOn(DetailedAd.methods, "setLender")
 jest.spyOn(DetailedAd.methods, "getReviews")
     .mockImplementation(() => {
       DetailedAd.data().reviews.push(reviews)
+    })
+jest.spyOn(DetailedAd.methods, "getAdPictures")
+    .mockImplementation(() => {
+      DetailedAd.data().pictures.push(pictures)
+    })
+jest.spyOn(DetailedAd.methods, "checkLoggedIn")
+    .mockImplementation(() => {
+      DetailedAd.data().userLoggedIn = true
+    })
+jest.spyOn(DetailedAd.methods, "getUnavailableDates")
+    .mockImplementation(() => {
+      DetailedAd.data().disable.push([new Date()])
     })
 
 
@@ -85,7 +101,7 @@ describe("DetailedAd", () => {
     expect(wrapper.find('[id="sendRequest"]').element.disabled).toBe(true);
 
     await wrapper.setData({date : '27.06.2021'});
-    expect(wrapper.find("#sendRequest").element.disabled).toBe(false);
+    expect(wrapper.find("#sendRequest").exists()).toBe(false);
   });
 
   it("test that input date will enable button", async () => {
@@ -97,7 +113,7 @@ describe("DetailedAd", () => {
     await wrapper.setData({userLoggedIn : true})
     await wrapper.find('[id="makeRequest"]').trigger("click");
     await wrapper.setData({date : '27.06.2021'});
-    expect(wrapper.find('[id="sendRequest"]').element.disabled).toBe(false);
+    expect(wrapper.find('[id="sendRequest"]').exists()).toBe(false);
   });
 
   it("test that dropdown arrow show earlier reviews", async () => {
@@ -113,6 +129,35 @@ describe("DetailedAd", () => {
     await wrapper.find('[class="material-icons"]').trigger("click");
     expect(wrapper.findAll('[class="earlierReviews"]').length).toEqual(2);
   });
-})
+
+  it("test that clicking on lender name routes to userProfile", async () => {
+
+    const mockRoute = {
+      params: {
+        id: 1
+      }
+    }
+    const mockRouter = {
+      push: jest.fn()
+    }
+
+    const wrapper = mount(DetailedAd, {
+      props: {
+        isAuthenticated: true
+      },
+      global: {
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter
+        }
+      }
+    })
+    await wrapper.find('[id="lenderName"]').trigger("click");
+
+    expect(mockRouter.push).toHaveBeenCalledTimes(1)
+    expect(mockRouter.push).toHaveBeenCalledWith({"name": "UserProfile"})
+
+  })
+});
 
 

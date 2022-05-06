@@ -1,6 +1,11 @@
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
+  plugins: [
+    createPersistedState({
+    storage: window.sessionStorage,
+  })],
   state: {
     isLoggedIn: false,
     lastClickedMainCat: null,
@@ -10,7 +15,16 @@ export default createStore({
     messages: [],
     mainCategories: [],
     subCategories: [],
-    subSubCategories: []
+    subSubCategories: [],
+    profile: {
+      email: "",
+      firstName: "",
+      lastName: "",
+      verified: null,
+      picture: null,
+      rating: null,
+      nrOfReviews: null
+    }
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
@@ -42,6 +56,30 @@ export default createStore({
     },
     ADD_SUB_SUB_CATEGORIES(state, categories){
       state.subSubCategories = categories
+    },
+    SET_PROFILE(state, profile){
+      state.profile = profile
+    },
+    SET_PROFILE_EMAIL(state, email){
+      state.profile.email = email
+    },
+    SET_PROFILE_FIRSTNAME(state, firstName){
+      state.profile.firstName = firstName
+    },
+    SET_PROFILE_LASTNAME(state, lastName){
+      state.profile.lastName = lastName
+    },
+    SET_PROFILE_VERIFIED(state, verified){
+      state.profile.verified = verified
+    },
+    SET_PROFILE_PICTURE(state, picture){
+      state.profile.picture = picture
+    },
+    SET_PROFILE_RATING(state, rating){
+      state.profile.rating = rating
+    },
+    SET_PROFILE_NROFREVIEWS(state, reviews){
+      state.profile.nrOfReviews = reviews
     }
   },
   actions: {
@@ -74,6 +112,30 @@ export default createStore({
     },
     setSubSubCategories({ commit }, categories){
       commit("ADD_SUB_SUB_CATEGORIES", categories)
+    },
+    setProfile({ commit }, profile){
+      commit("SET_PROFILE", profile)
+    },
+    setProfileEmail({ commit }, email){
+      commit("SET_PROFILE_EMAIL", email)
+    },
+    setProfileFirstName({ commit }, firstName){
+      commit("SET_PROFILE_FIRSTNAME", firstName)
+    },
+    setProfileLastName({ commit }, lastName){
+      commit("SET_PROFILE_LASTNAME", lastName)
+    },
+    setProfileVerified({ commit }, verified){
+      commit("SET_PROFILE_VERIFIED", verified)
+    },
+    setProfilePicture({ commit }, picture){
+      commit("SET_PROFILE_PICTURE", picture)
+    },
+    setProfileRating({ commit }, rating){
+      commit("SET_PROFILE_RATING", rating)
+    },
+    setProfileReviews({ commit }, reviews){
+      commit("SET_PROFILE_NROFREVIEWS",reviews)
     }
   },
   getters: {
@@ -103,6 +165,30 @@ export default createStore({
     },
     getSubSubCategories(state){
       return state.subSubCategories
+    },
+    getProfile(state){
+      return state.profile
+    },
+    getProfileEmail(state){
+      return state.profile.email
+    },
+    getProfileFirstName(state){
+      return state.profile.firstName
+    },
+    getProfileLastName(state){
+      return state.profile.lastName
+    },
+    getProfileVerified(state){
+      return state.profile.verified
+    },
+    getProfilePicture(state){
+      return state.profile.picture
+    },
+    getProfileRating(state){
+      return state.profile.rating
+    },
+    getProfileReviews(state){
+      return state.profile.nrOfReviews
     }
   },
 });
