@@ -31,13 +31,6 @@
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-signin-btn-container-style">
             <button class="btn btn-primary w-100 form-signin-btn-style" @click="loginSubmit">Logg inn</button>
           </div>
-          <p style="font-weight: inherit; font-style: italic">Eller</p>
-          <div class="d-flex flex-column justify-content-center">
-
-            <FacebookLoginComponent />
-            <GoogleLoginComponent />
-
-          </div>
           <div class="d-flex flex-column flex-shrink-1 justify-content-center align-items-center form-register-btn-container-style">
             <router-link to="/register" class="btn w-100 form-register-btn-style register-btn">Registrer</router-link>
           </div>
@@ -53,9 +46,6 @@ import useValidate from "@vuelidate/core";
 import loginRegistrationService from "@/services/registrationService";
 import { helpers, email } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
-
-import FacebookLoginComponent from "@/components/FacebookLoginComponent";
-import GoogleLoginComponent from "@/components/GoogleLoginComponent";
 import { logIn, getUserInfo } from "@/services/loginService";
 
 import chatService from "@/services/chatService";
@@ -64,10 +54,6 @@ import userService from "@/services/userService";
 export default {
   inject: ["GStore"],
   name: "Login",
-  components: {
-    FacebookLoginComponent,
-    GoogleLoginComponent
-  },
   setup() {
     const state = reactive({
       email: "",
