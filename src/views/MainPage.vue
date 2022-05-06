@@ -339,7 +339,7 @@ export default {
     },
     async getRandomAds() {
       await adsService
-        .getPageWithRandomAds(50,this.currPos.lat, this.currPos.lng)
+        .getPageWithRandomAds(500,this.currPos.lat, this.currPos.lng)
           .then(response => {
             console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
@@ -399,19 +399,19 @@ export default {
           console.log(response);//TODO OOO
           if (response.status === 200) {
             this.sortedAds = [];
-            for (let i = 0; i < response.data.body.length; i++) {
-              console.log(response.data.body[i])
+            console.log(response.data)
+            for (let i = 0; i < response.data.length; i++) {
               let ad = {
-                id: response.data.body[i].adId,
-                title: response.data.body[i].title,
-                city: response.data.body[i].city,
-                postalCode: response.data.body[i].postalCode.toString(),
-                streetAddress: response.data.body[i].streetAddress,
-                price: response.data.body[i].price,
-                distance: response.data.body[i].distance,
-                userId: response.data.body[i].userId,
-                lat: response.data.body[i].lat,
-                lng: response.data.body[i].lng,
+                id: response.data[i].adId,
+                title: response.data[i].title,
+                city: response.data[i].city,
+                postalCode: response.data[i].postalCode.toString(),
+                streetAddress: response.data[i].streetAddress,
+                price: response.data[i].price,
+                distance: response.data[i].distance,
+                userId: response.data[i].userId,
+                lat: response.data[i].lat,
+                lng: response.data[i].lng,
               };
               this.sortedAds.push(ad);
             }
@@ -445,7 +445,7 @@ export default {
           .then(response => {
             if(response.status === 200) {
               this.sortedAds = []
-              console.log(response.data)
+              console.log(response.data.body)
               for(let i = 0; i < response.data.length; i++) {
                 let ad = {
                   id: response.data[i].adId,
@@ -485,15 +485,15 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 city: response.data[i].city,
-                postalCode: response.data.body[i].postalCode.toString(),
-                streetAddress: response.data.body[i].streetAddress,
+                postalCode: response.data[i].postalCode.toString(),
+                streetAddress: response.data[i].streetAddress,
                 price: response.data[i].price,
-                userId: response.data[i].userId,
                 distance: response.data[i].distance,
+                userId: response.data[i].userId,
                 lat: response.data[i].lat,
                 lng: response.data[i].lng,
-              }
-              this.sortedAds.push(ad)
+              };
+              this.sortedAds.push(ad);
             }
           }
         })
