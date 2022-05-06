@@ -107,7 +107,7 @@
       </div>
     </div>
     <div id="distance" class="text-center mt-4" v-if="!usersOwnAddress">
-      <label class="form-label" v-if="this.ad.distance.exists">
+      <label class="form-label" v-if="this.ad.distance != 0">
         <label class="defined-label">Avstand</label>  : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
     </div>
@@ -343,7 +343,7 @@ export default {
         }, 4000)
       })
       let userId = localStorage.getItem("userId")
-      if ((userId != this.lender.id) && (this.ad.distance.exists)) {
+      if ((userId != this.lender.id) && (this.ad.distance != 0)) {
         this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
       }
     },
