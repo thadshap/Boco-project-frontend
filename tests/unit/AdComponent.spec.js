@@ -15,6 +15,7 @@ describe("AdComponent.vue", () => {
             global:{ plugins: [store]},
             props: { id,title,price,place,image,userId },
         });
+
         expect(wrapper.text()).toContain(`${title}${price} kr Trondheim Send melding  Til annonse`);
     });
 
