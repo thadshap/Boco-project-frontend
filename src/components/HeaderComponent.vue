@@ -68,8 +68,8 @@ import $ from "jquery";
         }
       },
       refresh(){
-        window.location.reload()
         this.$router.push("/")
+        window.location.reload()
       }
     }
   }

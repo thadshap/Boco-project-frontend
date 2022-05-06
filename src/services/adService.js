@@ -52,6 +52,23 @@ export default {
 
         return axios.request(options);
     },
+    /**
+     * Method for returning a list of ads where the ads header
+     *      or category will be filtered by the searchString
+     * @param searchString is the string who ads will be filtered by
+     */
+    getAdsBySearch(searchString, lat, lng) {
+        const options = {
+            method: 'POST',
+            url: `${url}${port}/api/search/` + searchString,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer '
+            },
+            data: {lat: lat, lng: lng}
+        };
+        return axios.request(options);
+    },
     getAdById(adId) {
         const options = {
             method: "GET",

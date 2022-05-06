@@ -10,6 +10,7 @@
                 placeholder="Søk"
                 class="w-100"
                 v-model="searchWord"
+                v-on:keyup.enter="search"
               />
               <button
                 class="btn btn-primary btn-style"
@@ -171,7 +172,7 @@ import { geolocationForUser } from "@/geolocationForUser";
 import { computed } from "vue";
 import adsService from "@/services/adsService";
 import categoryService from "../services/categoryService";
-import adService from "../services/adService";
+import adService from "@/services/adService";
 
 export default {
   name: "MainPage",
@@ -576,17 +577,18 @@ export default {
       if (this.searchWord === "") {
         return;
       }
-      await adsService
+      await adService
         .getAdsBySearch(this.searchWord, this.currPos.lat, this.currPos.lng)
         .then(response => {
           this.sortedAds = []
+          console.log(response.data)
           for(let i = 0; i < response.data.length; i++) {
             let ad = {
               id: response.data[i].adId,
               title: response.data[i].title,
               city: response.data[i].city,
-              postalCode: response.data.body[i].postalCode.toString(),
-              streetAddress: response.data.body[i].streetAddress,
+              postalCode: response.data[i].postalCode.toString(),
+              streetAddress: response.data[i].streetAddress,
               price: response.data[i].price,
               userId: response.data[i].userId,
               lat: response.data[i].lat,
