@@ -2,18 +2,26 @@
   <div class="project-card-container" @click="goToDetailedView">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
-        <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
+        <div class="div-img-size">
+          <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
+        </div>
       </div>
       <div class="d-flex flex-column ad-details-container-style">
-        <div class="d-flex flex-column align-items-start">
+        <div class="d-flex flex-column align-items-start text-left">
           <h3 class="ad-heading-style" style="margin-bottom: 10px;">
             <b>{{ title }}</b>
           </h3>
           <h4>{{ price }} kr</h4>
-          <h5 class="opacity-75"><i class="fas fa-map-marked-alt"></i> {{ place }}</h5>
+          <h5 class="opacity-75 d-flex flex-row align-items-center">
+            <i class="fas fa-map-marked-alt"></i>
+            <label class="address">
+              {{ streetAddress }}<br>
+              {{ postalCode }} {{ city }}
+            </label>
+          </h5>
         </div>
-        <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
-          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="!this.$data.isMyAd" @click="startChat">
+        <div class="d-flex flex-column h-100">
+          <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="!this.$data.isMyAd && isLoggedIn" @click="startChat">
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Send melding
           </a>
@@ -33,10 +41,12 @@ export default {
   name: "AdComponent",
   created() {
     this.checkIfMyAd()
+    this.checkIsLoggedIn()
   },
   data(){
     return{
-      isMyAd:false,
+      isMyAd: false,
+      isLoggedIn: false
     }
   },
   props: {
@@ -52,9 +62,17 @@ export default {
       type: Number,
       required: true,
     },
-    place: {
+    city: {
       type: String,
       required: true,
+    },
+    postalCode: {
+      type: String,
+      required: true
+    },
+    streetAddress: {
+      type: String,
+      required: true
     },
     image: {
       type: String,
@@ -89,6 +107,9 @@ export default {
     },
     checkIfMyAd(){
       this.$data.isMyAd = parseInt(localStorage.getItem("userId")) === this.$props.userId;
+    },
+    checkIsLoggedIn() {
+      this.isLoggedIn = localStorage.getItem("token") !== null && localStorage.getItem("token") !== undefined
     },
     async startChat() {
       if (this.$store.getters.loggedIn) {
@@ -146,6 +167,15 @@ export default {
   width: 100%;
 }
 
+.div-img-size {
+  max-height: 300px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .ad-img-style {
   object-fit: contain;
   max-width: 100%;
@@ -159,6 +189,26 @@ b{
   font-weight: inherit;
   font-size: 35px;
 }
+
+.address {
+  margin-left: 5px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.btn-container {
+  position: relative;
+}
+
+.btn-send-message {
+  position: absolute;
+  bottom: 0;
+}
+
 @media screen and (min-width: 992px) {
   .project-card-container {
     width: 50%;
