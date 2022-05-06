@@ -77,9 +77,9 @@
     </div>
     <div class="text-center">
       <div id="lenderHeader">
-        <label class="form-label defined-label"> Utlåner </label>
+        <label class="form-label defined-label" v-if="!usersOwnAddress"> Utlåner </label>
       </div>
-      <div id="lenderDetails">
+      <div id="lenderDetails" v-if="!usersOwnAddress">
         <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
            {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
@@ -106,8 +106,8 @@
         </div>
       </div>
     </div>
-    <div id="distance" class="text-center mt-4">
-      <label class="form-label">
+    <div id="distance" class="text-center mt-4" v-if="!usersOwnAddress">
+      <label class="form-label" v-if="this.ad.distance.exists">
         <label class="defined-label">Avstand</label>  : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
     </div>
@@ -118,6 +118,7 @@
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
         style="height: 40vh; padding-bottom: 7vh"
+        v-if="!usersOwnAddress"
       >
         <ol-view
           ref="view"
@@ -199,9 +200,6 @@ export default {
     }
   },
   setup(props) {
-    console.log(props)
-    console.log(parseFloat(props.lat))
-    console.log(parseFloat(props.lng))
     const projection = ref("EPSG:4326")
     const zoom = ref(8)
     const rotation = ref(0)
@@ -217,11 +215,14 @@ export default {
     };
   },
   methods: {
+    /**
+     * Method to get information about the ad currently picked
+     */
     async getCurrentAd(){
       await adService.getAdById(this.$store.getters.currentAd.id).then(response => {
         this.ad = response.data
       }).catch(error => {
-        console.log(error)
+        console.error(error)
         this.GStore.flashMessage = "Fikk ikke hentet ut annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -229,8 +230,11 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
     },
+    /**
+     * Method to change boolean if user is logged in,
+     * so a user who is not logged in cannot send message or request lending
+     */
     checkLoggedIn() {
       if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
         this.userLoggedIn = true
@@ -238,6 +242,9 @@ export default {
         this.userLoggedIn = false
       }
     },
+    /**
+     * Method for picking the correct picture when clicking next picture on picture carousel
+     */
     nextImage(){
       if(this.pictureIndex==this.pictures.length-1){
         this.pictureIndex=0;
@@ -245,6 +252,9 @@ export default {
         this.pictureIndex++
       }
     },
+    /**
+     * Method for picking the correct picture when clicking previous picture on picture carousel
+     */
     prevImage(){
       if(this.pictureIndex==0){
         this.pictureIndex=this.pictures.length-1;
@@ -252,6 +262,9 @@ export default {
         this.pictureIndex--
       }
     },
+    /**
+     * Changing the durationType from english to norwegian
+     */
     getDurationTypeToNorwegian(){
       if (this.ad.durationType == 'MONTH'){
         this.ad.durationType = "måned"
@@ -263,6 +276,9 @@ export default {
         this.ad.durationType = "uke"
       }
     },
+    /**
+     * Getting all reviews left for the current ad in the past
+     */
     async getReviews(){
       await reviewService.getAllReviewsForAd(this.$store.getters.currentAd.id).then(response => {
         this.reviews = response.data;
@@ -270,7 +286,7 @@ export default {
           this.setNameOfUserLeftReview(response.data[i].userId, i)
         }
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet ut anmeldelsene"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -278,12 +294,15 @@ export default {
         }, 4000)
       })
     },
+    /**
+     * Fetching the firstname and lastname of the user who in the past has left a review on the current ad
+     */
     async setNameOfUserLeftReview(id, i){
       await userService.getUserById(id).then(response => {
         this.reviews[i].firstName = response.data.firstName;
         this.reviews[i].lastName = response.data.lastName;
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet navn på anmeldelsene"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -292,11 +311,16 @@ export default {
       })
 
     },
+    /**
+     * Method to get unavailable dates for rental for current ad
+     * Dates are only marked unavailable when a lender accept a rental request
+     */
     async getUnavailableDates(){
-      await adService.getAllUnavailableDatesForAd(1).then(response => {
+      await adService.getAllUnavailableDatesForAd(this.$store.getters.currentAd.id).then(response => {
         this.disable = response.data;
+        console.log(response.data)
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet utilgjengelige datoer for annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -304,18 +328,28 @@ export default {
         }, 4000)
       })
     },
+    /**
+     * Method to fetch the user lending out the current ad
+     */
     async setLender(){
       await userService.getUserById(this.ad.userId).then(response => {
         this.lender = response.data
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet utlåneren av annonsen"
         this.GStore.variant = "Error"
         setTimeout(() => {
           this.GStore.flashMessage = ""
         }, 4000)
       })
+      let userId = localStorage.getItem("userId")
+      if ((userId != this.lender.id) && (this.ad.distance.exists)) {
+        this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+      }
     },
+    /**
+     *
+     */
     async startChat() {
       if (this.$store.getters.loggedIn) {
         let userId = localStorage.getItem("userId")
@@ -327,7 +361,7 @@ export default {
             groupId = response.data.groupId
           })
           .catch(error =>{
-            console.log(error)
+            console.error(error)
           })
           this.$store.dispatch("setGroupId", groupId)
           this.$store.dispatch("setGroupName", this.ad.title)
@@ -361,7 +395,7 @@ export default {
       await userService.getUserById(localStorage.getItem("userId"),).then(response => {
         this.userEmail = response.data.email
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke hentet emailen din"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -386,7 +420,7 @@ export default {
           this.userEmail,
           this.$store.getters.currentAd.id
       ).then(response => {
-        console.log(response)
+        console.error(response)
         this.showRequestDetails = false;
         this.GStore.flashMessage = "Forespørsel om utlån opprettet! Se detaljer på dine sider"
         this.GStore.variant = "Success"
@@ -395,7 +429,7 @@ export default {
         }, 4000)
         this.$router.push("/")
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         this.GStore.flashMessage = "Fikk ikke opprettet forespørsel"
         this.GStore.variant = "Error"
         setTimeout(() => {
@@ -426,7 +460,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     }
   },

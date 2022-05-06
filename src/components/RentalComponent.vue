@@ -137,7 +137,7 @@ export default {
       })
     },
     goToDetailedView() {
-      console.log(this.$props.adId);
+      this.$store.dispatch("setCurrentAd", this.$props);
       this.$router.push({
         path: "/ad/:id",
         name: "Ad",
