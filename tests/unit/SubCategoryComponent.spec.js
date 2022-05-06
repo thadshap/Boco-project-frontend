@@ -43,4 +43,22 @@ describe("SubCategoryComponent.vue", () => {
 
     expect(wrapper.find("input").attributes("id")).toBe(label)
   })
+
+  it("Emits event", async () => {
+    const label = "Sport";
+    const categoryType = "underkategori";
+
+    const wrapper = shallowMount(SubCategoryComponent, {
+      props: {
+        label,
+        categoryType
+      }
+    })
+
+    wrapper.vm.$emit("chosenSubCat", label)
+
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.emitted().chosenSubCat).toBeTruthy()
+  })
 })
