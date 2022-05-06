@@ -113,6 +113,9 @@ export default {
           .then(response =>{
               usersOwnEmail = response.data.email
           })
+          .catch(error => {
+              console.log(error)
+          })
           if (usersOwnEmail===this.input) {
               alert("Kan ikke legge til egen epost")
               return
@@ -139,6 +142,9 @@ export default {
           await userService.getUserById(localStorage.getItem("userId"))
           .then(response => {
               userEmail = response.data.email
+          })
+          .catch(error => {
+              console.log(error)
           })
           this.emails.push(userEmail)
           await chatService.createGroupFromEmails(this.groupName,this.emails)
