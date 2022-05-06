@@ -26,11 +26,11 @@
           </div>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="'align-items-end, h-100'">
-          <a v-if="active" v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
+          <a id="goToDetailedRentalView" v-if="active" v-on:click="goToDetailedRentalView" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
             <i class="fa fa-envelope" style="margin-right: 5px;"></i>
             Rediger lån (Kommer snart)
           </a>
-          <a v-on:click="goToDetailedView" class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button">
+          <a id="goToDetailedView" v-on:click="goToDetailedView" class="btn btn-outline-primary btn-sm rounded-pill mw-100" role="button">
             <i class="fa fa-arrow-circle-right" style="margin-right: 5px;"></i>
             Til annonse
           </a>
