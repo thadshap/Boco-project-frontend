@@ -3,12 +3,14 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     isLoggedIn: false,
-    // chosenMainCategory: "",
     lastClickedMainCat: null,
     currentAd : {},
     groupName: null,
     groupId: null,
     messages: [],
+    mainCategories: [],
+    subCategories: [],
+    subSubCategories: []
   },
   mutations: {
     SET_LOGGED_IN(state, isLoggedIn) {
@@ -17,9 +19,6 @@ export default createStore({
     SET_CURRENT_AD(state, currentAd) {
       state.currentAd = currentAd
     },
-    // SET_CHOSEN_MAIN_CATEGORY(state, chosenMainCategory) {
-    //   state.chosenMainCategory = chosenMainCategory;
-    // },
     SET_LAST_CLICKED_MAIN_CAT(state, lastClickedMainCat) {
       state.lastClickedMainCat = lastClickedMainCat;
     },
@@ -34,6 +33,15 @@ export default createStore({
     },
     ADD_MESSAGE(state, message){
       state.messages.push(message)
+    },
+    ADD_MAIN_CATEGORIES(state, categories){
+      state.mainCategories = categories
+    },
+    ADD_SUB_CATEGORIES(state, categories){
+      state.subCategories = categories
+    },
+    ADD_SUB_SUB_CATEGORIES(state, categories){
+      state.subSubCategories = categories
     }
   },
   actions: {
@@ -43,9 +51,6 @@ export default createStore({
     setCurrentAd({ commit }, currentAd) {
       commit("SET_CURRENT_AD", currentAd)
     },
-    // setChosenMainCategory({ commit }, chosenMainCategory) {
-    //   commit("SET_CHOSEN_MAIN_CATEGORY", chosenMainCategory);
-    // },
     setLastClickedMainCat({ commit }, lastClickedMainCat) {
       commit("SET_LAST_CLICKED_MAIN_CAT", lastClickedMainCat)
     },
@@ -60,15 +65,21 @@ export default createStore({
     },
     addMessage({commit}, message){
       commit("ADD_MESSAGE", message)
+    },
+    setMainCategories({ commit }, categories){
+      commit("ADD_MAIN_CATEGORIES", categories)
+    },
+    setSubCategories({ commit }, categories){
+      commit("ADD_SUB_CATEGORIES", categories)
+    },
+    setSubSubCategories({ commit }, categories){
+      commit("ADD_SUB_SUB_CATEGORIES", categories)
     }
   },
   getters: {
     loggedIn(state) {
       return state.isLoggedIn;
     },
-    // chosenMainCategory(state) {
-    //   return state.chosenMainCategory;
-    // },
     lastClickedMainCat(state) {
       return state.lastClickedMainCat;
     },
@@ -83,6 +94,15 @@ export default createStore({
     },
     getMessages(state){
       return state.messages
+    },
+    getMainCategories(state){
+      return state.mainCategories
+    },
+    getSubCategories(state){
+      return state.subCategories
+    },
+    getSubSubCategories(state){
+      return state.subSubCategories
     }
   },
 });

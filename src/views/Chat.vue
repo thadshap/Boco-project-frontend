@@ -121,6 +121,9 @@ export default {
           .then(response => {
               alert(response.data)
           })
+          .catch(error => {
+              console.log(error)
+          })
           this.$store.dispatch("setGroupName", this.newGroupName)
           this.newGroupName = ''
       },
@@ -132,6 +135,9 @@ export default {
           await chatService.addUserToGroupByEmail(this.$store.getters.getGroupId, this.addUser)
           .then(response => {
               alert(response.data)
+          })
+          .catch(error => {
+              console.log(error)
           })
           this.addUser = ''
       },

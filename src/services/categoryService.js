@@ -17,7 +17,7 @@ export default {
   getAllCategories() {
     const options = {
       method: "GET",
-      url: `${url}${port}/api/categories`,
+      url: `${url}${port}/api/categories/level`,
     };
     return axios.request(options);
   },
