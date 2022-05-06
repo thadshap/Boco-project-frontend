@@ -207,4 +207,10 @@ export default {
   color: blue;
   font-size: 25px;
 }
+#firstnameError, #lastnameError, #emailError, #passwordError, #repeatPasswordError{
+  display: flex;
+  width: 50%;
+  left: 25%;
+  position: relative;
+}
 </style>
