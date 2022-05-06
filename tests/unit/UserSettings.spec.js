@@ -1,14 +1,26 @@
 import { shallowMount } from "@vue/test-utils";
 import UserSettings from "@/views/UserSettings";
 
+
 jest.spyOn(UserSettings.methods, "disableChangeBtn")
-  .mockImplementation(() => {})
+  .mockImplementation(() => {
+    UserSettings.data().disableBtn = false
+  })
 
 jest.spyOn(UserSettings.methods, "getUserInfo")
-  .mockImplementation(() => {})
+  .mockImplementation(() => {
+    UserSettings.data().firstname = "Elise"
+    UserSettings.data().lastname = "Stene"
+    UserSettings.data().email = "Elise@gmail.com"
+  })
 
 jest.spyOn(UserSettings.methods, "existingUserImg")
-  .mockImplementation(() => {})
+  .mockImplementation(() => {
+    UserSettings.data().img = {
+      "pic": "dog",
+      "type": "jpg",
+    }
+  })
 
 describe("UserSettings", () => {
   it('should render a firstname input field and its belonging label', () => {
@@ -39,11 +51,16 @@ describe("UserSettings", () => {
 
   });
   it("test that error message displays if input is not valid for password since it does not contain 8 characters, and change button get disabled", async () => {
-    const wrapper = shallowMount(UserSettings);
+    const wrapper = shallowMount(UserSettings, {
+      data(){
+        return{
+          disableBtn : false
+        }
+      }});
     await wrapper.find('[id="password"]').setValue("hj");
     await wrapper.find('[id="repeatPassword"]').setValue("hj");
     await wrapper.find('[id="change"]').trigger("click");
-    const errorMessagePassword = wrapper.find('#passwordError');
+    const errorMessagePassword = wrapper.find('[id="passwordError"]');
     expect(errorMessagePassword.text()).toBe('Passordet må minst bestå av 8 karakterer')
     expect(wrapper.find('[id="change"]').element.disabled).toBe(true);
   });
@@ -56,7 +73,12 @@ describe("UserSettings", () => {
     expect(wrapper.find('[id="change"]').element.disabled).toBe(true);
   });
   it("test that error message displays if repeat password is not same as password, and change button get disabled", async () => {
-    const wrapper = shallowMount(UserSettings);
+    const wrapper = shallowMount(UserSettings, {
+      data(){
+        return{
+          disableBtn : false
+        }
+      }});
     await wrapper.find('[id="password"]').setValue("HunderErBedreEnnKatter");
     await wrapper.find('[id="repeatPassword"]').setValue("KatterErBedreEnnHunder");
     await wrapper.find('[id="change"]').trigger("click");
