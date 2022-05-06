@@ -163,14 +163,14 @@ export default {
 
 <style scoped>
 .logo-style {
-  max-width: 15vw;
+  max-width: 10vw;
   margin-bottom: 20px;
 }
 
 .form-fields-container-style {
-  background: #d6dde7;
-  box-shadow: 0px 0px 10px 2px;
-  padding: 20px;
+  background: rgb(230,247,255);
+  border: 1px solid rgba(4, 81, 114, 0.56);
+  padding: 20px 3rem 20px 3rem;
 }
 
 .form-inputs-container-style {
