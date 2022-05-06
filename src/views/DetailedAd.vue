@@ -107,13 +107,14 @@
       </div>
     </div>
     <div id="distance" class="text-center mt-4" v-if="!usersOwnAddress">
-      <label class="form-label" v-if="this.ad.distance != 0">
+      <label class="form-label">
         <label class="defined-label">Avstand</label>  : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
     </div>
     <div id="address" class="text-center">
       <label class="form-label"> <label class="defined-label">Adresse</label> : {{ ad.streetAddress }}&nbsp; </label>
     </div>
+    <div id="map">
       <ol-map
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
@@ -146,6 +147,7 @@
           </ol-source-vector>
         </ol-vector-layer>
       </ol-map>
+    </div>
     </div>
 </template>
 
@@ -343,7 +345,7 @@ export default {
         }, 4000)
       })
       let userId = localStorage.getItem("userId")
-      if ((userId != this.lender.id) && (this.ad.distance != 0)) {
+      if (userId != this.lender.id) {
         this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
       }
     },
@@ -584,4 +586,19 @@ button{
 #lenderDetails{
   display: inline-flex;
 }
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [id="map"] {
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  /* For mobile phones: */
+  [id="map"] {
+    width: 60%;
+    margin: auto;
+
+  }
+}
+
 </style>
