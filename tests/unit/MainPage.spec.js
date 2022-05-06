@@ -1,6 +1,7 @@
-import {mount} from "@vue/test-utils";
+import { mount, shallowMount } from "@vue/test-utils";
 import {createStore} from "vuex"
 import MainPage from "@/views/MainPage";
+import UserSettings from "@/views/UserSettings";
 
 
 const store = createStore({
@@ -249,6 +250,46 @@ describe("DetailedAd", () => {
     await wrapper.find('[id="pricerange"]').trigger("click");
 
     expect(wrapper.vm.titleHeader).toStrictEqual("Gjenstander for utlån filtrert etter pris");
+  });
+  it("test placeholder to input field", () => {
+    const wrapper = mount(MainPage, {
+      global:{
+        plugins:[store]
+      }
+    });
+    expect(wrapper.find('input[htmlPlaceholder="Søk"]').exists());
+  });
+  it('test id to input field', () => {
+    const wrapper = mount(MainPage, {
+      global:{
+        plugins:[store]
+      }
+    });
+    expect(wrapper.find('input[id="priceValue"]').exists());
+  });
+  it('test id to input field', () => {
+    const wrapper = mount(MainPage, {
+      global:{
+        plugins:[store]
+      }
+    });
+    expect(wrapper.find('input[id="pricerange"]').exists());
+  });
+  it('test id to input field', () => {
+    const wrapper = mount(MainPage, {
+      global:{
+        plugins:[store]
+      }
+    });
+    expect(wrapper.find('input[id="distanceValue"]').exists());
+  });
+  it('test id to input field', () => {
+    const wrapper = mount(MainPage, {
+      global:{
+        plugins:[store]
+      }
+    });
+    expect(wrapper.find('input[id="distanceRange"]').exists());
   });
 })
 
