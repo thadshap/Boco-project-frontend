@@ -46,8 +46,8 @@
                 @chosen-sub-cat="chosenSubCat"
               />
             </div>
-            <div v-if="subSubCategories.length !== 0" class="mt-3">
-              <h6 class="category-header">... underkategori</h6>
+            <div v-if="subSubCategories.length !== 0" class="mt-5">
+              <h5 class="category-header">... underkategori</h5>
               <hr />
               <SubCategoryComponent
                 v-for="cat in subSubCategories"
@@ -642,8 +642,8 @@ export default {
 
 .filter-and-sort-btn-container {
   display: flex;
-  justify-content: right;
-  margin-right: 12px;
+  justify-content: left;
+  margin-left: 12px;
 }
 .sort-container,
 .filter-container {
