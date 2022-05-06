@@ -266,7 +266,6 @@ export default {
       if (filterType === "distance") {
         rangeValue = this.rangeValueDistance;
       }
-
       await adsService.filterAdsInCategoryByDistanceOrPrice(
         filterType,
         this.currentCategoryName,
@@ -274,10 +273,8 @@ export default {
         true,
         this.currPos.lat,
         this.currPos.lng
-      );
-
-      this.sortedAds = []
-        .then((response) => {
+      ).then((response) => {
+        this.sortedAds = []
           for (let i = 0; i < response.data.body.length; i++) {
             let ad = {
               id: response.data.body[i].adId,
@@ -342,7 +339,7 @@ export default {
     },
     async getRandomAds() {
       await adsService
-        .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
+        .getPageWithRandomAds(50,this.currPos.lat, this.currPos.lng)
           .then(response => {
             console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
@@ -395,28 +392,28 @@ export default {
           );
         }
       }
-
+      console.log(title)
       await categoryService
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then((response) => {
-          console.log(response);
+          console.log(response);//TODO OOO
           if (response.status === 200) {
             this.sortedAds = [];
-            for (let i = 0; i < response.data.length; i++) {
+            for (let i = 0; i < response.data.body.length; i++) {
+              console.log(response.data.body[i])
               let ad = {
-                id: response.data[i].adId,
-                title: response.data[i].title,
-                city: response.data[i].city,
+                id: response.data.body[i].adId,
+                title: response.data.body[i].title,
+                city: response.data.body[i].city,
                 postalCode: response.data.body[i].postalCode.toString(),
                 streetAddress: response.data.body[i].streetAddress,
-                price: response.data[i].price,
-                userId: response.data[i].userId,
-                distance: response.data[i].distance,
-                lat: response.data[i].lat,
-                lng: response.data[i].lng,
-              }
-              this.sortedAds.push(ad)
-              console.log(ad)
+                price: response.data.body[i].price,
+                distance: response.data.body[i].distance,
+                userId: response.data.body[i].userId,
+                lat: response.data.body[i].lat,
+                lng: response.data.body[i].lng,
+              };
+              this.sortedAds.push(ad);
             }
           }
         })
@@ -448,6 +445,7 @@ export default {
           .then(response => {
             if(response.status === 200) {
               this.sortedAds = []
+              console.log(response.data)
               for(let i = 0; i < response.data.length; i++) {
                 let ad = {
                   id: response.data[i].adId,
@@ -618,7 +616,7 @@ export default {
     await this.displayAds(1, this.cachedAds);
   },
   updated() {
-    this.displayAds(this.currentPage, this.cachedAds);
+    // this.displayAds(this.currentPage, this.cachedAds);
     this.getAllCategories();
     this.categories = this.$store.getters.getMainCategories;
   }

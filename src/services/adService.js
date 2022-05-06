@@ -134,7 +134,8 @@ export default {
         price,
         streetaddress,
         postalCode,
-        categoryId
+        categoryId,
+        city
     ) {
         const options = {
             method: "POST",
@@ -153,6 +154,7 @@ export default {
                 postalCode: postalCode,
                 userId: localStorage.getItem("userId"),
                 categoryId: categoryId,
+                city: city
             },
         };
 

@@ -3,9 +3,9 @@
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light justify-content-between">
 
-        <router-link to="/" class="navbar-brand">
-          <img src="../assets/img/BoCo.png" width="30" height="30" class="d-inline-block align-top">
-          BorrowCommunity
+        <router-link  to="/" class="navbar-brand">
+          <img @click="refresh" src="../assets/img/BoCo.png" width="30" height="30" class="d-inline-block align-top">
+          <text @click="refresh">BorrowCommunity</text>
         </router-link>
 
         <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" @click="expandNavbar">
@@ -66,6 +66,10 @@ import $ from "jquery";
         } else {
           this.$store.dispatch("setLoggedIn", false);
         }
+      },
+      refresh(){
+        window.location.reload()
+        this.$router.push("/")
       }
     }
   }
