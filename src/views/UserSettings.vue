@@ -10,7 +10,7 @@
       <div class="text-end">
         <div class="d-flex flex-column align-content-center flex-wrap">
           <div class="d-flex flex-column user-img-container">
-            <input class="d-none" type="file" @input="onFileChange" accept="image/*" ref="fileInput" v-on:change="disableChangeBtn"/>
+            <input class="d-none" type="file" @input="onFileChange" id="upload-pic-btn" accept="image/*" ref="fileInput" v-on:change="disableChangeBtn"/>
             <img alt="Profilbilde" class="ms-auto user-img" v-if="img" :src="img" width="150" height="150">
             <button class="btn btn-primary me-auto w-100 user-img-upload-btn" type="button" @click="chooseImages">Endre profilbilde</button>
           </div>
@@ -36,25 +36,25 @@
           <div class="header">Personopplysning</div>
           <div class="mt-auto w-100 personal-info">
             <div class="d-inline-flex w-100 firstname-container">
-              <label class="form-label firstname-label">Fornavn</label>
+              <label class="form-label firstname-label" for="firstname">Fornavn</label>
               <input class="user-input" type="text" id="firstname" v-model="state.firstnameChange" v-on:change="disableChangeBtn">
             </div>
             <div class="d-inline-flex w-100 lastname-container">
-              <label class="form-label lastname-label">Etternavn</label>
+              <label class="form-label lastname-label" for="lastname">Etternavn</label>
               <input class="user-input" type="text" id="lastname" v-model="state.lastnameChange" v-on:change="disableChangeBtn">
             </div>
           </div>
           <div class="header">Brukeropplysning</div>
           <div class="me-auto w-100 user-info">
             <div class="d-inline-flex w-100 password-container">
-              <label class="form-label password-label">Passord</label>
+              <label class="form-label password-label" for="password">Passord</label>
               <input class="user-input" type="password" id="password" v-model="state.passwordChange" v-on:change="disableChangeBtn">
               <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
                 {{ v$.passwordChange.$errors[0].$message }}
               </span>
             </div>
             <div class="d-inline-flex w-100 password-container">
-              <label class="form-label password-label">Bekreft passord*</label>
+              <label class="form-label password-label" for="repeatPassword">Bekreft passord*</label>
               <input class="user-input" type="password" id="repeatPassword" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
               <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
                 {{ v$.repeatPasswordChange.$errors[0].$message }}
@@ -62,7 +62,6 @@
             </div>
           </div>
           <button id="change" class="btn btn-primary w-100 update-user-info-btn" type="button" :disabled="disableBtn === true" @click="submit">Endre</button>
-          <button class="btn btn-primary w-100 delete-user-btn" type="button"  @click="deleteUser">Slett konto</button>
         </div>
       </div>
     </div>
@@ -213,28 +212,6 @@ export default {
           window.location.reload();
         }, 4000)
       }
-    },
-    async deleteUser(){
-      let deleteAccount = prompt(
-        "Hvis du er sikker på å slette kontoen din, tast inn 'JA':"
-      );
-      if (deleteAccount == "JA") {
-        await userService.deleteUser(localStorage.getItem("userId"))
-          .then(response => {
-            console.log(response)
-            this.$router.push({
-              name: "Login",
-              component: Login
-            });
-          }).catch(error => {
-            this.GStore.flashMessage = "Ops... Noe gikk galt!"
-            this.GStore.variant = "Error"
-            setTimeout(() => {
-              this.GStore.flashMessage = ""
-            }, 4000)
-            console.log(error)
-          })
-      } else return
     }
   },
 };

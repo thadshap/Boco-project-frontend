@@ -53,18 +53,5 @@ export default {
             data: formData
         };
         return axios.request(options);
-    },
-    deleteUser(userId){
-        const options = {
-            method: 'DELETE',
-            url: `${url}${port}/user/` + userId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
-            },
-            data: {}
-        };
-
-        return axios.request(options);
-    },
+    }
 }

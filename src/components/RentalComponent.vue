@@ -1,22 +1,25 @@
 <template>
   <div class="project-card-container">
     <div class="project-card d-flex justify-content-center">
-      <div class="d-flex flex-column ad-details-container-style">
-        <div class="d-flex flex-column align-items-start">
-          <h3 class="ad-heading-style" style="margin-bottom: 10px;">
+      <div class="d-flex flex-column ad-details-container-style w-100">
+        <div class="d-flex flex-column align-items-start w-100">
+          <h3 class="ad-heading-style w-100" style="margin-bottom: 10px;">
             <b> {{ title }}</b>
           </h3>
-          <h4>Eier: {{ owner }}</h4>
-          <h4>Låner: {{ borrower }}</h4>
-          <h4>Leie fra: {{ rentFrom }}</h4>
-          <h4>Leie til: {{ rentTo }}</h4>
-          <h4>Total pris: {{ price }} kr</h4>
-          <h4>Aktivert: {{ active }}</h4>
-          <div id="review" v-if="showReviewBox">
-            Legg igjen en anmeldelse av dette lånet!
-            <br>Din beskrivelse av leieforholdet: <input type="text" maxlength="120" v-model="description">
-            <br>Din rating av leieforholdet på en skala fra 1-10: <input type="number" min="1" max="10" v-model="rating" v-on:change="enableSendRequestButton=true">
-            <br>
+          <div style="border: solid rgba(1, 87, 103, 0.4);background-color: rgba(70, 156, 175, 0.2); width: 100%">
+          <p class="pt-1">Eier: {{ owner }}</p>
+          <p>Låner: {{ borrower }}</p>
+          <p>Leie fra: {{ rentFrom }}</p>
+          <p>Leie til: {{ rentTo }}</p>
+          <p>Total pris: {{ price }} kr</p>
+          <p>Aktivert: {{ active }}</p>
+          </div>
+          <div id="review" v-if="showReviewBox" class="w-100 mt-2 mb-2 p-2" style="display:table-column;">
+            <h5 class="mb-0">Legg igjen en anmeldelse av dette lånet!</h5>
+            <hr class="mt-0">
+            <p class="d-flex justify-content-between">Din beskrivelse av leieforholdet: <input type="text" maxlength="120" v-model="description"></p>
+            <p class="d-flex justify-content-between">Din rating av leieforholdet på en skala fra 1-10: <input type="number" min="1" max="10" v-model="rating" v-on:change="enableSendRequestButton=true"></p>
+
             <a v-if="this.enableSendRequestButton" v-on:click="sendReview" class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" >
               Send tilbakemelding
             </a>
@@ -41,6 +44,7 @@
 import rentalService from "@/services/rentalService";
 import adService from "@/services/adService";
 export default {
+  inject : ["GStore"],
   name: "Rental",
   props: {
     id: {
@@ -137,7 +141,10 @@ export default {
       })
     },
     goToDetailedView() {
-      this.$store.dispatch("setCurrentAd", this.$props);
+      const rental = {
+        id: this.$props.adId
+      };
+      this.$store.dispatch("setCurrentAd", rental)
       this.$router.push({
         path: "/ad/:id",
         name: "Ad",
@@ -147,7 +154,6 @@ export default {
       })
     },
     goToDetailedRentalView() {
-      console.log(this.$props.id);
       this.$router.push({
         path: "/rental/:id",
         name: "Rental",

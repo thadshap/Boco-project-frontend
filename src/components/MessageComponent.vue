@@ -3,11 +3,11 @@
         <img class="profile-picture" v-bind:src="`data:${this.$props.type};base64,${this.$props.base64}`"/>
         <div class="flex-grow-1 padding padding-top">
             <div class="text">
-                <span v-on:click="routeToProfile" class="name">{{firstName}}&nbsp;</span>
-                <span v-on:click="routeToProfile" class="name">{{lastName}}</span>
+                <span v-on:click="routeToProfile" id="first-name" class="name">{{firstName}}&nbsp;</span>
+                <span v-on:click="routeToProfile" id="last-name" class="name">{{lastName}}</span>
                 <span class="timestamp">&nbsp;{{timestamp}}</span>
             </div>
-            <div class="text" v-html="editedContent"></div>
+            <div id="content" class="text" v-html="editedContent"></div>
         </div>
     </div>
 </template>

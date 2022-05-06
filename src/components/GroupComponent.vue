@@ -2,8 +2,8 @@
     <div class="">
         <div class="d-flex flex-column popup" v-if="!popup">
             <button v-on:click="showPopup" class="leave"><i class="fa fa-times-circle "></i></button>
-            Do you really want to leave {{groupName}}?
-            <button v-on:click="leaveChat" class="confirm">Confirm</button>
+            <div id="confirm-leave">Do you really want to leave {{groupName}}?</div>
+            <button id="confirm-leave-button" v-on:click="leaveChat" class="confirm">Confirm</button>
         </div>
         <div>
             <div class="d-flex flex-row middle">
