@@ -342,7 +342,7 @@ export default {
     },
     async getRandomAds() {
       await adsService
-        .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
+        .getPageWithRandomAds(20, this.currPos.lat, this.currPos.lng)
           .then(response => {
             console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
@@ -367,14 +367,11 @@ export default {
     },
     async displayAds(page, adArray) {
       this.ads = [];
-      for (
-        let i = this.adsPerPage * (page - 1);
-        i < this.adsPerPage * page;
-        i++
-      ) {
+      for (let i = this.adsPerPage * (page - 1); i < this.adsPerPage * page; i++) {
         if (adArray[i] === undefined) break;
         this.ads.push(adArray[i]);
       }
+      console.log(this.ads)
       await this.getPictureForAd();
     },
     setNrOfPages(adArray) {
@@ -399,7 +396,6 @@ export default {
       await categoryService
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             this.sortedAds = [];
             for (let i = 0; i < response.data.length; i++) {
@@ -416,7 +412,6 @@ export default {
                 lng: response.data[i].lng,
               }
               this.sortedAds.push(ad)
-              console.log(ad)
             }
           }
         })
@@ -618,7 +613,6 @@ export default {
     await this.displayAds(1, this.cachedAds);
   },
   updated() {
-    this.displayAds(this.currentPage, this.cachedAds);
     this.getAllCategories();
     this.categories = this.$store.getters.getMainCategories;
   }

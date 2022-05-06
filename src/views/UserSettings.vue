@@ -125,24 +125,22 @@ export default {
       this.$router.go(-1)
     },
     async getUserInfo(){
-      await userService.getUserById(parseInt(localStorage.getItem("userId")))
-        .then(response => {
-          this.state.firstname = response.data.firstName
-          this.state.lastname = response.data.lastName
-          this.state.email = response.data.email
-        }).catch(error => {
-          this.GStore.flashMessage = "Fikk ikke hentet brukeren!"
-          this.GStore.variant = "Error"
-          setTimeout(() => {
-            this.GStore.flashMessage = ""
-          }, 4000)
-          console.log(error)
-        })
+      this.state.firstname = this.$store.getters.getProfileFirstName
+      this.state.lastname = this.$store.getters.getProfileLastName
+      this.state.email = this.$store.getters.getProfileEmail
     },
-    changeUserInfo:async function(){
+    async changeUserInfo(){
       let userId = localStorage.getItem("userId")
       if (this.state.firstnameChange !== '' || this.state.lastnameChange !== '' || this.state.passwordChange !== '') {
-        await userService.updateUser(this.state.firstnameChange, this.state.lastnameChange, this.state.passwordChange, userId)
+        this.$store.dispatch("setProfileFirstName", this.state.firstnameChange)
+        this.$store.dispatch("setProfileLastName", this.state.lastnameChange)
+
+        await userService
+          .updateUser(
+            this.state.firstnameChange,
+            this.state.lastnameChange,
+            this.state.passwordChange, userId
+          )
           .then(response => {
             this.GStore.flashMessage = "Brukerendringen har blitt fullført!"
             this.GStore.variant = "Success"
@@ -159,24 +157,24 @@ export default {
             console.log(error)
           })
       }
-      console.log(this.changedImg)
-      if (this.changedImg === true){
-      let formdata = new FormData()
-      formdata.append("file", this.imgFile)
 
-      await userService
-        .updateProfilePicture(userId, formdata)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          this.GStore.flashMessage = "Bildet ble ikke oppdatert!"
-          this.GStore.variant = "Error"
-          setTimeout(() => {
-            this.GStore.flashMessage = ""
-          }, 4000)
-          console.log(error)
-        })
+      if (this.changedImg){
+        let formdata = new FormData()
+        formdata.append("file", this.imgFile)
+
+        await userService
+          .updateProfilePicture(userId, formdata)
+          .then(response => {
+            console.log(response)
+          })
+          .catch(error => {
+            this.GStore.flashMessage = "Bildet ble ikke oppdatert!"
+            this.GStore.variant = "Error"
+            setTimeout(() => {
+              this.GStore.flashMessage = ""
+            }, 4000)
+            console.log(error)
+          })
       }
     },
     disableChangeBtn(){
@@ -196,14 +194,7 @@ export default {
 
     },
     existingUserImg(){
-      userService
-        .getProfilePicture(localStorage.getItem("userId"))
-        .then(response => {
-          this.img = `data:${response.data.type};base64,${response.data.base64}`
-        })
-        .catch(error => {
-          console.log(error)
-        })
+      this.img = this.$store.getters.getProfilePicture
     },
     async submit(){
       this.v$.$validate()

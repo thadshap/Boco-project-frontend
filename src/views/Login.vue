@@ -56,9 +56,10 @@ import { computed, reactive } from "vue";
 
 import FacebookLoginComponent from "@/components/FacebookLoginComponent";
 import GoogleLoginComponent from "@/components/GoogleLoginComponent";
-import { logIn } from "@/services/loginService";
+import { logIn, getUserInfo } from "@/services/loginService";
 
 import chatService from "@/services/chatService";
+import userService from "@/services/userService";
 
 export default {
   inject: ["GStore"],
@@ -148,8 +149,6 @@ export default {
             }
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("userId", response.data.id);
-            console.log(localStorage.getItem("userId"))
-            localStorage.setItem("provider","none")
             this.$store.dispatch("setLoggedIn",true)
             this.getGroupChat()
             this.$router.push("/")
@@ -158,6 +157,35 @@ export default {
             console.error(error)
             alert("Nå skjedde det noe galt, prøv på nytt")
           });
+
+      await getUserInfo()
+        .then(response => {
+          let profile = {
+            email: response.data.email,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            verified: response.data.verified,
+            rating: response.data.rating,
+            nrOfReviews: response.data.nrOfReviews
+          }
+
+          this.$store.dispatch("setProfile", profile)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      await userService
+        .getProfilePicture(localStorage.getItem("userId"))
+        .then(response => {
+          this.$store.dispatch(
+            "setProfilePicture",
+            `data:${response.data.type};base64,${response.data.base64}`
+          );
+        })
+        .catch(error => {
+          console.log(error)
+        })
   },
   }
 };
