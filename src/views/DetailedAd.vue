@@ -77,9 +77,9 @@
     </div>
     <div class="text-center">
       <div id="lenderHeader">
-        <label class="form-label defined-label"> Utlåner </label>
+        <label class="form-label defined-label" v-if="showRequestDetails"> Utlåner </label>
       </div>
-      <div id="lenderDetails">
+      <div id="lenderDetails" v-if="showRequestDetails">
         <label id="lenderName" class="form-label" v-on:click="seeLenderDetails">
            {{ lender.firstName }} {{ lender.lastName }}<br />
         </label>
@@ -106,7 +106,7 @@
         </div>
       </div>
     </div>
-    <div id="distance" class="text-center mt-4">
+    <div id="distance" class="text-center mt-4" v-if="showRequestDetails">
       <label class="form-label">
         <label class="defined-label">Avstand</label>  : {{ ad.distance }} km fra din posisjon&nbsp;
       </label>
@@ -118,6 +118,7 @@
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
         style="height: 40vh; padding-bottom: 7vh"
+        v-if="showRequestDetails"
       >
         <ol-view
           ref="view"
@@ -229,7 +230,6 @@ export default {
         }, 4000)
       })
       this.getDurationTypeToNorwegian()
-      this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
     },
     checkLoggedIn() {
       if(localStorage.getItem('token') || this.$store.getters.loggedIn) {
@@ -315,6 +315,12 @@ export default {
           this.GStore.flashMessage = ""
         }, 4000)
       })
+      let userId = localStorage.getItem("userId")
+      console.log(userId)
+      console.log(this.lender.id)
+      if (userId != this.lender.id) {
+        this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+      }
     },
     async startChat() {
       if (this.$store.getters.loggedIn) {
