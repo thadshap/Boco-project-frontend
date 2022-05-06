@@ -226,6 +226,7 @@ export default {
       subSubCategoriesId :"",
       idToCategory: "",
       city:"",
+      adId: "",
       durations: [
         {
           displayName: "Time",
@@ -266,7 +267,6 @@ export default {
       this.validateImages()
 
       if(!this.v$.$error && this.imgError === "") {
-        let adId;
         let durationType;
 
         for(let i= 0; i < this.durations.length; i++) {
@@ -283,10 +283,11 @@ export default {
             this.state.price,
             this.state.streetAddress,
             this.state.postalCode,
-            this.idToCategory
+            this.idToCategory,
+            this.city
           )
           .then(response => {
-            adId = response.data
+            this.adId = response.data
             console.log(response)
             this.$router.push({
               name: "MainPage",
@@ -310,7 +311,7 @@ export default {
         }
 
         await adService
-          .uploadPicturesForAd(adId, formdata)
+          .uploadPicturesForAd(this.adId, formdata)
           .then(response => {
             this.GStore.flashMessage = "Annonsen ble opprettet!"
             this.GStore.variant = "Success"

@@ -1,21 +1,35 @@
-// import { shallowMount } from "@vue/test-utils";
-// import AdComponent from "@/components/AdComponent";
-// import store from "@/store"
-//
+import { shallowMount } from "@vue/test-utils";
+import AdComponent from "@/components/AdComponent";
+import store from "@/store"
+
+
 describe("AdComponent.vue", () => {
     it("renders props when passed", () => {
-        expect(true).toBe(true)
-        // const id = 1;
-        // const title = "Motorsag";
-        // const price = 1000;
-        // const place = "Trondheim";
-        // const image = "BoCo.png";
-        // const wrapper = shallowMount(AdComponent, {
-        //     global:{ plugins: [store]},
-        //     props: { id,title,price,place,image },
-        // });
-        // expect(wrapper.text()).toMatch(`${title}${price} Til annonse`);
-        // // expect(wrapper.text()).toMatch(place);
-        // // expect(wrapper.text()).toMatch(price.toString());
+        const id = 1;
+        const title = "Motorsag";
+        const price = 1000;
+        const place = "Trondheim";
+        const image = "BoCo.png";
+        const userId = 1
+        const wrapper = shallowMount(AdComponent, {
+            global:{ plugins: [store]},
+            props: { id,title,price,place,image,userId },
+        });
+
+        expect(wrapper.text()).toContain(`${title}${price} kr Trondheim Send melding  Til annonse`);
+    });
+
+    it("Renders image when passed", () => {
+        const id = 1;
+        const title = "Motorsag";
+        const price = 1000;
+        const place = "Trondheim";
+        const image = "BoCo.png";
+        const userId = 1
+        const wrapper = shallowMount(AdComponent, {
+            global:{ plugins: [store]},
+            props: { id,title,price,place,image,userId },
+        });
+        expect(wrapper.find("img").attributes("src")).toBe(`${image}`)
     });
 });

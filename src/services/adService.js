@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'http://localhost:'
+let url = 'https://localhost:'
 let port = "8443"
 
 export default {
@@ -96,7 +96,8 @@ export default {
         price,
         streetaddress,
         postalCode,
-        categoryId
+        categoryId,
+        city
     ) {
         const options = {
             method: "POST",
@@ -115,6 +116,7 @@ export default {
                 postalCode: postalCode,
                 userId: localStorage.getItem("userId"),
                 categoryId: categoryId,
+                city: city
             },
         };
 

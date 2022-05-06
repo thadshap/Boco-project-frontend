@@ -72,7 +72,6 @@
 import { email, minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
-import Login from "./Login";
 import userService from "@/services/userService";
 
 
