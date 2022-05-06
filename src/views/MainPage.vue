@@ -282,7 +282,9 @@ export default {
             let ad = {
               id: response.data.body[i].adId,
               title: response.data.body[i].title,
-              place: response.data.body[i].postalCode.toString(),
+              city: response.data.body[i].city,
+              postalCode: response.data.body[i].postalCode.toString(),
+              streetAddress: response.data.body[i].streetAddress,
               price: response.data.body[i].price,
               distance: response.data.body[i].distance,
               userId: response.data.body[i].userId,
@@ -321,7 +323,9 @@ export default {
             let ad = {
               id: response.data[i].adId,
               title: response.data[i].title,
-              place: response.data[i].postalCode.toString(),
+              city: response.data[i].city,
+              postalCode: response.data.body[i].postalCode.toString(),
+              streetAddress: response.data.body[i].streetAddress,
               price: response.data[i].price,
               userId: response.data[i].userId,
               distance: response.data[i].distance,
@@ -340,11 +344,14 @@ export default {
       await adsService
         .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
           .then(response => {
+            console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                place: response.data[i].city,
+                city: response.data[i].city,
+                postalCode: response.data[i].postalCode.toString(),
+                streetAddress: response.data[i].streetAddress,
                 price: response.data[i].price,
                 distance: response.data[i].distance,
                 lat: response.data[i].lat,
@@ -369,10 +376,6 @@ export default {
         this.ads.push(adArray[i]);
       }
       await this.getPictureForAd();
-    },
-    getAdsWhenOnMainpage() {
-      if (this.$route.name === "/")
-        this.displayAds(this.currentPage, this.cachedAds);
     },
     setNrOfPages(adArray) {
       this.totalPages = Math.ceil(adArray.length / this.adsPerPage);
@@ -403,7 +406,9 @@ export default {
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                place: response.data[i].city,
+                city: response.data[i].city,
+                postalCode: response.data.body[i].postalCode.toString(),
+                streetAddress: response.data.body[i].streetAddress,
                 price: response.data[i].price,
                 userId: response.data[i].userId,
                 distance: response.data[i].distance,
@@ -447,7 +452,9 @@ export default {
                 let ad = {
                   id: response.data[i].adId,
                   title: response.data[i].title,
-                  place: response.data[i].city,
+                  city: response.data[i].city,
+                  postalCode: response.data.body[i].postalCode.toString(),
+                  streetAddress: response.data.body[i].streetAddress,
                   price: response.data[i].price,
                   userId: response.data[i].userId,
                   distance: response.data[i].distance,
@@ -479,7 +486,9 @@ export default {
               let ad = {
                 id: response.data[i].adId,
                 title: response.data[i].title,
-                place: response.data[i].city,
+                city: response.data[i].city,
+                postalCode: response.data.body[i].postalCode.toString(),
+                streetAddress: response.data.body[i].streetAddress,
                 price: response.data[i].price,
                 userId: response.data[i].userId,
                 distance: response.data[i].distance,
@@ -513,7 +522,6 @@ export default {
     },
     async getAllCategories() {
       if(this.$store.getters.getMainCategories.length !== 0) {
-        console.log("Already in store!!")
         return
       }
 
@@ -569,7 +577,9 @@ export default {
             let ad = {
               id: response.data[i].adId,
               title: response.data[i].title,
-              place: response.data[i].city,
+              city: response.data[i].city,
+              postalCode: response.data.body[i].postalCode.toString(),
+              streetAddress: response.data.body[i].streetAddress,
               price: response.data[i].price,
               userId: response.data[i].userId,
               lat: response.data[i].lat,
@@ -592,15 +602,17 @@ export default {
       else this.displayAds(this.currentPage, this.sortedAds);
     },
   },
-  watch: {
-    $route: "getAdsWhenOnMainpage",
-  },
   async mounted() {
     await this.getAllCategories();
     await this.getRandomAds();
     await this.setNrOfPages(this.cachedAds);
     await this.displayAds(1, this.cachedAds);
   },
+  updated() {
+    this.displayAds(this.currentPage, this.cachedAds);
+    this.getAllCategories();
+    this.categories = this.$store.getters.getMainCategories;
+  }
 };
 </script>
 

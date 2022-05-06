@@ -10,7 +10,13 @@
             <b>{{ title }}</b>
           </h3>
           <h4>{{ price }} kr</h4>
-          <h5 class="opacity-75"><i class="fas fa-map-marked-alt"></i> {{ place }}</h5>
+          <h5 class="opacity-75 d-flex flex-row align-items-center">
+            <i class="fas fa-map-marked-alt"></i>
+            <label class="address">
+              {{ streetAddress }}<br>
+              {{ postalCode }} {{ city }}
+            </label>
+          </h5>
         </div>
         <div class="d-flex flex-column justify-content-between" :class="{ 'align-items-end, h-100': !this.$store.getters.loggedIn }">
           <a class="btn btn-outline-primary btn-sm rounded-pill my-3 mw-100" role="button" v-if="!this.$data.isMyAd" @click="startChat">
@@ -52,9 +58,17 @@ export default {
       type: Number,
       required: true,
     },
-    place: {
+    city: {
       type: String,
       required: true,
+    },
+    postalCode: {
+      type: String,
+      required: true
+    },
+    streetAddress: {
+      type: String,
+      required: true
     },
     image: {
       type: String,
@@ -159,6 +173,13 @@ b{
   font-weight: inherit;
   font-size: 35px;
 }
+
+.address {
+  margin-left: 5px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
 @media screen and (min-width: 992px) {
   .project-card-container {
     width: 50%;
