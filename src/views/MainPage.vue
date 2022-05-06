@@ -342,7 +342,6 @@ export default {
       await adsService
         .getPageWithRandomAds(500,this.currPos.lat, this.currPos.lng)
           .then(response => {
-            console.log(response.data)
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
                 id: response.data[i].adId,

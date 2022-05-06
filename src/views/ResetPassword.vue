@@ -15,14 +15,14 @@
       </div>
       <div class="me-auto w-100 user-info">
         <div class="d-inline-flex w-100 password-container">
-          <label class="form-label password-label">Passord</label>
+          <label class="form-label password-label" for="password">Passord</label>
           <input class="user-input" type="password" id="password" placeholder="********" v-model="state.passwordChange" v-on:change="disableChangeBtn">
           <span id="passwordError" class="text-danger" v-if="v$.passwordChange.$error">
                 {{ v$.passwordChange.$errors[0].$message }}
               </span>
         </div>
         <div class="d-inline-flex w-100 password-container">
-          <label class="form-label password-label">Bekreft passord*</label>
+          <label class="form-label password-label" for="repeatPassword">Bekreft passord*</label>
           <input class="user-input" type="password" id="repeatPassword" placeholder="********" v-model="state.repeatPasswordChange" v-on:change="disableChangeBtn">
           <span id="repeatPasswordError" class="text-danger" v-if="v$.repeatPasswordChange.$error">
                 {{ v$.repeatPasswordChange.$errors[0].$message }}
@@ -48,7 +48,6 @@ export default {
   name: "ResetPassword",
   data(){
     return{
-      // TODO: her burde det lagres en array som tar imot info om brukeren fra databasen
       password: "",
       repeatPassword: "",
       disableBtn: true,
