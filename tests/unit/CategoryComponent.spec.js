@@ -1,4 +1,4 @@
-import {mount, shallowMount} from "@vue/test-utils";
+import { shallowMount } from "@vue/test-utils";
 import CategoryComponent from "@/components/CategoryComponent";
 import { createStore } from "vuex";
 
