@@ -20,7 +20,7 @@
                 </div>
                   <p v-if="verified">Denne brukeren er verifisert <i
                       class="fas fa-check-circle float-end pt-1"
-                      style="color: var(--bs-blue); font-size: 3vh;"
+                      style="color: var(--bs-blue); font-size: 2vh;"
                   ></i></p>
               </div>
             </div>

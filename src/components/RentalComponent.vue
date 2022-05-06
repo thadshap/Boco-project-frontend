@@ -41,6 +41,7 @@
 import rentalService from "@/services/rentalService";
 import adService from "@/services/adService";
 export default {
+  inject : ["GStore"],
   name: "Rental",
   props: {
     id: {
@@ -137,7 +138,10 @@ export default {
       })
     },
     goToDetailedView() {
-      this.$store.dispatch("setCurrentAd", this.$props);
+      const rental = {
+        id: this.$props.adId
+      };
+      this.$store.dispatch("setCurrentAd", rental)
       this.$router.push({
         path: "/ad/:id",
         name: "Ad",
@@ -147,7 +151,6 @@ export default {
       })
     },
     goToDetailedRentalView() {
-      console.log(this.$props.id);
       this.$router.push({
         path: "/rental/:id",
         name: "Rental",
