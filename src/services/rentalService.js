@@ -3,8 +3,10 @@ let url = 'http://localhost:'
 let port = "8443"
 
 export default {
+
     /**
      * Method to create a request for a rental
+     *
      * @param deadline for cancelling the rental, 24 hours before rent starts
      * @param price
      */
@@ -34,8 +36,12 @@ export default {
 
         return axios.request(options)
     },
+
     /**
      * Method to activate a rental when the lender has accepted the request
+     *
+     * @param rentalId id of the rental
+     * @returns {Promise<AxiosResponse<any>>}
      */
     approveRental(rentalId) {
         const options = {
@@ -49,6 +55,15 @@ export default {
 
         return axios.request(options);
     },
+
+    /**
+     * Method to delete a rental
+     *
+     * @param rentalId
+     * @param rating
+     * @param review
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     deleteRental(rentalId, rating, review){
         const options = {
             method: 'DELETE',
@@ -62,6 +77,13 @@ export default {
 
         return axios.request(options);
     },
+
+    /**
+     * Method to decline a rental
+     *
+     * @param rentalId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     declineRental(rentalId) {
         const options = {
             method: "DELETE",
@@ -75,20 +97,12 @@ export default {
         return axios.request(options);
     },
 
-    updateRental(rentalId, dateRentFrom, dateRentTo, deadline, price) {
-        const options = {
-            method: 'PUT',
-            url: `${url}${port}/rental/update/` + rentalId,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("token")
-            },
-            data: {rentFrom: dateRentFrom, rentTo: dateRentTo, deadline: deadline, price: price}
-        };
-
-        return axios.request(options);
-    },
-
+    /**
+     * Gets a rental by its id
+     *
+     * @param rentalId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     getRentalById(rentalId) {
         const options = {
             method: 'GET',
@@ -103,6 +117,9 @@ export default {
 
     /**
      * Gets all the items a user have lent, and all items it has rented out
+     *
+     * @param userId
+     * @returns {Promise<AxiosResponse<any>>}
      */
     getHistoryRentalForUser(userId) {
         const options = {
