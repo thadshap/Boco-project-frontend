@@ -1,10 +1,14 @@
 import axios from "axios";
-let url = 'http://localhost:'
+let url = 'https://localhost:'
 let port = "8443"
 
 export default {
+
     /**
      * Method to get a list of ads who are nearby the user
+     *
+     * @param userId id of the user
+     * @returns {Promise<AxiosResponse<any>>}
      */
     getAllAdsForUser(userId) {
         const options = {
@@ -15,30 +19,13 @@ export default {
         return axios.request(options);
     },
 
-    getAllAds() {
-        const options = { method: "GET", url: `${url}${port}/api/ads` };
-
-        return axios.request(options);
-    },
-
-    /**
-     * Method to get a list of ads who are nearby the user
-     * @param latitude is the latitude coordinate for the current user
-     * @param longitude is the longitude coordinate for the current user
-     */
-    getAllNearbyAds(latitude, longitude) {
-        const options = {
-            method: "POST",
-            url: `${url}${port}/api/ads/nearby`,
-            headers: { "Content-Type": "application/json" },
-            data: { lat: latitude, lng: longitude },
-        };
-
-        return axios.request(options);
-    },
     /**
      * Method to get a list of random ads
+     *
      * @param pageSize how many ads on the page
+     * @param lat latitude of the user
+     * @param lng longitude ofthe user
+     * @returns {Promise<AxiosResponse<any>>}
      */
     getPageWithRandomAds(pageSize, lat,lng) {
         const options = {
@@ -53,10 +40,15 @@ export default {
 
         return axios.request(options);
     },
+
     /**
      * Method for returning a list of ads where the ads header
      *      or category will be filtered by the searchString
+     *
      * @param searchString is the string who ads will be filtered by
+     * @param lat latitude of the user
+     * @param lng longitude ofthe user
+     * @returns {Promise<AxiosResponse<any>>}
      */
     getAdsBySearch(searchString, lat, lng) {
         const options = {
@@ -73,16 +65,10 @@ export default {
         return axios.request(options);
 
     },
-    getAdsByRentalType(){
-        const options = {
-            method: 'GET',
-            url: `${url}${port}/api/ads/rental/true`
-        };
 
-        return axios.request(options);
-    },
     /**
      * Method for filtering ads when category is not chosen
+     *
      * @param filterType can be "distance" or "price"
      * @param upperLimit is the upperlimit of the filterType
      * @param lowestValueFirst is a boolean, set true if you want to sort increasing, and false for decreasing
@@ -108,6 +94,7 @@ export default {
         };
         return axios.request(options);
     },
+
     /**
      * Method for filtering ads when category is chosen
      * @param filterType can be "distance" or "price"

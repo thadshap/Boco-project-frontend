@@ -1,6 +1,7 @@
-import { shallowMount } from "@vue/test-utils";
+import {mount, shallowMount} from "@vue/test-utils";
 import CategoryComponent from "@/components/CategoryComponent";
 import { createStore } from "vuex";
+
 
 const store = createStore({
   state:{
@@ -9,6 +10,11 @@ const store = createStore({
   getters: {
     loggedIn(state) {
       return state.isLoggedIn;
+    },
+  },
+  actions: {
+    setLastClickedMainCat({ commit }, lastClickedMainCat) {
+      commit("SET_LAST_CLICKED_MAIN_CAT", lastClickedMainCat)
     },
   }
 })

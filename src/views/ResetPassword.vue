@@ -41,7 +41,7 @@ import { minLength, helpers, sameAs } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 import useValidate from "@vuelidate/core";
 import MainPage from "./MainPage";
-import loginRegistrationService from "@/services/loginRegistrationService";
+import loginRegistrationService from "@/services/registrationService";
 
 export default {
   inject: ["GStore"],

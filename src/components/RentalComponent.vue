@@ -12,7 +12,6 @@
           <p>Leie fra: {{ rentFrom }}</p>
           <p>Leie til: {{ rentTo }}</p>
           <p>Total pris: {{ price }} kr</p>
-          <p>Aktivert: {{ active }}</p>
           </div>
           <div id="review" v-if="showReviewBox" class="w-100 mt-2 mb-2 p-2" style="display:table-column;">
             <h5 class="mb-0">Legg igjen en anmeldelse av dette lånet!</h5>

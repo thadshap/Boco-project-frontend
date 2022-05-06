@@ -77,7 +77,7 @@
 import {computed, reactive} from "vue";
 import {email, helpers, minLength, required, sameAs} from "@vuelidate/validators";
 import useValidate from "@vuelidate/core";
-import loginRegistrationService from "@/services/loginRegistrationService";
+import loginRegistrationService from "@/services/registrationService";
 export default {
   name: "Register",
 

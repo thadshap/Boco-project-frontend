@@ -1,18 +1,11 @@
 import axios from "axios";
-let url = "http://localhost:";
+let url = "https://localhost:";
 let port = "8443";
 
 export default {
-  getAllAdsForCategory(categoryId) {
-    const options = {
-      method: "GET",
-      url: `${url}${port}/api/categories/ads/${categoryId}`,
-    };
-    return axios.request(options);
-  },
 
   /**
-   *get all categories
+   * Get all categories
    */
   getAllCategories() {
     const options = {
@@ -23,7 +16,7 @@ export default {
   },
 
   /**
-   *get parent categories
+   * Get parent categories
    */
   getAllParentCategories() {
     const options = {
@@ -34,22 +27,11 @@ export default {
   },
 
   /**
-   *get all categories
-   * @param categoryName is the name of the parent category
+   * Get all ads for a category and its subcategories, and its subcategories etc
+   *
+   * @param categoryName name of the upmost category
+   * @returns {Promise<AxiosResponse<any>>}
    */
-  getAllSubCategoriesForCategory(categoryName) {
-    const options = {
-      method: "GET",
-      url: `${url}${port}/api/categories/${categoryName}`,
-    };
-    return axios.request(options);
-  },
-
-    /**
-     * Get all ads for a category and its subcategories, and its subcategories etc
-     * @param categoryName name of the upmost category
-     * @returns {Promise<AxiosResponse<any>>}
-     */
   getAllAdsForCategoryAndSubCategories(categoryName, geoLoc) {
     const options = {
       method: "POST",

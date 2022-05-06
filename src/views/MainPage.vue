@@ -10,6 +10,7 @@
                 placeholder="Søk"
                 class="w-100"
                 v-model="searchWord"
+                v-on:keyup.enter="search"
               />
               <button
                 class="btn btn-primary btn-style"
@@ -65,6 +66,7 @@
             <div class="filter-and-sort-btn-container">
               <div class="sort-container">
                 <button
+                    id="sort"
                   class="btn sort-btn"
                   type="button"
                   v-on:click="showSortingOptions"
@@ -78,7 +80,7 @@
                   />
                   Sorter
                 </button>
-                <div class="dropdown-item-container" v-if="showMenuBarSorting">
+                <div id="sortItems" class="dropdown-item-container" v-if="showMenuBarSorting">
                   <a
                     id="lav-hoy"
                     class="dropdown-item"
@@ -105,6 +107,7 @@
               <div>
                 <div class="dropdown filter-container">
                   <button
+                    id="filter"
                     class="btn filter-btn"
                     type="button"
                     v-on:click="showFilteringOptions"
@@ -119,24 +122,29 @@
                     Filtrer
                   </button>
                   <div
+                      id="filterItems"
                     class="dropdown-item-container"
                     v-if="showMenuBarFiltering"
                   >
                     <a class="dropdown-item" href="#"
                       >max-pris:<br />
-                      <input type="number" v-model="rangeValuePrice" />
+                      <input id="priceValue" type="number" v-model="rangeValuePrice" />
                       <input
+                          id="pricerange"
                         type="button"
                         v-on:click="filter('price')"
                         value="filtrer"
+                        v-on:keyup.enter="filter('price')"
                     /></a>
                     <a class="dropdown-item" href="#"
                       >max-avstand:<br />
-                      <input type="number" v-model="rangeValueDistance" />
+                      <input id="distanceValue" type="number" v-model="rangeValueDistance" />
                       <input
+                        id="distanceRange"
                         type="button"
                         v-on:click="filter('distance')"
                         value="filtrer"
+                        v-on:keyup.enter="filter('distance')"
                       />
                     </a>
                   </div>
@@ -171,7 +179,7 @@ import { geolocationForUser } from "@/geolocationForUser";
 import { computed } from "vue";
 import adsService from "@/services/adsService";
 import categoryService from "../services/categoryService";
-import adService from "../services/adService";
+import adService from "@/services/adService";
 
 export default {
   name: "MainPage",
@@ -266,30 +274,27 @@ export default {
       if (filterType === "distance") {
         rangeValue = this.rangeValueDistance;
       }
-
-      await adsService.filterAdsInCategoryByDistanceOrPrice(
+      await adService.filterAdsInCategoryByDistanceOrPrice(
         filterType,
         this.currentCategoryName,
         rangeValue,
-        true,
+        0,
         this.currPos.lat,
         this.currPos.lng
-      );
-
-      this.sortedAds = []
-        .then((response) => {
-          for (let i = 0; i < response.data.body.length; i++) {
+      ).then((response) => {
+        this.sortedAds = []
+          for (let i = 0; i < response.data.length; i++) {
             let ad = {
-              id: response.data.body[i].adId,
-              title: response.data.body[i].title,
-              city: response.data.body[i].city,
-              postalCode: response.data.body[i].postalCode.toString(),
-              streetAddress: response.data.body[i].streetAddress,
-              price: response.data.body[i].price,
-              distance: response.data.body[i].distance,
-              userId: response.data.body[i].userId,
-              lat: response.data.body[i].lat,
-              lng: response.data.body[i].lng,
+              id: response.data[i].adId,
+              title: response.data[i].title,
+              city: response.data[i].city,
+              postalCode: response.data[i].postalCode.toString(),
+              streetAddress: response.data[i].streetAddress,
+              price: response.data[i].price,
+              distance: response.data[i].distance,
+              userId: response.data[i].userId,
+              lat: response.data[i].lat,
+              lng: response.data[i].lng,
             };
             this.sortedAds.push(ad);
           }
@@ -308,24 +313,24 @@ export default {
         this.titleHeader = "Gjenstander for utlån filtrert etter avstander";
         rangeValue = this.rangeValueDistance;
       }
-      this.sortedAds = [];
 
       await adsService
         .filterAdsForPriceOrDistance(
           filterType,
           rangeValue,
-          true,
+          0,
           this.currPos.lat,
           this.currPos.lng
         )
         .then((response) => {
           for (let i = 0; i < response.data.length; i++) {
+            this.sortedAds = [];
             let ad = {
               id: response.data[i].adId,
               title: response.data[i].title,
               city: response.data[i].city,
-              postalCode: response.data.body[i].postalCode.toString(),
-              streetAddress: response.data.body[i].streetAddress,
+              postalCode: response.data[i].postalCode.toString(),
+              streetAddress: response.data[i].streetAddress,
               price: response.data[i].price,
               userId: response.data[i].userId,
               distance: response.data[i].distance,
@@ -342,7 +347,7 @@ export default {
     },
     async getRandomAds() {
       await adsService
-        .getPageWithRandomAds(20,this.currPos.lat, this.currPos.lng)
+        .getPageWithRandomAds(500,this.currPos.lat, this.currPos.lng)
           .then(response => {
             for (let i = 0; i < response.data.length; i++) {
               let ad = {
@@ -366,11 +371,7 @@ export default {
     },
     async displayAds(page, adArray) {
       this.ads = [];
-      for (
-        let i = this.adsPerPage * (page - 1);
-        i < this.adsPerPage * page;
-        i++
-      ) {
+      for (let i = this.adsPerPage * (page - 1); i < this.adsPerPage * page; i++) {
         if (adArray[i] === undefined) break;
         this.ads.push(adArray[i]);
       }
@@ -398,7 +399,6 @@ export default {
       await categoryService
         .getAllAdsForCategoryAndSubCategories(title, this.currPos)
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             this.sortedAds = [];
             for (let i = 0; i < response.data.length; i++) {
@@ -406,16 +406,15 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 city: response.data[i].city,
-                postalCode: response.data.body[i].postalCode.toString(),
-                streetAddress: response.data.body[i].streetAddress,
+                postalCode: response.data[i].postalCode.toString(),
+                streetAddress: response.data[i].streetAddress,
                 price: response.data[i].price,
-                userId: response.data[i].userId,
                 distance: response.data[i].distance,
+                userId: response.data[i].userId,
                 lat: response.data[i].lat,
                 lng: response.data[i].lng,
-              }
-              this.sortedAds.push(ad)
-              console.log(ad)
+              };
+              this.sortedAds.push(ad);
             }
           }
         })
@@ -452,8 +451,8 @@ export default {
                   id: response.data[i].adId,
                   title: response.data[i].title,
                   city: response.data[i].city,
-                  postalCode: response.data.body[i].postalCode.toString(),
-                  streetAddress: response.data.body[i].streetAddress,
+                  postalCode: response.data[i].postalCode.toString(),
+                  streetAddress: response.data[i].streetAddress,
                   price: response.data[i].price,
                   userId: response.data[i].userId,
                   distance: response.data[i].distance,
@@ -486,15 +485,15 @@ export default {
                 id: response.data[i].adId,
                 title: response.data[i].title,
                 city: response.data[i].city,
-                postalCode: response.data.body[i].postalCode.toString(),
-                streetAddress: response.data.body[i].streetAddress,
+                postalCode: response.data[i].postalCode.toString(),
+                streetAddress: response.data[i].streetAddress,
                 price: response.data[i].price,
-                userId: response.data[i].userId,
                 distance: response.data[i].distance,
+                userId: response.data[i].userId,
                 lat: response.data[i].lat,
                 lng: response.data[i].lng,
-              }
-              this.sortedAds.push(ad)
+              };
+              this.sortedAds.push(ad);
             }
           }
         })
@@ -586,8 +585,8 @@ export default {
               id: response.data[i].adId,
               title: response.data[i].title,
               city: response.data[i].city,
-              postalCode: response.data.body[i].postalCode.toString(),
-              streetAddress: response.data.body[i].streetAddress,
+              postalCode: response.data[i].postalCode.toString(),
+              streetAddress: response.data[i].streetAddress,
               price: response.data[i].price,
               userId: response.data[i].userId,
               lat: response.data[i].lat,
@@ -617,7 +616,6 @@ export default {
     await this.displayAds(1, this.cachedAds);
   },
   updated() {
-    this.displayAds(this.currentPage, this.cachedAds);
     this.getAllCategories();
     this.categories = this.$store.getters.getMainCategories;
   }

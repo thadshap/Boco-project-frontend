@@ -2,6 +2,7 @@ import { shallowMount } from "@vue/test-utils";
 import MessageComponent from "@/components/MessageComponent";
 
 describe("MessageComponent.vue", () => {
+
   it("test that MessageComponent displays first name correctly", () => {
     const firstName = "Leo"
     const lastName = "Leosen"
@@ -14,7 +15,7 @@ describe("MessageComponent.vue", () => {
       props: { firstName,lastName,timestamp,content,userId,type,base64 },
       data(){
         return{
-            editedContent: content
+          editedContent: content
         }
       },
     });
@@ -22,138 +23,179 @@ describe("MessageComponent.vue", () => {
   });
 });
 describe("MessageComponent.vue", () => {
-    it("test that MessageComponent displays last name correctly", () => {
-      const firstName = "Leo"
-      const lastName = "Leosen"
-      const timestamp = "2022-05-06 15:16:38"
-      const content = "Hello world!"
-      const userId = "1"
-      const type = "image/jpeg"
-      const base64 = ``
-      const wrapper = shallowMount(MessageComponent, {
-        props: { firstName,lastName,timestamp,content,userId,type,base64 },
-        data(){
-          return{
-              editedContent: content
-          }
-        },
-      });
-      expect(wrapper.find('[id="last-name"]').text()).toBe('Leosen')
+  it("test that MessageComponent displays last name correctly", () => {
+    const firstName = "Leo"
+    const lastName = "Leosen"
+    const timestamp = "2022-05-06 15:16:38"
+    const content = "Hello world!"
+    const userId = "1"
+    const type = "image/jpeg"
+    const base64 = ``
+    const wrapper = shallowMount(MessageComponent, {
+      props: { firstName,lastName,timestamp,content,userId,type,base64 },
+      data(){
+        return{
+          editedContent: content
+        }
+      },
     });
+    expect(wrapper.find('[id="last-name"]').text()).toBe('Leosen')
+  });
 });
 describe("MessageComponent.vue", () => {
-    it("test that MessageComponent displays timestamp correctly", () => {
-      const firstName = "Leo"
-      const lastName = "Leosen"
-      const timestamp = "2022-05-06 15:16:38"
-      const content = "Hello world!"
-      const userId = "1"
-      const type = "image/jpeg"
-      const base64 = ``
-      const wrapper = shallowMount(MessageComponent, {
-        props: { firstName,lastName,timestamp,content,userId,type,base64 },
-        data(){
-          return{
-              editedContent: content
-          }
-        },
-      });
-      expect(wrapper.find('[class="timestamp"]').text()).toBe('2022-05-06 15:16:38')
+  it("test that MessageComponent displays timestamp correctly", () => {
+    const firstName = "Leo"
+    const lastName = "Leosen"
+    const timestamp = "2022-05-06 15:16:38"
+    const content = "Hello world!"
+    const userId = "1"
+    const type = "image/jpeg"
+    const base64 = ``
+    const wrapper = shallowMount(MessageComponent, {
+      props: { firstName,lastName,timestamp,content,userId,type,base64 },
+      data(){
+        return{
+          editedContent: content
+        }
+      },
     });
+    expect(wrapper.find('[class="timestamp"]').text()).toBe('2022-05-06 15:16:38')
+  });
 });
 describe("MessageComponent.vue", () => {
-    it("test that MessageComponent displays content correctly", () => {
-      const firstName = "Leo"
-      const lastName = "Leosen"
-      const timestamp = "2022-05-06 15:16:38"
-      const content = "Hello world!"
-      const userId = "1"
-      const type = "image/jpeg"
-      const base64 = ``
-      const wrapper = shallowMount(MessageComponent, {
-        props: { firstName,lastName,timestamp,content,userId,type,base64 },
-        data(){
-          return{
-              editedContent: content
-          }
-        },
-      });
-      expect(wrapper.find('[id="content"]').text()).toBe('Hello world!')
+  it("test that MessageComponent displays content correctly", () => {
+    const firstName = "Leo"
+    const lastName = "Leosen"
+    const timestamp = "2022-05-06 15:16:38"
+    const content = "Hello world!"
+    const userId = "1"
+    const type = "image/jpeg"
+    const base64 = ``
+    const wrapper = shallowMount(MessageComponent, {
+      props: { firstName,lastName,timestamp,content,userId,type,base64 },
+      data(){
+        return{
+          editedContent: content
+        }
+      },
     });
+    expect(wrapper.find('[id="content"]').text()).toBe('Hello world!')
+  });
 });
 describe("MessageComponent.vue", () => {
-    it("test that non-link messages display normally", () => {
-      const firstName = "Leo"
-      const lastName = "Leosen"
-      const timestamp = "2022-05-06 15:16:38"
-      const content = "Hello world!"
-      const userId = "1"
-      const type = "image/jpeg"
-      const base64 = ``
-      const wrapper = shallowMount(MessageComponent, {
-        props: { firstName,lastName,timestamp,content,userId,type,base64 },
-        data(){
-          return{
-              editedContent: content
-          }
-        },
-      });
-      expect(wrapper.find('[id="content"]').text()).toBe(content)
+  it("test that non-link messages display normally", () => {
+    const firstName = "Leo"
+    const lastName = "Leosen"
+    const timestamp = "2022-05-06 15:16:38"
+    const content = "Hello world!"
+    const userId = "1"
+    const type = "image/jpeg"
+    const base64 = ``
+    const wrapper = shallowMount(MessageComponent, {
+      props: { firstName,lastName,timestamp,content,userId,type,base64 },
+      data(){
+        return{
+          editedContent: content
+        }
+      },
     });
+    expect(wrapper.find('[id="content"]').text()).toBe(content)
+  });
 });
 describe("MessageComponent.vue", () => {
-    it("test that link messages display with links", () => {
-      const firstName = "Leo"
-      const lastName = "Leosen"
-      const timestamp = "2022-05-06 15:16:38"
-      const content = "https://www.google.com/"
-      const userId = "1"
-      const type = "image/jpeg"
-      const base64 = ``
-      const wrapper = shallowMount(MessageComponent, {
-        props: { firstName,lastName,timestamp,content,userId,type,base64 },
-        data(){
-          return{
-              editedContent: content
-          }
-        },
-      });
-      expect(wrapper.find('[id="content"]').text()).toBe(content)
+  it("test that link messages display with links", () => {
+    const firstName = "Leo"
+    const lastName = "Leosen"
+    const timestamp = "2022-05-06 15:16:38"
+    const content = "https://www.google.com/"
+    const userId = "1"
+    const type = "image/jpeg"
+    const base64 = ``
+    const wrapper = shallowMount(MessageComponent, {
+      props: { firstName,lastName,timestamp,content,userId,type,base64 },
+      data(){
+        return{
+          editedContent: content
+        }
+      },
     });
+    expect(wrapper.find('[id="content"]').text()).toBe(content)
+  });
 });
 describe("MessageComponent.vue", () => {
-    it("test that routeToProfile works", async () => {
-      const firstName = "Leo"
-      const lastName = "Leosen"
-      const timestamp = "2022-05-06 15:16:38"
-      const content = "Hello world!"
-      const userId = "1"
-      const type = "image/jpeg"
-      const base64 = ``
-      const mockRoute = {
-        params: {
-          id: 1
+  it("test that routeToProfile works", async () => {
+    const firstName = "Leo"
+    const lastName = "Leosen"
+    const timestamp = "2022-05-06 15:16:38"
+    const content = "Hello world!"
+    const userId = "1"
+    const type = "image/jpeg"
+    const base64 = ``
+    const mockRoute = {
+      params: {
+        id: 1
+      }
+    }
+    const mockRouter = {
+      push: jest.fn()
+    }
+
+    const wrapper = shallowMount(MessageComponent, {
+      props: { firstName,lastName,timestamp,content,userId,type,base64 },
+      data(){
+        return{
+          editedContent: content
+        }
+      },
+      global: {
+        mocks: {
+          $route: mockRoute,
+          $router: mockRouter
         }
       }
-      const mockRouter = {
-        push: jest.fn()
-      }
-    
-      const wrapper = shallowMount(MessageComponent, {
-        props: { firstName,lastName,timestamp,content,userId,type,base64 },
-        data(){
-          return{
-            editedContent: content
-          }
-        },
-        global: {
-            mocks: {
-              $route: mockRoute,
-              $router: mockRouter
-            }
-          }
-      });
-      await wrapper.find('[class="name"]').trigger('click')
-      expect(mockRouter.push).toHaveBeenCalled()
     });
+    await wrapper.find('[class="name"]').trigger('click')
+    expect(mockRouter.push).toHaveBeenCalled()
+  });
+  it("Renders component", () => {
+    const wrapper = shallowMount(MessageComponent, {
+      props: {
+        firstname: "Per",
+        lastName: "Per",
+        timestamp: "10.22.10",
+        content: "https://localhost:8443/",
+        userId: 1,
+        type: "image/jpg",
+        base64: "abcdefghijklmnop"
+      }
+    })
+
+    expect(wrapper.find("div").exists()).toBeTruthy()
+  })
+
+
+  it("Renders firstname", () => {
+    const firstName = "Per";
+    const lastName = "Per"
+    const timestamp = "10.22.10";
+    const content = "https://localhost:8443/";
+    const userId = 1;
+    const type = "image/jpg";
+    const base64 = "abcdefghijklmnop";
+
+    const wrapper = shallowMount(MessageComponent, {
+      props: {
+        firstName,
+        lastName,
+        timestamp,
+        content,
+        userId,
+        type,
+        base64
+      }
+    })
+
+    expect(wrapper.findAll(".name")[0].text()).toBe(`${firstName}`)
+  });
 });
+
