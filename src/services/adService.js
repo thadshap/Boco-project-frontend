@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = 'https://localhost:'
+let url = 'http://localhost:'
 let port = "8443"
 
 export default {
@@ -121,6 +121,29 @@ export default {
         };
 
         return axios.request(options);
+    },
+    /**
+     * Method for returning a list of ads where the ads header
+     *      or category will be filtered by the searchString
+     *
+     * @param searchString is the string who ads will be filtered by
+     * @param lat latitude of the user
+     * @param lng longitude ofthe user
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+    getAdsBySearch(searchString, lat, lng) {
+        const options = {
+            method: 'POST',
+            url: `${url}${port}/api/search/` + searchString,
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer '
+            },
+            data: {lat: lat, lng: lng}
+        };
+
+        return axios.request(options);
+
     },
 
     /**
