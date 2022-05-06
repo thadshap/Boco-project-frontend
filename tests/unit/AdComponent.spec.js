@@ -1,6 +1,57 @@
-import { shallowMount } from "@vue/test-utils";
+import {mount, shallowMount} from "@vue/test-utils";
 import AdComponent from "@/components/AdComponent";
-import store from "@/store"
+import { createStore } from "vuex";
+
+const ad = {
+    "rental": true,
+    "rentedOut": false,
+    "duration": 2,
+    "durationType": "MONTH",
+    "categoryId": 5,
+    "price": 100,
+    "streetAddress": "Project Road 4",
+    "postalCode": 7200,
+    "city": "Trondheim",
+    "title": "New pants",
+    "description": "Renting out a pair of pants in size 36",
+    "distance": 0.0,
+    "lat": 0.0,
+    "lng": 0.0,
+    "adId": 1,
+    "userId": 1,
+    "sizeOfPage": 0,
+    "pictures": []
+}
+
+const store = createStore({
+    state:{
+        currentAd: {},
+        isLoggedIn: true
+    },
+    mutations: {
+        SET_CURRENT_AD(state, currentAd) {
+            state.currentAd = currentAd
+        },
+    },
+    actions: {
+        setCurrentAd({ commit }, currentAd) {
+            commit("SET_CURRENT_AD", currentAd)
+        },
+    },
+    getters:{
+        currentAd(state) {
+            return state.currentAd
+        },
+        loggedIn(state) {
+            return state.isLoggedIn;
+        },
+    }
+})
+
+jest.spyOn(AdComponent.methods, "goToDetailedView")
+    .mockImplementation(() => {
+        AdComponent.data().disable = [new Date()]
+    })
 
 
 describe("AdComponent.vue", () => {
@@ -33,3 +84,37 @@ describe("AdComponent.vue", () => {
         expect(wrapper.find("img").attributes("src")).toBe(`${image}`)
     });
 });
+
+describe("AdComponent.vue", () => {
+    it("do not redirects to ad when clicked without permission", () => {
+        const wrapper = mount(AdComponent, {
+            props: {
+                isLoggedIn: true
+            },
+            global: {
+                mocks: {
+                    $route: mockRoute,
+                    $router: mockRouter
+                }
+            }
+        })
+        wrapper.find('[class="project-card-container"]').trigger("click");
+        expect(mockRouter.push).toHaveBeenCalledTimes(0)
+    });
+});
+
+const mockRoute = {
+    params: {
+        id: 1
+    }
+}
+const mockRouter = {
+    push: jest.fn()
+}
+
+jest.spyOn(AdComponent.methods, "checkIsLoggedIn")
+    .mockImplementation(() => {
+        localStorage.setItem("token", "my hardcoded token")
+        AdComponent.data().isLoggedIn = true
+    })
+

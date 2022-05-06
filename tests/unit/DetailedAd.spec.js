@@ -156,7 +156,6 @@ describe("DetailedAd", () => {
 
     expect(mockRouter.push).toHaveBeenCalledTimes(1)
     expect(mockRouter.push).toHaveBeenCalledWith({"name": "UserProfile"})
-
   })
 });
 

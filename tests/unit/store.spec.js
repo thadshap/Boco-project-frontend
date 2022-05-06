@@ -1,6 +1,15 @@
 import store from '@/store'
+import createPersistedState from "vuex-persistedstate";
+import {shallowMount} from "@vue/test-utils";
+import UserSettings from "@/views/UserSettings";
+import RentalComponent from "@/components/RentalComponent";
 describe('store', () => {
     test('action, mutation and getter for current ad', async() => {
+        const wrapper = shallowMount(store, {
+            plugins: [createPersistedState({
+                storage: window.sessionStorage,
+            })]
+        });
         const ad = {
             adId: 1,
             title: "skates",
