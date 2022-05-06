@@ -67,3 +67,21 @@ export function googleLogin(googleLoginRequest) {
 
   return axios.request(options)
 }
+
+/**
+ * Gets user info from server, except profile picture
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export function getUserInfo() {
+  const userId = localStorage.getItem("userId")
+
+  const options = {
+    method: "GET",
+    url: `${url}:${port}/user/${userId}`,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  return axios.request(options)
+}

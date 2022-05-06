@@ -19,6 +19,8 @@
 <script>
 import HeaderComponent from "@/components/HeaderComponent";
 import FooterComponent from "@/components/FooterComponent";
+import { getUserInfo } from "@/services/loginService";
+import userService from "@/services/userService";
 
 const $ = require("jquery");
 window.$ = $;
@@ -31,6 +33,40 @@ export default {
   components: {
     HeaderComponent,
     FooterComponent
+  },
+  async mounted() {
+    if(this.$store.getters.getProfileEmail !== "") {
+      return
+    }
+
+    await getUserInfo()
+      .then(response => {
+        let profile = {
+          email: response.data.email,
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+          verified: response.data.verified,
+          rating: response.data.rating,
+          nrOfReviews: response.data.nrOfReviews
+        }
+
+        this.$store.dispatch("setProfile", profile)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+    await userService
+      .getProfilePicture(localStorage.getItem("userId"))
+      .then(response => {
+        this.$store.dispatch(
+          "setProfilePicture",
+          `data:${response.data.type};base64,${response.data.base64}`
+        );
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 }
 </script>
