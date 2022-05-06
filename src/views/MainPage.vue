@@ -528,19 +528,28 @@ export default {
               case 1:
                 mainCategories.push({
                   title: response.data[i].name,
-                  icon: response.data[i].icon
+                  icon: response.data[i].icon,
+                  id: response.data[i].id,
+                  child: response.data[i].child,
+                  parent: response.data[i].parent
                 })
                 break;
               case 2:
                 subCategories.push({
                   parentCat: response.data[i].parentName,
-                  title: response.data[i].name
+                  title: response.data[i].name,
+                  id: response.data[i].id,
+                  child: response.data[i].child,
+                  parent: response.data[i].parent
                 })
                 break;
               case 3:
                 subSubCategories.push({
                   parentCat: response.data[i].parentName,
-                  title: response.data[i].name
+                  title: response.data[i].name,
+                  id: response.data[i].id,
+                  child: response.data[i].child,
+                  parent: response.data[i].parent
                 })
                 break;
             }
