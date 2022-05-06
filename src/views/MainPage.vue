@@ -65,6 +65,7 @@
             <div class="filter-and-sort-btn-container">
               <div class="sort-container">
                 <button
+                    id="sort"
                   class="btn sort-btn"
                   type="button"
                   v-on:click="showSortingOptions"
@@ -78,7 +79,7 @@
                   />
                   Sorter
                 </button>
-                <div class="dropdown-item-container" v-if="showMenuBarSorting">
+                <div id="sortItems" class="dropdown-item-container" v-if="showMenuBarSorting">
                   <a
                     id="lav-hoy"
                     class="dropdown-item"
@@ -105,6 +106,7 @@
               <div>
                 <div class="dropdown filter-container">
                   <button
+                    id="filter"
                     class="btn filter-btn"
                     type="button"
                     v-on:click="showFilteringOptions"
@@ -119,21 +121,24 @@
                     Filtrer
                   </button>
                   <div
+                      id="filterItems"
                     class="dropdown-item-container"
                     v-if="showMenuBarFiltering"
                   >
                     <a class="dropdown-item" href="#"
                       >max-pris:<br />
-                      <input type="number" v-model="rangeValuePrice" />
+                      <input id="priceValue" type="number" v-model="rangeValuePrice" />
                       <input
+                          id="pricerange"
                         type="button"
                         v-on:click="filter('price')"
                         value="filtrer"
                     /></a>
                     <a class="dropdown-item" href="#"
                       >max-avstand:<br />
-                      <input type="number" v-model="rangeValueDistance" />
+                      <input id="distanceValue" type="number" v-model="rangeValueDistance" />
                       <input
+                        id="distanceRange"
                         type="button"
                         v-on:click="filter('distance')"
                         value="filtrer"

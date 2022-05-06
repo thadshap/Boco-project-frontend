@@ -17,7 +17,7 @@ describe("RentalComponent.vue", () => {
     const price = 100
     const rentTo = "2021-02-02"
     const userIden = 1
-    const wrapper = shallowMount(RentalComponent, {
+    const wrapper = shallowMount(RentalComponent,{
       props: { id,adId,title,borrower,owner,active,price,rentTo },
       data(){
         return{
