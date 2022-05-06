@@ -50,7 +50,7 @@
 
 <script>
 import useValidate from "@vuelidate/core";
-import loginRegistrationService from "@/services/loginRegistrationService";
+import loginRegistrationService from "@/services/registrationService";
 import { helpers, email } from "@vuelidate/validators";
 import { computed, reactive } from "vue";
 
