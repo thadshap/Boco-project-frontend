@@ -32,7 +32,7 @@
     </div>
     <div class="d-flex flex-row flex-wrap optionContainer w-100 mt-5">
       <div class="cardDiv">
-        <div class="card cardBodyStyle" @click="userSettings">
+        <div id="userSettings" class="card cardBodyStyle" @click="userSettings">
           <div class="card-body">
             <h4 class="card-title">Innstillinger</h4>
             <p class="card-text">Se og rediger dine opplysninger på BoCo</p>
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div class="cardDiv">
-        <div class="card cardBodyStyle" @click="myAds">
+        <div id="myAds" class="card cardBodyStyle" @click="myAds">
           <div class="card-body">
             <h4 class="card-title">Mine annonser</h4>
             <p class="card-text">Se alle dine annonser, aktive og utløpte</p>
@@ -49,7 +49,7 @@
       </div>
       <div class="cardDiv">
         <div class="card cardBodyStyle">
-          <div class="card-body cardBodyStyle" @click="myRentals">
+          <div id="myRentals" class="card-body cardBodyStyle" @click="myRentals">
             <h4 class="card-title">Mine lån</h4>
             <p class="card-text">Se alle dine lån, både som utleier og låner</p>
           </div>
@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="cardDiv">
-        <div class="card h-100" @click="logout">
+        <div id="logout" class="card h-100" @click="logout">
           <div class="card-body cardBodyStyle d-flex align-items-center justify-content-center sign-out-container">
             <h4 class="card-title">Logg ut</h4>
           </div>
