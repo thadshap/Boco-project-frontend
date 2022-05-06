@@ -2,7 +2,9 @@
   <div class="project-card-container" @click="goToDetailedView">
     <div class="project-card d-flex justify-content-center">
       <div class="ad-img-container-style d-flex align-items-center justify-content-center">
-        <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
+        <div class="div-img-size">
+          <img :src="image" class="ad-img-style rounded-top rounded-bottom"/>
+        </div>
       </div>
       <div class="d-flex flex-column ad-details-container-style">
         <div class="d-flex flex-column align-items-start">
@@ -158,6 +160,15 @@ export default {
 
 .ad-img-container-style {
   width: 100%;
+}
+
+.div-img-size {
+  max-height: 300px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ad-img-style {
