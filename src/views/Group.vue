@@ -60,6 +60,8 @@
 import GroupComponent from "@/components/GroupComponent";
 import chatService from "@/services/chatService";
 import userService from "@/services/userService";
+import {required, email} from "@vuelidate/validators";
+import useVuelidate from '@vuelidate/core';
 export default {  
   name: "Group",
   data(){
@@ -71,6 +73,22 @@ export default {
           groupId:'',
           collapse: true
       }
+  },
+  setup(){
+      return{
+          v$: useVuelidate()
+      }
+  },
+  validations() {
+      return{
+          input:{
+              required,
+              email
+          },
+          groupName:{
+              required
+          }
+    }
   },
   components:{
       GroupComponent
@@ -88,7 +106,21 @@ export default {
               console.log(error)
           })
       },
-      addEmailToList(){
+      async addEmailToList(){
+          const valid = await this.v$.input.$validate()
+          let usersOwnEmail
+          await userService.getUserById(localStorage.getItem("userId"))
+          .then(response =>{
+              usersOwnEmail = response.data.email
+          })
+          if (usersOwnEmail===this.input) {
+              alert("Kan ikke legge til egen epost")
+              return
+          }
+            if (!valid) {
+                alert("Ugyldig epost")
+                return
+            }
           if (!this.emails.includes(this.input)) {
             this.emails.push(this.input)
             this.input = ''
@@ -97,6 +129,11 @@ export default {
           }
       },
       async createGroupFromEmails(){
+          const valid = await this.v$.groupName.$validate()
+          if(!valid&&this.emails.length){
+              alert("Gruppenavn og epost er krevd")
+              return
+          }
           let userEmail
           let succ
           await userService.getUserById(localStorage.getItem("userId"))
