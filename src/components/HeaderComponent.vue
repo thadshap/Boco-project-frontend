@@ -69,7 +69,6 @@ import $ from "jquery";
       },
       refresh(){
         this.$router.push("/")
-        window.location.reload()
       }
     }
   }

@@ -14,14 +14,14 @@
         <div class="d-flex flex-column flex-shrink-1 align-items-center form-inputs-container-style">
           <div class="text-center form-username-container-style">
             <label class="form-label form-username-label-style">Epost</label>
-            <input class="form-control" type="text" v-model="state.email">
+            <input class="form-control" type="text" v-on:keyup.enter="loginSubmit" v-model="state.email">
             <span id="emailError" class="text-danger w-65" v-if="v$.email.$error">
               {{ v$.email.$errors[0].$message }}
             </span>
           </div>
           <div class="text-center form-password-container-style">
             <label class="form-label form-password-label-style">Passord</label>
-            <input class="form-control" type="password" v-model="password">
+            <input class="form-control" type="password" v-on:keyup.enter="loginSubmit" v-model="password">
           </div>
           <div>
             <a href="#" v-on:click="changePassword" class="form-forgot-password-style">Glemt passord?</a>

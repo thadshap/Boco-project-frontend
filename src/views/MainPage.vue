@@ -130,6 +130,7 @@
                         type="button"
                         v-on:click="filter('price')"
                         value="filtrer"
+                        v-on:keyup.enter="filter('price')"
                     /></a>
                     <a class="dropdown-item" href="#"
                       >max-avstand:<br />
@@ -138,6 +139,7 @@
                         type="button"
                         v-on:click="filter('distance')"
                         value="filtrer"
+                        v-on:keyup.enter="filter('distance')"
                       />
                     </a>
                   </div>
@@ -267,27 +269,27 @@ export default {
       if (filterType === "distance") {
         rangeValue = this.rangeValueDistance;
       }
-      await adsService.filterAdsInCategoryByDistanceOrPrice(
+      await adService.filterAdsInCategoryByDistanceOrPrice(
         filterType,
         this.currentCategoryName,
         rangeValue,
-        true,
+        0,
         this.currPos.lat,
         this.currPos.lng
       ).then((response) => {
         this.sortedAds = []
-          for (let i = 0; i < response.data.body.length; i++) {
+          for (let i = 0; i < response.data.length; i++) {
             let ad = {
-              id: response.data.body[i].adId,
-              title: response.data.body[i].title,
-              city: response.data.body[i].city,
-              postalCode: response.data.body[i].postalCode.toString(),
-              streetAddress: response.data.body[i].streetAddress,
-              price: response.data.body[i].price,
-              distance: response.data.body[i].distance,
-              userId: response.data.body[i].userId,
-              lat: response.data.body[i].lat,
-              lng: response.data.body[i].lng,
+              id: response.data[i].adId,
+              title: response.data[i].title,
+              city: response.data[i].city,
+              postalCode: response.data[i].postalCode.toString(),
+              streetAddress: response.data[i].streetAddress,
+              price: response.data[i].price,
+              distance: response.data[i].distance,
+              userId: response.data[i].userId,
+              lat: response.data[i].lat,
+              lng: response.data[i].lng,
             };
             this.sortedAds.push(ad);
           }
@@ -306,24 +308,24 @@ export default {
         this.titleHeader = "Gjenstander for utlån filtrert etter avstander";
         rangeValue = this.rangeValueDistance;
       }
-      this.sortedAds = [];
 
       await adsService
         .filterAdsForPriceOrDistance(
           filterType,
           rangeValue,
-          true,
+          0,
           this.currPos.lat,
           this.currPos.lng
         )
         .then((response) => {
           for (let i = 0; i < response.data.length; i++) {
+            this.sortedAds = [];
             let ad = {
               id: response.data[i].adId,
               title: response.data[i].title,
               city: response.data[i].city,
-              postalCode: response.data.body[i].postalCode.toString(),
-              streetAddress: response.data.body[i].streetAddress,
+              postalCode: response.data[i].postalCode.toString(),
+              streetAddress: response.data[i].streetAddress,
               price: response.data[i].price,
               userId: response.data[i].userId,
               distance: response.data[i].distance,
@@ -451,8 +453,8 @@ export default {
                   id: response.data[i].adId,
                   title: response.data[i].title,
                   city: response.data[i].city,
-                  postalCode: response.data.body[i].postalCode.toString(),
-                  streetAddress: response.data.body[i].streetAddress,
+                  postalCode: response.data[i].postalCode.toString(),
+                  streetAddress: response.data[i].streetAddress,
                   price: response.data[i].price,
                   userId: response.data[i].userId,
                   distance: response.data[i].distance,
