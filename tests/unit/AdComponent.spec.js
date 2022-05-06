@@ -2,27 +2,6 @@ import {mount, shallowMount} from "@vue/test-utils";
 import AdComponent from "@/components/AdComponent";
 import { createStore } from "vuex";
 
-const ad = {
-    "rental": true,
-    "rentedOut": false,
-    "duration": 2,
-    "durationType": "MONTH",
-    "categoryId": 5,
-    "price": 100,
-    "streetAddress": "Project Road 4",
-    "postalCode": 7200,
-    "city": "Trondheim",
-    "title": "New pants",
-    "description": "Renting out a pair of pants in size 36",
-    "distance": 0.0,
-    "lat": 0.0,
-    "lng": 0.0,
-    "adId": 1,
-    "userId": 1,
-    "sizeOfPage": 0,
-    "pictures": []
-}
-
 const store = createStore({
     state:{
         currentAd: {},
