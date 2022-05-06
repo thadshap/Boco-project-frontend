@@ -2,8 +2,7 @@ import {mount} from "@vue/test-utils";
 import {createStore} from "vuex"
 import MainPage from "@/views/MainPage";
 import DetailedAd from "@/views/DetailedAd";
-import CategoryComponent from "@/components/CategoryComponent";
-import {getKey} from "@vuepic/vue-datepicker/src/VueDatePicker/utils/util";
+
 
 const store = createStore({
   state:{
