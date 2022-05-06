@@ -576,7 +576,7 @@ export default {
       if (this.searchWord === "") {
         return;
       }
-      await adsService
+      await adService
         .getAdsBySearch(this.searchWord, this.currPos.lat, this.currPos.lng)
         .then(response => {
           this.sortedAds = []

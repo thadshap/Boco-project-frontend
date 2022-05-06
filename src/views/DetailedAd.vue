@@ -345,8 +345,13 @@ export default {
         }, 4000)
       })
       let userId = localStorage.getItem("userId")
-      if (userId != this.lender.id && (this.ad.distance!=0)) {
-        this.ad.distance = this.$store.getters.currentAd.distance.toFixed(2)
+      console.log(userId)
+      console.log(this.lender.id)
+      console.log(this.ad.distance)
+
+      if (userId != this.lender.id && (this.$store.getters.currentAd.distance != 0)) {
+        console.log("Inside if")
+        this.ad.distance = (this.$store.getters.currentAd.distance / 1000).toFixed(2)
       }
     },
     /**

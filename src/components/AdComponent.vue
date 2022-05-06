@@ -94,6 +94,8 @@ export default {
   methods: {
     goToDetailedView(){
       this.$store.dispatch("setCurrentAd", this.$props);
+      console.log(this.$store.getters.currentAd)
+
 
       this.$router.push({
         path: "/ad/:id",
