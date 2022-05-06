@@ -1,8 +1,8 @@
 <template>
 <div class="d-flex flex-column screen">
   <div class="d-flex flex-column groups">
-      <div v-if="!groups.length">Her var det tomt! Start en chat ved å trykke på knappen under</div>
-      <div><button v-on:click="collapseCreateChat" v-if="collapse" style="
+      <div id="no-groups" v-if="!groups.length">Her var det tomt! Start en chat ved å trykke på knappen under</div>
+      <div><button id="make-chat-popup" v-on:click="collapseCreateChat" v-if="collapse" style="
                                 border: 1.5px solid #2A94EE7F;
                                 border-radius: 5px;
                                 box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
@@ -13,16 +13,16 @@
       <div v-if="!collapse">
       <div>Start en chat:</div>
       <div>
-        <input type="text" v-model="groupName" placeholder="Gruppe navn" style="margin: 5px; padding: 5px; border-radius: 5px">
+        <input id="group-name" type="text" v-model="groupName" placeholder="Gruppe navn" style="margin: 5px; padding: 5px; border-radius: 5px">
     </div>
-        <input type="text" placeholder="Epost" class="add" v-model="input" style="margin: 5px; padding: 5px; border-radius: 5px">
+        <input id="email" type="text" placeholder="Epost" class="add" v-model="input" style="margin: 5px; padding: 5px; border-radius: 5px">
       
       <div>
           <div>
               {{this.emails}}
           </div>
           <div>
-              <button v-on:click="addEmailToList" style="
+              <button id="add-email" v-on:click="addEmailToList" style="
                                 border: 1.5px solid #2A94EE7F;
                                 border-radius: 5px;
                                 box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
@@ -31,7 +31,7 @@
                                 margin: 5px;">Legg til epost</button>
           </div>
           
-      <button v-on:click="createGroupFromEmails" v-if="emails.length" style="
+      <button id="make-group" v-on:click="createGroupFromEmails" v-if="emails.length" style="
                                 border: 1.5px solid #2A94EE7F;
                                 border-radius: 5px;
                                 box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
@@ -39,7 +39,7 @@
                                 padding: 5px;
                                 margin: 5px;">Lag gruppe</button>
         </div>
-        <button v-on:click="collapseCreateChat" v-if="!collapse" style="
+        <button id="close" v-on:click="collapseCreateChat" v-if="!collapse" style="
                                 border: 1.5px solid #2A94EE7F;
                                 border-radius: 5px;
                                 box-shadow: 5px 5px 5px rgba(0,0,0,0.1);
@@ -74,7 +74,7 @@ export default {
           collapse: true
       }
   },
-  setup(){
+  setup(){  
       return{
           v$: useVuelidate()
       }
