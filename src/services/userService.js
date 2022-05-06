@@ -3,6 +3,16 @@ let url = 'http://localhost:'
 let port = "8443"
 
 export default {
+
+    /**
+     * Updates a user info
+     *
+     * @param firstName
+     * @param lastName
+     * @param password
+     * @param userId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     updateUser(firstName, lastName, password, userId){
         const options = {
             method: 'PUT',
@@ -19,7 +29,13 @@ export default {
         };
         return axios.request(options);
     },
-    //TODO picture handling
+
+    /**
+     * Gets a user by it id
+     *
+     * @param userId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     getUserById(userId){
         const options = {
             method: 'GET',
@@ -31,6 +47,13 @@ export default {
         };
         return axios.request(options);
     },
+
+    /**
+     * Get the the users profile picture by the users id
+     *
+     * @param userId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     getProfilePicture(userId) {
         const options = {
             method: 'GET',
@@ -42,6 +65,14 @@ export default {
         };
         return axios.request(options);
     },
+
+    /**
+     * Method for updating a users profile picture
+     *
+     * @param userId
+     * @param formData
+     * @returns {Promise<AxiosResponse<any>>}
+     */
     updateProfilePicture(userId, formData) {
         const options = {
             method: 'PUT',
