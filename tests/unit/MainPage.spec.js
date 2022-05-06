@@ -1,7 +1,6 @@
 import {mount} from "@vue/test-utils";
 import {createStore} from "vuex"
 import MainPage from "@/views/MainPage";
-import DetailedAd from "@/views/DetailedAd";
 
 
 const store = createStore({
